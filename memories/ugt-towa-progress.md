@@ -51,14 +51,18 @@ FRONTEND DEVELOPMENT - Iniciando
   * AdminQuienesSomos, AdminCitas, AdminDashboard: funcionales
 - Sistema de autenticación completo con validación de dominio
 - Build exitoso (2414 módulos)
-- **Desplegado en producción**: https://mnuilbg09vmn.space.minimax.io
+- **Desplegado en producción**: https://wpz9aiwwenbf.space.minimax.io
+- **Cambios aplicados** (02-Nov-2025):
+  * Termómetro de negociación eliminado de homepage
+  * Lenguaje inclusivo implementado ("informadas/os")
 - Pruebas comprehensivas pasadas exitosamente
 
 ### Archivos Entregables
 - Código fuente completo: /workspace/ugt-towa-portal/
 - Documentación despliegue: /workspace/DEPLOY_GUIDE.md
 - Build producción: /workspace/ugt-towa-portal/dist/
-- URL producción: https://mnuilbg09vmn.space.minimax.io
+- URL producción: https://wpz9aiwwenbf.space.minimax.io
+- Reporte de testing: /workspace/test-progress.md
 
 ## Notas
 - Logo disponible: user_input_files/UGT-logo.jpg

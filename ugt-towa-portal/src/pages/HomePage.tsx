@@ -2,15 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { supabase, Communique, Survey, NegotiationStatus } from '@/lib/supabase';
-import { Calendar, FileText, Vote, TrendingUp, MessageSquare } from 'lucide-react';
+import { supabase, Communique, Survey } from '@/lib/supabase';
+import { Calendar, FileText, Vote, MessageSquare } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 export default function HomePage() {
   const [communiques, setCommuniques] = useState<Communique[]>([]);
   const [activeSurvey, setActiveSurvey] = useState<Survey | null>(null);
-  const [negotiations, setNegotiations] = useState<NegotiationStatus[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,13 +36,6 @@ export default function HomePage() {
         .limit(1)
         .maybeSingle();
       if (surveyData) setActiveSurvey(surveyData);
-
-      // Cargar negociaciones
-      const { data: negData } = await supabase
-        .from('negotiation_status')
-        .select('*')
-        .order('updated_at', { ascending: false });
-      if (negData) setNegotiations(negData);
     } finally {
       setLoading(false);
     }
@@ -61,7 +53,7 @@ export default function HomePage() {
               Bienvenido al Portal Sindical UGT Towa
             </h1>
             <p className="text-xl text-red-100 mb-8">
-              Tu plataforma para estar informado, participar y conectar con tus representantes sindicales
+              Tu plataforma para estar informadas/os, participar y conectar con tus representantes sindicales
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
@@ -84,42 +76,7 @@ export default function HomePage() {
       </div>
 
       <div className="container mx-auto px-4 py-12">
-        {/* Termómetro de Negociación */}
-        {negotiations.length > 0 && (
-          <div className="mb-12">
-            <div className="flex items-center mb-6">
-              <TrendingUp className="h-6 w-6 text-red-600 mr-2" />
-              <h2 className="text-2xl font-bold text-gray-900">Termómetro de Negociación</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {negotiations.map((neg) => (
-                <div key={neg.id} className="bg-white rounded-lg shadow-md p-6">
-                  <h3 className="font-semibold text-gray-900 mb-3">{neg.topic}</h3>
-                  <div className="relative pt-1">
-                    <div className="flex mb-2 items-center justify-between">
-                      <div>
-                        <span className="text-xs font-semibold inline-block text-red-600">
-                          Progreso
-                        </span>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-xs font-semibold inline-block text-red-600">
-                          {neg.percentage}%
-                        </span>
-                      </div>
-                    </div>
-                    <div className="overflow-hidden h-3 text-xs flex rounded-full bg-gray-200">
-                      <div
-                        style={{ width: `${neg.percentage}%` }}
-                        className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-600 transition-all duration-500"
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Últimos Comunicados */}
