@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { supabase } from '@/lib/supabase';
-import { LayoutDashboard, FileText, Calendar, Vote, Users, MessageSquare } from 'lucide-react';
+import { LayoutDashboard, FileText, Calendar, Vote, Users, MessageSquare, Tag } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -42,6 +42,7 @@ export default function AdminDashboard() {
   const menuItems = [
     { to: '/admin/quienes-somos', icon: Users, title: 'Quiénes Somos', desc: 'Gestionar delegados y contenido' },
     { to: '/admin/comunicados', icon: FileText, title: 'Comunicados', desc: 'Publicar y editar comunicados' },
+    { to: '/admin/categorias', icon: Tag, title: 'Categorías', desc: 'Gestionar categorías de comunicados' },
     { to: '/admin/citas', icon: Calendar, title: 'Citas', desc: 'Ver y gestionar citas' },
     { to: '/admin/disponibilidad', icon: Calendar, title: 'Disponibilidad', desc: 'Configurar slots de citas' },
     { to: '/admin/encuestas', icon: Vote, title: 'Encuestas', desc: 'Crear y gestionar encuestas' }

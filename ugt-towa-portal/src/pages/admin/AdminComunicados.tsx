@@ -2,26 +2,36 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase, Communique } from '@/lib/supabase';
+import { supabase, Communique, Category } from '@/lib/supabase';
 import { Plus, Edit2, Trash2, Upload, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminComunicados() {
   const { user } = useAuth();
   const [communiques, setCommuniques] = useState<Communique[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ title: '', content: '', category: 'general', image_url: '' });
+  const [formData, setFormData] = useState({ title: '', content: '', category_id: '', image_url: '' });
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     loadCommuniques();
+    loadCategories();
   }, []);
 
+  async function loadCategories() {
+    const { data } = await supabase.from('categories').select('*').order('name', { ascending: true });
+    if (data) setCategories(data);
+  }
+
   async function loadCommuniques() {
-    const { data } = await supabase.from('communiques').select('*').order('created_at', { ascending: false });
-    if (data) setCommuniques(data);
+    const { data } = await supabase
+      .from('communiques')
+      .select('*, category:categories(*)')
+      .order('created_at', { ascending: false });
+    if (data) setCommuniques(data as any);
   }
 
   async function handleImageUpload() {
@@ -38,15 +48,15 @@ export default function AdminComunicados() {
         return;
       }
 
-      const formData = new FormData();
-      formData.append('file', selectedFile);
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', selectedFile);
 
       const response = await fetch('https://zaxdscclkeytakcowgww.supabase.co/functions/v1/upload-communique-image', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
         },
-        body: formData
+        body: formDataUpload
       });
 
       const result = await response.json();
@@ -87,13 +97,18 @@ export default function AdminComunicados() {
   }
 
   function handleEdit(com: Communique) {
-    setFormData({ title: com.title, content: com.content, category: com.category || 'general', image_url: com.image_url || '' });
+    setFormData({ 
+      title: com.title, 
+      content: com.content, 
+      category_id: com.category_id || '', 
+      image_url: com.image_url || '' 
+    });
     setEditingId(com.id);
     setShowForm(true);
   }
 
   function resetForm() {
-    setFormData({ title: '', content: '', category: 'general', image_url: '' });
+    setFormData({ title: '', content: '', category_id: '', image_url: '' });
     setEditingId(null);
     setShowForm(false);
     setSelectedFile(null);
@@ -112,13 +127,35 @@ export default function AdminComunicados() {
         {showForm && (
           <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow mb-8">
             <h2 className="text-xl font-bold mb-4">{editingId ? 'Editar Comunicado' : 'Nuevo Comunicado'}</h2>
-            <input type="text" placeholder="Título" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full p-3 border rounded mb-4" required />
-            <select value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full p-3 border rounded mb-4">
-              <option value="general">General</option>
-              <option value="negociacion">Negociación</option>
-              <option value="convenio">Convenio</option>
+            <input 
+              type="text" 
+              placeholder="Título" 
+              value={formData.title} 
+              onChange={e => setFormData({...formData, title: e.target.value})} 
+              className="w-full p-3 border rounded mb-4" 
+              required 
+            />
+            <select 
+              value={formData.category_id} 
+              onChange={e => setFormData({...formData, category_id: e.target.value})} 
+              className="w-full p-3 border rounded mb-4"
+              required
+            >
+              <option value="">Selecciona una categoría</option>
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
             </select>
-            <textarea placeholder="Contenido" value={formData.content} onChange={e => setFormData({...formData, content: e.target.value})} className="w-full p-3 border rounded mb-4" rows={10} required />
+            <textarea 
+              placeholder="Contenido" 
+              value={formData.content} 
+              onChange={e => setFormData({...formData, content: e.target.value})} 
+              className="w-full p-3 border rounded mb-4" 
+              rows={10} 
+              required 
+            />
             
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">Imagen (opcional)</label>
@@ -162,28 +199,36 @@ export default function AdminComunicados() {
           </form>
         )}
         <div className="space-y-4">
-          {communiques.map(com => (
-            <div key={com.id} className="bg-white p-6 rounded-lg shadow">
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold mb-2">{com.title}</h3>
-                  <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs mb-2">
-                    {com.category}
-                  </span>
-                  <p className="text-gray-600">{com.content.substring(0,200)}...</p>
-                  <p className="text-sm text-gray-500 mt-2">{new Date(com.created_at).toLocaleString('es-ES')}</p>
-                </div>
-                <div className="flex gap-2 ml-4">
-                  <button onClick={() => handleEdit(com)} className="p-2 text-blue-600 hover:bg-blue-50 rounded">
-                    <Edit2 className="h-5 w-5" />
-                  </button>
-                  <button onClick={() => handleDelete(com.id)} className="p-2 text-red-600 hover:bg-red-50 rounded">
-                    <Trash2 className="h-5 w-5" />
-                  </button>
+          {communiques.map(com => {
+            const category = com.category;
+            return (
+              <div key={com.id} className="bg-white p-6 rounded-lg shadow">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold mb-2">{com.title}</h3>
+                    {category && (
+                      <span 
+                        className="inline-block px-3 py-1 text-white rounded-full text-xs mb-2 font-semibold"
+                        style={{ backgroundColor: category.color }}
+                      >
+                        {category.name}
+                      </span>
+                    )}
+                    <p className="text-gray-600">{com.content.substring(0,200)}...</p>
+                    <p className="text-sm text-gray-500 mt-2">{new Date(com.created_at).toLocaleString('es-ES')}</p>
+                  </div>
+                  <div className="flex gap-2 ml-4">
+                    <button onClick={() => handleEdit(com)} className="p-2 text-blue-600 hover:bg-blue-50 rounded">
+                      <Edit2 className="h-5 w-5" />
+                    </button>
+                    <button onClick={() => handleDelete(com.id)} className="p-2 text-red-600 hover:bg-red-50 rounded">
+                      <Trash2 className="h-5 w-5" />
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
       <Footer />

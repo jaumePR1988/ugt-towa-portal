@@ -2,34 +2,47 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { supabase, Communique } from '@/lib/supabase';
+import { supabase, Communique, Category } from '@/lib/supabase';
 import { FileText, Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 export default function ComunicadosPage() {
   const [communiques, setCommuniques] = useState<Communique[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [category, setCategory] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
 
   useEffect(() => {
     loadCommuniques();
-  }, [category]);
+  }, [selectedCategory]);
+
+  async function loadCategories() {
+    const { data } = await supabase
+      .from('categories')
+      .select('*')
+      .order('name', { ascending: true });
+    if (data) setCategories(data);
+  }
 
   async function loadCommuniques() {
     setLoading(true);
     let query = supabase
       .from('communiques')
-      .select('*')
+      .select('*, category:categories(*)')
       .eq('is_published', true)
       .order('created_at', { ascending: false });
 
-    if (category !== 'all') {
-      query = query.eq('category', category);
+    if (selectedCategory !== 'all') {
+      query = query.eq('category_id', selectedCategory);
     }
 
     const { data } = await query;
-    if (data) setCommuniques(data);
+    if (data) setCommuniques(data as any);
     setLoading(false);
   }
 
@@ -42,43 +55,80 @@ export default function ComunicadosPage() {
             <FileText className="h-8 w-8 text-red-600 mr-3" />
             <h1 className="text-4xl font-bold text-gray-900">Comunicados</h1>
           </div>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600"
-          >
-            <option value="all">Todas las categorías</option>
-            <option value="general">General</option>
-            <option value="negociacion">Negociación</option>
-            <option value="convenio">Convenio</option>
-          </select>
+        </div>
+
+        {/* Filtros de categoría */}
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold text-gray-700 mb-3">Filtrar por categoría:</h2>
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => setSelectedCategory('all')}
+              className={`px-4 py-2 rounded-lg font-medium transition ${
+                selectedCategory === 'all'
+                  ? 'bg-gray-900 text-white shadow-md'
+                  : 'bg-white text-gray-700 border border-gray-300 hover:border-gray-400'
+              }`}
+            >
+              Todas las categorías
+            </button>
+            {categories.map(cat => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`px-4 py-2 rounded-lg font-medium transition ${
+                  selectedCategory === cat.id
+                    ? 'text-white shadow-md'
+                    : 'bg-white text-gray-700 border-2 hover:shadow'
+                }`}
+                style={
+                  selectedCategory === cat.id
+                    ? { backgroundColor: cat.color, borderColor: cat.color }
+                    : { borderColor: cat.color, color: cat.color }
+                }
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
         </div>
 
         {loading ? (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
           </div>
+        ) : communiques.length === 0 ? (
+          <div className="text-center py-12 bg-white rounded-lg shadow">
+            <p className="text-gray-500 text-lg">No hay comunicados en esta categoría.</p>
+          </div>
         ) : (
           <div className="grid grid-cols-1 gap-6">
-            {communiques.map(com => (
-              <Link
-                key={com.id}
-                to={`/comunicados/${com.id}`}
-                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition"
-              >
-                <h2 className="text-2xl font-semibold text-gray-900 mb-3">{com.title}</h2>
-                <p className="text-gray-600 mb-4 line-clamp-3">{com.content.substring(0, 200)}...</p>
-                <div className="flex items-center text-sm text-gray-500">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  <span>{format(new Date(com.created_at), "d 'de' MMMM, yyyy", { locale: es })}</span>
-                  {com.category && (
-                    <span className="ml-4 px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs">
-                      {com.category}
-                    </span>
-                  )}
-                </div>
-              </Link>
-            ))}
+            {communiques.map(com => {
+              const category = com.category;
+              return (
+                <Link
+                  key={com.id}
+                  to={`/comunicados/${com.id}`}
+                  className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <h2 className="text-2xl font-semibold text-gray-900 flex-1">{com.title}</h2>
+                    {category && (
+                      <span
+                        className="ml-4 px-3 py-1 text-white rounded-full text-sm font-semibold"
+                        style={{ backgroundColor: category.color }}
+                      >
+                        {category.name}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-gray-600 mb-4 line-clamp-3">{com.content.substring(0, 200)}...</p>
+                  <div className="flex items-center text-sm text-gray-500">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    <span>{format(new Date(com.created_at), "d 'de' MMMM, yyyy", { locale: es })}</span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>

@@ -5,35 +5,35 @@
         "id": "1",
         "content": "Crear sistema de categorías de comunicados con colores",
         "details": "Implementar gestión completa de categorías: 1. Crear tabla 'categories' con campos: id, name, color, created_at. 2. Modificar tabla 'communiques' para usar foreign key hacia categories. 3. Crear interfaz en panel admin para CRUD de categorías. 4. Selector de color (palette o input color). 5. Filtros en página de comunicados por categoría con colores.",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
         "content": "Implementar calendario desplegable para citas",
         "details": "Reemplazar sistema actual por calendario completo: 1. Calendario mensual/navegación por meses. 2. Horarios de 8:00 a 16:00 con intervalos de 1 hora (8:00, 9:00, 10:00, 11:00, 12:00, 13:00, 14:00, 15:00, 16:00). 3. Vista de horarios por día seleccionado. 4. Estados: disponible, bloqueado, ocupado. 5. Interfaz intuitiva para selección.",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "3": {
         "id": "3",
         "content": "Sistema de bloqueo de horarios por administrador",
         "details": "Funcionalidad para que administradores puedan gestionar disponibilidad: 1. Panel administrativo para bloquear/desbloquear horarios específicos. 2. Botón para marcar horarios como 'no disponible' en el calendario. 3. Justificación opcional para bloqueos. 4. Vista de horarios bloqueados para administradores. 5. Los horarios bloqueados no aparecen para usuarios normales.",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "4": {
         "id": "4",
         "content": "Gestión automática de conflictos de citas",
         "details": "Sistema para prevenir solapamientos: 1. Cuando un usuario selecciona una hora, se marca como 'ocupada' automáticamente. 2. La hora desaparece de disponibilidad para otros usuarios inmediatamente. 3. Confirmación de cita envía email automático. 4. Si usuario no confirma en X tiempo, volver a disponibilidad. 5. Dashboard de administración para gestionar citas confirmadas/pendientes.",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       },
       "5": {
         "id": "5",
         "content": "Testing y despliegue de nuevas funcionalidades",
         "details": "Verificar todas las mejoras implementadas: 1. Testear CRUD de categorías con colores. 2. Verificar funcionamiento del calendario desplegable. 3. Probar bloqueo de horarios por admin. 4. Comprobar gestión de conflictos de citas. 5. Build y despliegue de versión actualizada.",
-        "status": "pending",
+        "status": "completed",
         "priority": "low"
       }
     }

@@ -18,6 +18,7 @@ import NewsletterPage from './pages/NewsletterPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminQuienesSomos from './pages/admin/AdminQuienesSomos';
 import AdminComunicados from './pages/admin/AdminComunicados';
+import AdminCategorias from './pages/admin/AdminCategorias';
 import AdminCitas from './pages/admin/AdminCitas';
 import AdminDisponibilidad from './pages/admin/AdminDisponibilidad';
 import AdminEncuestas from './pages/admin/AdminEncuestas';
@@ -76,6 +77,14 @@ function App() {
             element={
               <AdminRoute>
                 <AdminComunicados />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/categorias"
+            element={
+              <AdminRoute>
+                <AdminCategorias />
               </AdminRoute>
             }
           />

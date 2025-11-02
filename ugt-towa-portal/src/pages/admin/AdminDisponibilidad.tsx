@@ -1,83 +1,311 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase, AppointmentSlot } from '@/lib/supabase';
-import { Plus } from 'lucide-react';
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Lock, Unlock } from 'lucide-react';
 import { toast } from 'sonner';
 
+const TIME_SLOTS = [
+  '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'
+];
+
+const DELEGATE_TYPES = [
+  { value: 'comite', label: 'Comité de Empresa' },
+  { value: 'sindical', label: 'Delegados Sindicales' },
+  { value: 'prevencion', label: 'Prevención' }
+];
+
 export default function AdminDisponibilidad() {
+  const { user } = useAuth();
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedDelegateType, setSelectedDelegateType] = useState<'comite' | 'sindical' | 'prevencion'>('comite');
   const [slots, setSlots] = useState<AppointmentSlot[]>([]);
-  const [formData, setFormData] = useState({ delegate_type: 'comite', start_time: '', end_time: '' });
+  const [blockReason, setBlockReason] = useState('');
+  const [showBlockModal, setShowBlockModal] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<AppointmentSlot | null>(null);
 
   useEffect(() => {
     loadSlots();
-  }, []);
+  }, [selectedDate, selectedDelegateType]);
 
   async function loadSlots() {
-    const { data } = await supabase.from('appointment_slots').select('*').order('start_time');
+    const dateStr = selectedDate.toISOString().split('T')[0];
+    const { data } = await supabase
+      .from('appointment_slots')
+      .select('*')
+      .eq('appointment_date', dateStr)
+      .eq('delegate_type', selectedDelegateType)
+      .order('start_time');
+    
     if (data) setSlots(data);
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const { error } = await supabase.from('appointment_slots').insert([{ ...formData, is_available: true }]);
-    if (error) toast.error('Error al crear slot');
-    else { 
-      toast.success('Slot creado'); 
-      setFormData({ delegate_type: 'comite', start_time: '', end_time: '' });
-      loadSlots(); 
+  async function createSlotsForDay() {
+    const dateStr = selectedDate.toISOString().split('T')[0];
+    const slotsToCreate = TIME_SLOTS.map((time, index) => {
+      const startHour = parseInt(time.split(':')[0]);
+      const endHour = startHour + 1;
+      return {
+        delegate_type: selectedDelegateType,
+        start_time: `${dateStr} ${time}:00+00`,
+        end_time: `${dateStr} ${endHour.toString().padStart(2, '0')}:00:00+00`,
+        appointment_date: dateStr,
+        status: 'available'
+      };
+    });
+
+    const { error } = await supabase.from('appointment_slots').insert(slotsToCreate);
+    
+    if (error) {
+      toast.error('Error al crear slots');
+    } else {
+      toast.success('Slots creados para este día');
+      loadSlots();
     }
   }
 
-  async function handleDelete(id: string) {
-    if (confirm('¿Eliminar este slot?')) {
-      const { error } = await supabase.from('appointment_slots').delete().eq('id', id);
-      if (error) toast.error('Error al eliminar');
-      else { toast.success('Eliminado'); loadSlots(); }
+  async function toggleBlockSlot(slot: AppointmentSlot) {
+    if (slot.status === 'blocked') {
+      // Desbloquear
+      const { error } = await supabase
+        .from('appointment_slots')
+        .update({ status: 'available', blocked_by: null, block_reason: null })
+        .eq('id', slot.id);
+      
+      if (!error) {
+        toast.success('Horario desbloqueado');
+        loadSlots();
+      }
+    } else if (slot.status === 'available') {
+      // Mostrar modal para bloquear
+      setSelectedSlot(slot);
+      setShowBlockModal(true);
+    } else {
+      toast.error('Este horario está ocupado, no se puede bloquear');
     }
   }
+
+  async function confirmBlock() {
+    if (!selectedSlot || !user) return;
+
+    const { error } = await supabase
+      .from('appointment_slots')
+      .update({ 
+        status: 'blocked', 
+        blocked_by: user.id, 
+        block_reason: blockReason || 'Sin especificar' 
+      })
+      .eq('id', selectedSlot.id);
+    
+    if (!error) {
+      toast.success('Horario bloqueado');
+      setShowBlockModal(false);
+      setBlockReason('');
+      setSelectedSlot(null);
+      loadSlots();
+    }
+  }
+
+  function changeDate(days: number) {
+    const newDate = new Date(selectedDate);
+    newDate.setDate(newDate.getDate() + days);
+    setSelectedDate(newDate);
+  }
+
+  function getSlotForTime(time: string): AppointmentSlot | undefined {
+    return slots.find(s => {
+      const slotTime = new Date(s.start_time).getHours();
+      const targetHour = parseInt(time.split(':')[0]);
+      return slotTime === targetHour;
+    });
+  }
+
+  function getStatusBadge(status: string) {
+    switch (status) {
+      case 'available':
+        return { bg: 'bg-green-100', text: 'text-green-700', label: 'Disponible' };
+      case 'blocked':
+        return { bg: 'bg-red-100', text: 'text-red-700', label: 'Bloqueado' };
+      case 'occupied':
+        return { bg: 'bg-gray-100', text: 'text-gray-700', label: 'Ocupado' };
+      default:
+        return { bg: 'bg-gray-100', text: 'text-gray-500', label: 'Sin definir' };
+    }
+  }
+
+  const dateStr = selectedDate.toLocaleDateString('es-ES', { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="container mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold mb-8">Configurar Disponibilidad</h1>
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow mb-8">
+        <div className="flex items-center mb-8">
+          <CalendarIcon className="h-8 w-8 text-red-600 mr-3" />
+          <h1 className="text-3xl font-bold">Gestión de Disponibilidad</h1>
+        </div>
+
+        {/* Selector de tipo de delegado */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <h2 className="text-xl font-semibold mb-4">Tipo de Delegado</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <select value={formData.delegate_type} onChange={e => setFormData({...formData, delegate_type: e.target.value as any})} className="p-3 border rounded">
-              <option value="comite">Comité</option>
-              <option value="sindical">Sindical</option>
-              <option value="prevencion">Prevención</option>
-            </select>
-            <input type="datetime-local" value={formData.start_time} onChange={e => setFormData({...formData, start_time: e.target.value})} className="p-3 border rounded" required />
-            <input type="datetime-local" value={formData.end_time} onChange={e => setFormData({...formData, end_time: e.target.value})} className="p-3 border rounded" required />
+            {DELEGATE_TYPES.map(type => (
+              <button
+                key={type.value}
+                onClick={() => setSelectedDelegateType(type.value as any)}
+                className={`p-4 rounded-lg border-2 font-semibold transition ${
+                  selectedDelegateType === type.value
+                    ? 'border-red-600 bg-red-50 text-red-700'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                {type.label}
+              </button>
+            ))}
           </div>
-          <button type="submit" className="mt-4 px-6 py-3 bg-red-600 text-white rounded hover:bg-red-700">
-            <Plus className="inline h-5 w-5 mr-1" /> Añadir Slot
-          </button>
-        </form>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {slots.map(slot => (
-            <div key={slot.id} className={`p-4 rounded-lg border ${slot.is_available ? 'bg-green-50 border-green-200' : 'bg-gray-100 border-gray-200'}`}>
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="font-semibold text-gray-900 capitalize">{slot.delegate_type}</p>
-                  <p className="text-sm text-gray-600 mt-1">{new Date(slot.start_time).toLocaleString('es-ES')}</p>
-                  <p className="text-sm text-gray-600">{new Date(slot.end_time).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</p>
-                  <span className={`inline-block mt-2 px-2 py-1 text-xs rounded ${slot.is_available ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-700'}`}>
-                    {slot.is_available ? 'Disponible' : 'Ocupado'}
-                  </span>
+        </div>
+
+        {/* Navegación de fecha */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={() => changeDate(-1)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+            <h2 className="text-xl font-bold capitalize">{dateStr}</h2>
+            <button
+              onClick={() => changeDate(1)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </button>
+          </div>
+
+          <div className="text-center">
+            <button
+              onClick={createSlotsForDay}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            >
+              Crear Slots para este Día
+            </button>
+          </div>
+        </div>
+
+        {/* Calendario de slots */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-semibold mb-4">Horarios (8:00 - 16:00)</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {TIME_SLOTS.map(time => {
+              const slot = getSlotForTime(time);
+              const endHour = (parseInt(time.split(':')[0]) + 1).toString().padStart(2, '0');
+              const badge = slot ? getStatusBadge(slot.status) : null;
+
+              return (
+                <div
+                  key={time}
+                  className={`p-4 rounded-lg border-2 ${
+                    !slot
+                      ? 'border-gray-200 bg-gray-50'
+                      : slot.status === 'available'
+                      ? 'border-green-300 bg-green-50'
+                      : slot.status === 'blocked'
+                      ? 'border-red-300 bg-red-50'
+                      : 'border-gray-300 bg-gray-100'
+                  }`}
+                >
+                  <div className="text-center mb-2">
+                    <p className="font-bold text-lg">{time} - {endHour}:00</p>
+                  </div>
+                  
+                  {slot ? (
+                    <>
+                      <div className="flex justify-center mb-3">
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${badge?.bg} ${badge?.text}`}>
+                          {badge?.label}
+                        </span>
+                      </div>
+                      {slot.block_reason && (
+                        <p className="text-xs text-gray-600 mb-2 text-center italic">
+                          Motivo: {slot.block_reason}
+                        </p>
+                      )}
+                      {slot.status !== 'occupied' && (
+                        <button
+                          onClick={() => toggleBlockSlot(slot)}
+                          className={`w-full py-2 rounded-lg flex items-center justify-center gap-2 transition ${
+                            slot.status === 'blocked'
+                              ? 'bg-green-600 text-white hover:bg-green-700'
+                              : 'bg-red-600 text-white hover:bg-red-700'
+                          }`}
+                        >
+                          {slot.status === 'blocked' ? (
+                            <>
+                              <Unlock className="h-4 w-4" />
+                              Desbloquear
+                            </>
+                          ) : (
+                            <>
+                              <Lock className="h-4 w-4" />
+                              Bloquear
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </>
+                  ) : (
+                    <p className="text-gray-400 text-center text-sm">Sin slot</p>
+                  )}
                 </div>
-                <button onClick={() => handleDelete(slot.id)} className="text-red-600 hover:bg-red-50 p-1 rounded">
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          ))}
+              );
+            })}
+          </div>
         </div>
       </div>
+
+      {/* Modal de bloqueo */}
+      {showBlockModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <h3 className="text-xl font-bold mb-4">Bloquear Horario</h3>
+            <p className="text-gray-600 mb-4">
+              Indica el motivo del bloqueo (opcional):
+            </p>
+            <input
+              type="text"
+              value={blockReason}
+              onChange={(e) => setBlockReason(e.target.value)}
+              placeholder="Ej: Reunión externa, vacaciones..."
+              className="w-full p-3 border border-gray-300 rounded-lg mb-4"
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={confirmBlock}
+                className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
+              >
+                Confirmar Bloqueo
+              </button>
+              <button
+                onClick={() => {
+                  setShowBlockModal(false);
+                  setBlockReason('');
+                  setSelectedSlot(null);
+                }}
+                className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300 transition"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </div>
   );

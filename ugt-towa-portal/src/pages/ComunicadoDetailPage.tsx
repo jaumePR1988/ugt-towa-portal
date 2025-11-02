@@ -35,10 +35,10 @@ export default function ComunicadoDetailPage() {
   async function loadCommunique() {
     const { data } = await supabase
       .from('communiques')
-      .select('*')
+      .select('*, category:categories(*)')
       .eq('id', id)
       .maybeSingle();
-    if (data) setCommunique(data);
+    if (data) setCommunique(data as any);
     setLoading(false);
   }
 
@@ -184,8 +184,11 @@ export default function ComunicadoDetailPage() {
               <Calendar className="h-4 w-4 mr-2" />
               <span>{format(new Date(communique.created_at), "d 'de' MMMM, yyyy", { locale: es })}</span>
               {communique.category && (
-                <span className="ml-4 px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs">
-                  {communique.category}
+                <span 
+                  className="ml-4 px-3 py-1 text-white rounded-full text-sm font-semibold"
+                  style={{ backgroundColor: communique.category.color }}
+                >
+                  {communique.category.name}
                 </span>
               )}
             </div>

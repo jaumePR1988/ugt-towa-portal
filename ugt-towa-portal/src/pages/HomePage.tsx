@@ -21,11 +21,11 @@ export default function HomePage() {
       // Cargar últimos 3 comunicados
       const { data: comData } = await supabase
         .from('communiques')
-        .select('*')
+        .select('*, category:categories(*)')
         .eq('is_published', true)
         .order('created_at', { ascending: false })
         .limit(3);
-      if (comData) setCommuniques(comData);
+      if (comData) setCommuniques(comData as any);
 
       // Cargar encuesta activa
       const { data: surveyData } = await supabase
@@ -112,8 +112,11 @@ export default function HomePage() {
                         <div className="flex items-center mt-3 text-sm text-gray-500">
                           <span>{format(new Date(com.created_at), "d 'de' MMMM, yyyy", { locale: es })}</span>
                           {com.category && (
-                            <span className="ml-3 px-2 py-1 bg-red-100 text-red-700 rounded text-xs">
-                              {com.category}
+                            <span 
+                              className="ml-3 px-2 py-1 text-white rounded text-xs font-semibold"
+                              style={{ backgroundColor: com.category.color }}
+                            >
+                              {com.category.name}
                             </span>
                           )}
                         </div>
