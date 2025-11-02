@@ -3,37 +3,37 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Reparar sistema de gestión de citas",
-        "details": "El sistema de citas no está funcionando correctamente. Necesito revisar y corregir: 1. Verificar tablas appointments y appointment_slots. 2. Revisar funciones de creación, actualización y visualización de citas. 3. Comprobar el calendario interactivo. 4. Verificar permisos y políticas RLS para citas.",
-        "status": "completed",
+        "content": "Crear sistema de categorías de comunicados con colores",
+        "details": "Implementar gestión completa de categorías: 1. Crear tabla 'categories' con campos: id, name, color, created_at. 2. Modificar tabla 'communiques' para usar foreign key hacia categories. 3. Crear interfaz en panel admin para CRUD de categorías. 4. Selector de color (palette o input color). 5. Filtros en página de comunicados por categoría con colores.",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Implementar subida de imágenes en 'Quiénes Somos' y 'Comunicados'",
-        "details": "Agregar funcionalidad para que los administradores puedan subir y gestionar imágenes en: 1. Página 'Quiénes Somos' (para fotos de delegados y contenido). 2. Sección de comunicados (para imágenes en los comunicados). 3. Integrar con Supabase Storage. 4. Crear interfaz de subida en panel admin.",
-        "status": "completed",
-        "priority": "medium"
+        "content": "Implementar calendario desplegable para citas",
+        "details": "Reemplazar sistema actual por calendario completo: 1. Calendario mensual/navegación por meses. 2. Horarios de 8:00 a 16:00 con intervalos de 1 hora (8:00, 9:00, 10:00, 11:00, 12:00, 13:00, 14:00, 15:00, 16:00). 3. Vista de horarios por día seleccionado. 4. Estados: disponible, bloqueado, ocupado. 5. Interfaz intuitiva para selección.",
+        "status": "pending",
+        "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Mostrar autor de comentarios",
-        "details": "Modificar el sistema de comentarios para que muestre quien ha hecho cada comentario: 1. Obtener nombre de usuario desde tabla profiles. 2. Mostrar nombre del usuario que hizo el comentario. 3. Estilizar la información del autor. 4. Mantener funcionalidad de tiempo real.",
-        "status": "completed",
-        "priority": "medium"
+        "content": "Sistema de bloqueo de horarios por administrador",
+        "details": "Funcionalidad para que administradores puedan gestionar disponibilidad: 1. Panel administrativo para bloquear/desbloquear horarios específicos. 2. Botón para marcar horarios como 'no disponible' en el calendario. 3. Justificación opcional para bloqueos. 4. Vista de horarios bloqueados para administradores. 5. Los horarios bloqueados no aparecen para usuarios normales.",
+        "status": "pending",
+        "priority": "high"
       },
       "4": {
         "id": "4",
-        "content": "Implementar sistema de reacciones a comentarios",
-        "details": "Agregar funcionalidad de reacciones (likes) a los comentarios: 1. Crear nueva tabla para reacciones de comentarios. 2. Implementar botones de reacción (like, dislike, etc.). 3. Contar y mostrar número de reacciones. 4. Prevenir doble reacción del mismo usuario. 5. Integrar con el sistema de tiempo real.",
-        "status": "completed",
+        "content": "Gestión automática de conflictos de citas",
+        "details": "Sistema para prevenir solapamientos: 1. Cuando un usuario selecciona una hora, se marca como 'ocupada' automáticamente. 2. La hora desaparece de disponibilidad para otros usuarios inmediatamente. 3. Confirmación de cita envía email automático. 4. Si usuario no confirma en X tiempo, volver a disponibilidad. 5. Dashboard de administración para gestionar citas confirmadas/pendientes.",
+        "status": "pending",
         "priority": "medium"
       },
       "5": {
         "id": "5",
-        "content": "Testing y despliegue de mejoras",
-        "details": "Probar todas las modificaciones implementadas: 1. Testear sistema de citas reparado. 2. Verificar subida de imágenes en admin. 3. Comprobar visualización de autores en comentarios. 4. Testear sistema de reacciones. 5. Realizar build y despliegue actualizado.",
-        "status": "completed",
+        "content": "Testing y despliegue de nuevas funcionalidades",
+        "details": "Verificar todas las mejoras implementadas: 1. Testear CRUD de categorías con colores. 2. Verificar funcionamiento del calendario desplegable. 3. Probar bloqueo de horarios por admin. 4. Comprobar gestión de conflictos de citas. 5. Build y despliegue de versión actualizada.",
+        "status": "pending",
         "priority": "low"
       }
     }
