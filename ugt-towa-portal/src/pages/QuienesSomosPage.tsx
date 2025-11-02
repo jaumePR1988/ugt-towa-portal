@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { supabase, Delegate } from '@/lib/supabase';
-import { Users } from 'lucide-react';
+import { Users, User } from 'lucide-react';
 
 export default function QuienesSomosPage() {
   const [delegates, setDelegates] = useState<{
@@ -92,22 +92,29 @@ function DelegateSection({ title, description, delegates }: {
       {description && (
         <p className="text-gray-700 mb-6">{description}</p>
       )}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {delegates.map(delegate => (
-          <div key={delegate.id} className="bg-white rounded-lg shadow-md p-6">
-            {delegate.image_url && (
-              <img
-                src={delegate.image_url}
-                alt={delegate.full_name}
-                className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
-              />
-            )}
-            <h3 className="text-xl font-semibold text-center text-gray-900 mb-2">
-              {delegate.full_name}
-            </h3>
-            <p className="text-gray-600 text-center text-sm">{delegate.bio}</p>
-          </div>
-        ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {delegates.map(delegate => {
+          const photoUrl = delegate.photo_url || delegate.image_url;
+          return (
+            <div key={delegate.id} className="bg-white rounded-lg shadow-md p-6 text-center">
+              {photoUrl ? (
+                <img
+                  src={photoUrl}
+                  alt={delegate.full_name}
+                  className="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-red-100"
+                />
+              ) : (
+                <div className="w-24 h-24 rounded-full mx-auto mb-4 bg-gray-200 flex items-center justify-center border-4 border-gray-100">
+                  <User className="h-12 w-12 text-gray-400" />
+                </div>
+              )}
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                {delegate.full_name}
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed">{delegate.bio}</p>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase, Communique, Comment as CommentType } from '@/lib/supabase';
-import { Calendar, MessageSquare } from 'lucide-react';
+import { supabase, Communique, Comment as CommentType, CommentReaction } from '@/lib/supabase';
+import { Calendar, MessageSquare, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -14,6 +14,7 @@ export default function ComunicadoDetailPage() {
   const { user } = useAuth();
   const [communique, setCommunique] = useState<Communique | null>(null);
   const [comments, setComments] = useState<CommentType[]>([]);
+  const [reactions, setReactions] = useState<Record<string, CommentReaction[]>>({});
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -24,6 +25,12 @@ export default function ComunicadoDetailPage() {
       subscribeToComments();
     }
   }, [id]);
+
+  useEffect(() => {
+    if (comments.length > 0) {
+      loadReactions();
+    }
+  }, [comments]);
 
   async function loadCommunique() {
     const { data } = await supabase
@@ -38,10 +45,68 @@ export default function ComunicadoDetailPage() {
   async function loadComments() {
     const { data } = await supabase
       .from('comments')
-      .select('*')
+      .select(`
+        *,
+        author:profiles(full_name)
+      `)
       .eq('post_id', id)
       .order('created_at', { ascending: false });
+    
     if (data) setComments(data);
+  }
+
+  async function loadReactions() {
+    if (comments.length === 0) return;
+    
+    const { data } = await supabase
+      .from('comment_reactions')
+      .select('*')
+      .in('comment_id', comments.map(c => c.id));
+    
+    if (data) {
+      const grouped = data.reduce((acc, reaction) => {
+        if (!acc[reaction.comment_id]) acc[reaction.comment_id] = [];
+        acc[reaction.comment_id].push(reaction);
+        return acc;
+      }, {} as Record<string, CommentReaction[]>);
+      setReactions(grouped);
+    }
+  }
+
+  async function handleReaction(commentId: string, reactionType: 'like' | 'dislike') {
+    if (!user) {
+      toast.error('Debes iniciar sesión para reaccionar');
+      return;
+    }
+
+    const existingReaction = reactions[commentId]?.find(r => r.user_id === user.id);
+
+    if (existingReaction) {
+      // Si ya reaccionó, eliminar la reacción
+      const { error } = await supabase
+        .from('comment_reactions')
+        .delete()
+        .eq('id', existingReaction.id);
+
+      if (!error) {
+        toast.success('Reacción eliminada');
+        loadReactions();
+      }
+    } else {
+      // Crear nueva reacción
+      const { error } = await supabase
+        .from('comment_reactions')
+        .insert([{
+          comment_id: commentId,
+          user_id: user.id,
+          reaction_type: reactionType
+        }]);
+
+      if (!error) {
+        toast.success('Reacción agregada');
+        loadReactions();
+      }
+    }
   }
 
   function subscribeToComments() {
@@ -125,6 +190,13 @@ export default function ComunicadoDetailPage() {
               )}
             </div>
             <div className="prose max-w-none">
+              {communique.image_url && (
+                <img 
+                  src={communique.image_url} 
+                  alt={communique.title}
+                  className="w-full h-auto rounded-lg mb-6"
+                />
+              )}
               <p className="text-gray-700 whitespace-pre-line">{communique.content}</p>
             </div>
           </article>
@@ -156,14 +228,52 @@ export default function ComunicadoDetailPage() {
             )}
 
             <div className="space-y-4">
-              {comments.map(comment => (
-                <div key={comment.id} className="border-l-4 border-red-600 pl-4 py-2">
-                  <p className="text-gray-700">{comment.content}</p>
-                  <p className="text-sm text-gray-500 mt-2">
-                    {format(new Date(comment.created_at), "d 'de' MMMM, yyyy 'a las' HH:mm", { locale: es })}
-                  </p>
-                </div>
-              ))}
+              {comments.map(comment => {
+                const commentReactions = reactions[comment.id] || [];
+                const likes = commentReactions.filter(r => r.reaction_type === 'like').length;
+                const dislikes = commentReactions.filter(r => r.reaction_type === 'dislike').length;
+                const userReaction = commentReactions.find(r => r.user_id === user?.id);
+
+                return (
+                  <div key={comment.id} className="border-l-4 border-red-600 pl-4 py-2">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <p className="text-gray-700">{comment.content}</p>
+                        <div className="flex items-center gap-4 mt-2">
+                          <p className="text-sm font-medium text-gray-900">
+                            {comment.author?.full_name || 'Usuario'}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {format(new Date(comment.created_at), "d 'de' MMMM, yyyy 'a las' HH:mm", { locale: es })}
+                          </p>
+                        </div>
+                      </div>
+                      {user && (
+                        <div className="flex items-center gap-2 ml-4">
+                          <button
+                            onClick={() => handleReaction(comment.id, 'like')}
+                            className={`flex items-center gap-1 px-2 py-1 rounded hover:bg-gray-100 ${
+                              userReaction?.reaction_type === 'like' ? 'text-red-600' : 'text-gray-500'
+                            }`}
+                          >
+                            <ThumbsUp className="h-4 w-4" />
+                            <span className="text-sm">{likes}</span>
+                          </button>
+                          <button
+                            onClick={() => handleReaction(comment.id, 'dislike')}
+                            className={`flex items-center gap-1 px-2 py-1 rounded hover:bg-gray-100 ${
+                              userReaction?.reaction_type === 'dislike' ? 'text-red-600' : 'text-gray-500'
+                            }`}
+                          >
+                            <ThumbsDown className="h-4 w-4" />
+                            <span className="text-sm">{dislikes}</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

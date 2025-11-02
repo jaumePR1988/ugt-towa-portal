@@ -11,22 +11,37 @@ import { toast } from 'sonner';
 export default function CitasPage() {
   const { user } = useAuth();
   const [slots, setSlots] = useState<AppointmentSlot[]>([]);
+  const [allSlots, setAllSlots] = useState<AppointmentSlot[]>([]);
   const [myAppointments, setMyAppointments] = useState<Appointment[]>([]);
   const [selectedType, setSelectedType] = useState<'comite' | 'sindical' | 'prevencion'>('comite');
 
   useEffect(() => {
-    loadSlots();
+    loadAllSlots();
     if (user) loadMyAppointments();
-  }, [selectedType, user]);
+  }, [user]);
 
-  async function loadSlots() {
+  useEffect(() => {
+    filterSlotsByType();
+  }, [selectedType, allSlots]);
+
+  async function loadAllSlots() {
     const { data } = await supabase
       .from('appointment_slots')
       .select('*')
-      .eq('delegate_type', selectedType)
       .eq('is_available', true)
       .order('start_time', { ascending: true });
-    if (data) setSlots(data);
+    if (data) {
+      setAllSlots(data);
+    }
+  }
+
+  function filterSlotsByType() {
+    const filtered = allSlots.filter(slot => slot.delegate_type === selectedType);
+    setSlots(filtered);
+  }
+
+  function getSlotCountByType(type: string) {
+    return allSlots.filter(slot => slot.delegate_type === type).length;
   }
 
   async function loadMyAppointments() {
@@ -60,7 +75,7 @@ export default function CitasPage() {
         .eq('id', slotId);
 
       toast.success('Cita reservada correctamente');
-      loadSlots();
+      loadAllSlots();
       loadMyAppointments();
     } catch (error) {
       toast.error('Error al reservar cita');
@@ -80,30 +95,49 @@ export default function CitasPage() {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-md p-6 mb-6">
               <h2 className="text-xl font-bold mb-4">Reservar Cita</h2>
-              <div className="flex space-x-2 mb-6">
+              <div className="flex flex-wrap gap-2 mb-6">
                 <button
                   onClick={() => setSelectedType('comite')}
-                  className={`px-4 py-2 rounded-lg ${selectedType === 'comite' ? 'bg-red-600 text-white' : 'bg-gray-200'}`}
+                  className={`px-4 py-2 rounded-lg font-medium transition ${
+                    selectedType === 'comite' 
+                      ? 'bg-red-600 text-white' 
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
                 >
-                  Comité
+                  Comité {getSlotCountByType('comite') > 0 && `(${getSlotCountByType('comite')})`}
                 </button>
                 <button
                   onClick={() => setSelectedType('sindical')}
-                  className={`px-4 py-2 rounded-lg ${selectedType === 'sindical' ? 'bg-red-600 text-white' : 'bg-gray-200'}`}
+                  className={`px-4 py-2 rounded-lg font-medium transition ${
+                    selectedType === 'sindical' 
+                      ? 'bg-red-600 text-white' 
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
                 >
-                  Sindical
+                  Sindical {getSlotCountByType('sindical') > 0 && `(${getSlotCountByType('sindical')})`}
                 </button>
                 <button
                   onClick={() => setSelectedType('prevencion')}
-                  className={`px-4 py-2 rounded-lg ${selectedType === 'prevencion' ? 'bg-red-600 text-white' : 'bg-gray-200'}`}
+                  className={`px-4 py-2 rounded-lg font-medium transition ${
+                    selectedType === 'prevencion' 
+                      ? 'bg-red-600 text-white' 
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
                 >
-                  Prevención
+                  Prevención {getSlotCountByType('prevencion') > 0 && `(${getSlotCountByType('prevencion')})`}
                 </button>
               </div>
 
               <div className="space-y-3">
                 {slots.length === 0 ? (
-                  <p className="text-gray-500 text-center py-8">No hay slots disponibles</p>
+                  <div className="text-center py-12">
+                    <p className="text-gray-500 mb-2">No hay slots disponibles para {selectedType === 'comite' ? 'Comité' : selectedType === 'sindical' ? 'Sindical' : 'Prevención'}</p>
+                    {allSlots.length > 0 && (
+                      <p className="text-sm text-gray-400">
+                        Prueba seleccionando otra categoría arriba
+                      </p>
+                    )}
+                  </div>
                 ) : (
                   slots.map(slot => (
                     <div key={slot.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">

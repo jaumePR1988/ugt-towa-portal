@@ -3,43 +3,36 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Configurar Base de Datos Supabase",
-        "details": "1. Crear todas las tablas del esquema (profiles, delegates, site_content, communiques, comments, appointments, appointment_slots, surveys, survey_responses, newsletter_subscribers, negotiation_status, suggestions). 2. Configurar RLS (Row Level Security) para todas las tablas. 3. Crear triggers automáticos para la tabla profiles. 4. Crear bucket 'delegate_photos' en Supabase Storage. 5. Configurar Edge Function para validación de dominio @towapharmaceutical.com",
+        "content": "Reparar sistema de gestión de citas",
+        "details": "El sistema de citas no está funcionando correctamente. Necesito revisar y corregir: 1. Verificar tablas appointments y appointment_slots. 2. Revisar funciones de creación, actualización y visualización de citas. 3. Comprobar el calendario interactivo. 4. Verificar permisos y políticas RLS para citas.",
         "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Desarrollar Aplicación SvelteKit Completa",
-        "details": "1. Configurar proyecto SvelteKit con Tailwind CSS. 2. Crear todas las páginas y rutas (/, /login, /register, /quienes-somos, /comunicados, /comunicados/[id], /citas, /encuestas, /newsletter). 3. Implementar sistema de autenticación con Supabase Auth. 4. Crear componentes para cada funcionalidad. 5. Implementar diseño UGT (colores rojo UGT, blanco, grises). 6. Configurar variables de entorno",
+        "content": "Implementar subida de imágenes en 'Quiénes Somos' y 'Comunicados'",
+        "details": "Agregar funcionalidad para que los administradores puedan subir y gestionar imágenes en: 1. Página 'Quiénes Somos' (para fotos de delegados y contenido). 2. Sección de comunicados (para imágenes en los comunicados). 3. Integrar con Supabase Storage. 4. Crear interfaz de subida en panel admin.",
         "status": "completed",
-        "priority": "high"
+        "priority": "medium"
       },
       "3": {
         "id": "3",
-        "content": "Implementar Panel de Administración",
-        "details": "1. Crear rutas admin protegidas (/admin/dashboard, /admin/quienes-somos, /admin/comunicados, /admin/citas, /admin/disponibilidad, /admin/encuestas). 2. CRUD completo para todas las entidades (delegados, comunicados, citas, encuestas, disponibilidad). 3. Editor de contenido para site_content. 4. Sistema de subida de imágenes a Supabase Storage. 5. Gestión de roles y permisos",
+        "content": "Mostrar autor de comentarios",
+        "details": "Modificar el sistema de comentarios para que muestre quien ha hecho cada comentario: 1. Obtener nombre de usuario desde tabla profiles. 2. Mostrar nombre del usuario que hizo el comentario. 3. Estilizar la información del autor. 4. Mantener funcionalidad de tiempo real.",
         "status": "completed",
-        "priority": "high"
+        "priority": "medium"
       },
       "4": {
         "id": "4",
-        "content": "Desarrollar Funcionalidades Disruptivas",
-        "details": "1. Termómetro de Negociación en tiempo real (Supabase Realtime). 2. Buzón de Sugerencias Anónimo. 3. Notificaciones automatizadas con Edge Functions y Cron Jobs (recordatorios de citas, newsletter). 4. Comentarios en tiempo real para comunicados. 5. Sistema de booking de citas con calendario interactivo",
+        "content": "Implementar sistema de reacciones a comentarios",
+        "details": "Agregar funcionalidad de reacciones (likes) a los comentarios: 1. Crear nueva tabla para reacciones de comentarios. 2. Implementar botones de reacción (like, dislike, etc.). 3. Contar y mostrar número de reacciones. 4. Prevenir doble reacción del mismo usuario. 5. Integrar con el sistema de tiempo real.",
         "status": "completed",
         "priority": "medium"
       },
       "5": {
         "id": "5",
-        "content": "Configurar Despliegue Hostinger",
-        "details": "1. Configurar adapter estático de SvelteKit. 2. Preparar build de producción. 3. Crear guía de despliegue para Hostinger. 4. Documentar variables de entorno necesarias. 5. Instrucciones de configuración de dominio y SSL",
-        "status": "completed",
-        "priority": "medium"
-      },
-      "6": {
-        "id": "6",
-        "content": "Testing y Documentación Final",
-        "details": "1. Probar todas las funcionalidades. 2. Verificar políticas de seguridad RLS. 3. Testear restricciones de dominio @towapharmaceutical.com. 4. Crear documentación de administración. 5. Manual de usuario para empleados",
+        "content": "Testing y despliegue de mejoras",
+        "details": "Probar todas las modificaciones implementadas: 1. Testear sistema de citas reparado. 2. Verificar subida de imágenes en admin. 3. Comprobar visualización de autores en comentarios. 4. Testear sistema de reacciones. 5. Realizar build y despliegue actualizado.",
         "status": "completed",
         "priority": "low"
       }
