@@ -45,7 +45,8 @@ export default function AdminDashboard() {
     { to: '/admin/categorias', icon: Tag, title: 'Categorías', desc: 'Gestionar categorías de comunicados' },
     { to: '/admin/citas', icon: Calendar, title: 'Citas', desc: 'Ver y gestionar citas' },
     { to: '/admin/disponibilidad', icon: Calendar, title: 'Disponibilidad', desc: 'Configurar slots de citas' },
-    { to: '/admin/encuestas', icon: Vote, title: 'Encuestas', desc: 'Crear y gestionar encuestas' }
+    { to: '/admin/encuestas', icon: Vote, title: 'Encuestas', desc: 'Crear y gestionar encuestas' },
+    { to: '/admin/comentarios', icon: MessageSquare, title: 'Gestión de Comentarios', desc: 'Moderar y eliminar comentarios' }
   ];
 
   return (

@@ -22,6 +22,7 @@ import AdminCategorias from './pages/admin/AdminCategorias';
 import AdminCitas from './pages/admin/AdminCitas';
 import AdminDisponibilidad from './pages/admin/AdminDisponibilidad';
 import AdminEncuestas from './pages/admin/AdminEncuestas';
+import AdminComentarios from './pages/admin/AdminComentarios';
 
 // Components
 import PrivateRoute from './components/PrivateRoute';
@@ -109,6 +110,14 @@ function App() {
             element={
               <AdminRoute>
                 <AdminEncuestas />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/comentarios"
+            element={
+              <AdminRoute>
+                <AdminComentarios />
               </AdminRoute>
             }
           />

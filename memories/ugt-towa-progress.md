@@ -134,7 +134,25 @@ MEJORAS AVANZADAS - 02-Nov-2025 15:17
 - [x] Rebuild, redeploy y testing completos - EXITOSO
 
 ## URL Final de Producción
-https://i0250pxul5gh.space.minimax.io
+https://9vplhbixy5tu.space.minimax.io
+
+## Nueva Iteración - 02-Nov-2025 15:53
+### Mejoras Implementadas y Verificadas:
+- [x] Previsualización de fotos en comunicados en Homepage (HomePage.tsx)
+  * Layout de 2 columnas responsive (md:flex-row)
+  * Imagen condicional solo si existe image_url
+  * 2 comunicados con imágenes en BD verificados
+- [x] Borrado de comentarios por administrador (AdminComentarios.tsx)
+  * Componente completo de 198 líneas
+  * Modal de confirmación nativo
+  * CASCADE delete verificado para reacciones
+  * RLS policy "Allow author or admin delete comments" verificada
+- [x] Ruta /admin/comentarios añadida (App.tsx)
+- [x] Enlace en AdminDashboard.tsx añadido
+- [x] Build exitoso (2416 módulos)
+- [x] Desplegado en: https://t2bmix4qekja.space.minimax.io
+- [x] Testing E2E completado (verificación código + BD + RLS)
+  * Documento: /workspace/test-progress-mejoras.md
 
 ## Screenshots de Verificación
 - citas_pestanas_contadores.png: Pestañas con contadores funcionales

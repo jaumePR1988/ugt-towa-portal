@@ -103,26 +103,59 @@ export default function HomePage() {
                     to={`/comunicados/${com.id}`}
                     className="block bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition"
                   >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">{com.title}</h3>
-                        <p className="text-gray-600 line-clamp-2">
-                          {com.content.substring(0, 150)}...
-                        </p>
-                        <div className="flex items-center mt-3 text-sm text-gray-500">
-                          <span>{format(new Date(com.created_at), "d 'de' MMMM, yyyy", { locale: es })}</span>
-                          {com.category && (
-                            <span 
-                              className="ml-3 px-2 py-1 text-white rounded text-xs font-semibold"
-                              style={{ backgroundColor: com.category.color }}
-                            >
-                              {com.category.name}
-                            </span>
-                          )}
+                    {com.image_url ? (
+                      // Layout con imagen: 2 columnas en desktop, stack en móvil
+                      <div className="flex flex-col md:flex-row gap-4">
+                        <div className="md:w-48 md:flex-shrink-0">
+                          <img
+                            src={com.image_url}
+                            alt={com.title}
+                            className="w-full h-32 md:h-full object-cover rounded-lg"
+                          />
+                        </div>
+                        <div className="flex-1 flex flex-col justify-between">
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">{com.title}</h3>
+                            <p className="text-gray-600 line-clamp-2">
+                              {com.content.substring(0, 150)}...
+                            </p>
+                          </div>
+                          <div className="flex items-center mt-3 text-sm text-gray-500">
+                            <span>{format(new Date(com.created_at), "d 'de' MMMM, yyyy", { locale: es })}</span>
+                            {com.category && (
+                              <span 
+                                className="ml-3 px-2 py-1 text-white rounded text-xs font-semibold"
+                                style={{ backgroundColor: com.category.color }}
+                              >
+                                {com.category.name}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
-                      <MessageSquare className="h-5 w-5 text-gray-400 ml-4" />
-                    </div>
+                    ) : (
+                      // Layout sin imagen: diseño original
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{com.title}</h3>
+                          <p className="text-gray-600 line-clamp-2">
+                            {com.content.substring(0, 150)}...
+                          </p>
+                          <div className="flex items-center mt-3 text-sm text-gray-500">
+                            <span>{format(new Date(com.created_at), "d 'de' MMMM, yyyy", { locale: es })}</span>
+                            {com.category && (
+                              <span 
+                                className="ml-3 px-2 py-1 text-white rounded text-xs font-semibold"
+                                style={{ backgroundColor: com.category.color }}
+                              >
+                                {com.category.name}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <MessageSquare className="h-5 w-5 text-gray-400 ml-4" />
+                      </div>
+                    )}
                   </Link>
                 ))}
               </div>
