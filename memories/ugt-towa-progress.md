@@ -353,6 +353,49 @@ https://9vplhbixy5tu.space.minimax.io
 
 **Estado Final**: LISTO PARA PRODUCCIÓN ✅
 
+## Reposicion QR Arriba - 09-Nov-2025 01:53
+### QR Reposicionado en la Parte Superior
+**Estado**: COMPLETADO Y DESPLEGADO
+
+**URL Base**: https://6hgw62iisuh9.space.minimax.io
+
+**Cambio Implementado:**
+
+Reposicion del QR para alineacion superior
+   - Titulo "Buzon de Sugerencias Anonimas" movido dentro del grid
+   - Descripcion movida dentro de la columna izquierda
+   - QR ahora alineado horizontalmente con el titulo
+   - Cambio de justify-center a justify-start en columna QR
+   - QR visible en la parte superior de la seccion, no al final
+   - Grid mantiene 2 columnas en desktop, 1 en movil
+   - Tamano de 200px y funcionalidad preservados
+
+**Estructura Nueva:**
+```
+Grid 2 columnas:
+├── Columna Izquierda:
+│   ├── Titulo (Buzon de Sugerencias Anonimas)
+│   ├── Descripcion
+│   └── Formulario
+└── Columna Derecha:
+    └── QR de Afiliacion (alineado arriba)
+```
+
+**Archivos Modificados:**
+- /workspace/ugt-towa-portal/src/pages/HomePage.tsx (lineas 227-270)
+
+**Build y Despliegue:**
+- Build exitoso: 2677 modulos
+- Desplegado en: https://6hgw62iisuh9.space.minimax.io
+
+**Resultado:**
+- QR ahora esta en la parte superior, alineado con el titulo
+- No esta al final de la seccion como antes
+- Responsive funcional en movil y desktop
+- Toda funcionalidad preservada
+
+**Estado Final**: QR REPOSICIONADO EXITOSAMENTE
+
 ## Ajustes de Diseno QR - 09-Nov-2025 01:46
 ### Ajustes en Diseno y Textos del QR
 **Estado**: COMPLETADO Y DESPLEGADO

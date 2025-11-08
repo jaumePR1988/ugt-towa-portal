@@ -226,19 +226,18 @@ export default function HomePage() {
 
         {/* Buzón de Sugerencias Anónimas */}
         <div id="sugerencias" className="mt-12 bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Buzón de Sugerencias Anónimas</h2>
-          <p className="text-gray-600 mb-6">
-            Comparte tus ideas, comentarios o preocupaciones de forma completamente anónima
-          </p>
-          
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Formulario */}
+            {/* Columna izquierda: Título, descripción y formulario */}
             <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Buzón de Sugerencias Anónimas</h2>
+              <p className="text-gray-600 mb-6">
+                Comparte tus ideas, comentarios o preocupaciones de forma completamente anónima
+              </p>
               <SuggestionsForm />
             </div>
 
-            {/* QR Code */}
-            <div className="flex flex-col items-center justify-center">
+            {/* Columna derecha: QR Code alineado arriba */}
+            <div className="flex flex-col items-center justify-start pt-0">
               <div className="w-full max-w-[200px] mx-auto">
                 <h3 className="text-base font-semibold text-gray-900 mb-3 text-center">
                   QR de Afiliacion
