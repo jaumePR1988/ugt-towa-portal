@@ -32,6 +32,7 @@ import AdminEncuestasAnalisis from './pages/admin/AdminEncuestasAnalisis';
 import AdminNewsletter from './pages/admin/AdminNewsletter';
 import AdminCategoriasDocumentos from './pages/admin/AdminCategoriasDocumentos';
 import AdminQR from './pages/admin/AdminQR';
+import AdminGaleria from './pages/admin/AdminGaleria';
 
 // Components
 import PrivateRoute from './components/PrivateRoute';
@@ -185,6 +186,14 @@ function App() {
             element={
               <AdminRoute>
                 <AdminQR />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/galeria"
+            element={
+              <AdminRoute>
+                <AdminGaleria />
               </AdminRoute>
             }
           />

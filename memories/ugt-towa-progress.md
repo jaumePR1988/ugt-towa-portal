@@ -14,7 +14,7 @@ Portal web completo para Sección Sindical UGT en Towa Pharmaceutical Europe
 - Keys: Disponibles via get_all_secrets
 
 ## Fase Actual
-MEJORAS AVANZADAS - 02-Nov-2025 15:17
+NUEVAS MEJORAS - 09-Nov-2025 02:23
 
 ### Tareas Completadas:
 - [x] Sistema de categorías de comunicados con colores
@@ -395,6 +395,95 @@ Grid 2 columnas:
 - Toda funcionalidad preservada
 
 **Estado Final**: QR REPOSICIONADO EXITOSAMENTE
+
+## Nuevas Mejoras Implementadas - 09-Nov-2025 02:23
+### 3 Mejoras en el Portal UGT Towa
+**Estado**: EN DESARROLLO
+
+**Mejoras Solicitadas:**
+1. Galería de Imágenes Animada con carrusel
+2. Contador de Suscriptores en Tiempo Real con gráfico
+3. Tema Oscuro/Claro con toggle
+
+**Backend Completado:**
+- [x] Tabla event_images creada con RLS (8 columnas, 5 policies)
+- [x] Bucket event-images creado (5MB, PNG/JPG/WEBP)
+- [x] Edge Function upload-event-image desplegada (v1)
+
+**Frontend Completado:**
+- [x] ImageGallery.tsx creado (165 líneas) - Carrusel con auto-rotación
+- [x] ThemeToggle.tsx creado (54 líneas) - Switch de tema con localStorage
+- [x] AdminGaleria.tsx creado (402 líneas) - Panel CRUD de imágenes
+- [x] AdminNewsletter.tsx actualizado con estadísticas avanzadas:
+  * Gráfico de crecimiento mensual (Chart.js Line)
+  * Nuevos suscriptores este mes
+  * Tasa de crecimiento vs mes anterior
+  * Auto-actualización cada 30 segundos
+- [x] Navbar.tsx actualizado con ThemeToggle
+- [x] HomePage.tsx actualizado con ImageGallery
+- [x] App.tsx actualizado con ruta /admin/galeria
+- [x] AdminDashboard.tsx actualizado con enlace a galería
+- [x] index.css actualizado con variables CSS de dark mode
+- [x] Dark mode implementado con Tailwind
+
+**Archivos Creados:**
+- /workspace/ugt-towa-portal/src/components/ImageGallery.tsx
+- /workspace/ugt-towa-portal/src/components/ThemeToggle.tsx
+- /workspace/ugt-towa-portal/src/pages/admin/AdminGaleria.tsx
+- /workspace/supabase/functions/upload-event-image/index.ts
+
+**Archivos Modificados:**
+- /workspace/ugt-towa-portal/src/pages/admin/AdminNewsletter.tsx
+- /workspace/ugt-towa-portal/src/components/Navbar.tsx
+- /workspace/ugt-towa-portal/src/pages/HomePage.tsx
+- /workspace/ugt-towa-portal/src/App.tsx
+- /workspace/ugt-towa-portal/src/pages/admin/AdminDashboard.tsx
+- /workspace/ugt-towa-portal/src/index.css
+
+**Pendiente:**
+- [x] Build del proyecto
+- [x] Despliegue
+- [x] Testing comprehensivo
+- [x] Corrección de bugs (dots de navegación)
+- [x] Redeploy con correcciones
+- [x] Imágenes de ejemplo insertadas (3)
+
+**Estado Final**: COMPLETADO Y DESPLEGADO ✅
+
+**URL de Producción**: https://ad8zriqxhr2d.space.minimax.io
+
+**Detalles de Implementación:**
+
+**1. Galería de Imágenes Animada:**
+- Carrusel responsive con 3 imágenes de ejemplo
+- Navegación con flechas izquierda/derecha
+- Dots indicadores para navegación directa (corregido)
+- Auto-rotación cada 4.5 segundos
+- Overlay con título, descripción y fecha
+- Panel admin completo para CRUD de imágenes
+
+**2. Contador de Suscriptores en Tiempo Real:**
+- 6 tarjetas de métricas: Total, Activos, Nuevos este mes, Tasa actividad, Contenido, PDFs
+- Gráfico de línea Chart.js con crecimiento últimos 12 meses
+- Cálculo de tasa de crecimiento vs mes anterior
+- Auto-actualización cada 30 segundos
+- Visualización profesional con datos reales
+
+**3. Tema Oscuro/Claro:**
+- Toggle switch en navbar (Sol/Luna)
+- Persistencia en localStorage
+- Transiciones suaves
+- CSS variables completas para ambos temas
+- Rojo corporativo UGT (#e50000) mantenido
+- Aplicado a toda la interfaz (público + admin)
+
+**Testing Realizado:**
+- ✅ Tema oscuro/claro: FUNCIONAL (persistencia OK)
+- ✅ Galería de eventos: VISIBLE en homepage con 3 imágenes
+- ✅ Panel admin galería: FUNCIONAL con formulario completo
+- ✅ Contador suscriptores: FUNCIONAL con gráfico y métricas
+- ✅ Navegación general: SIN ERRORES
+- ✅ Dots corregidos: preventDefault y stopPropagation agregados
 
 ## Ajustes de Diseno QR - 09-Nov-2025 01:46
 ### Ajustes en Diseno y Textos del QR

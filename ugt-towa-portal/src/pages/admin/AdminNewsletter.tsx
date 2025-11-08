@@ -11,8 +11,12 @@ import { toast } from 'sonner';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import * as XLSX from 'xlsx';
-import { format } from 'date-fns';
+import { format, subMonths, startOfMonth, endOfMonth, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { Line } from 'react-chartjs-2';
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 type ContentType = 'news' | 'events' | 'statistics' | 'directives' | 'suggestions';
 
@@ -57,7 +61,14 @@ export default function AdminNewsletter() {
     totalSubscribers: 0,
     activeSubscribers: 0,
     totalContent: 0,
-    newslettersGenerated: 0
+    newslettersGenerated: 0,
+    newThisMonth: 0,
+    growthRate: 0
+  });
+  
+  const [monthlyGrowth, setMonthlyGrowth] = useState<{labels: string[], data: number[]}>({
+    labels: [],
+    data: []
   });
 
   // Content management
@@ -87,28 +98,83 @@ export default function AdminNewsletter() {
     loadContents();
     loadNewsletters();
     loadSubscribers();
+    
+    // Auto-actualización cada 30 segundos
+    const interval = setInterval(() => {
+      loadDashboardStats();
+      loadSubscribers();
+    }, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const loadDashboardStats = async () => {
     try {
       const [subsResult, contentResult, generatedResult] = await Promise.all([
-        supabase.from('newsletter_subscribers').select('id, is_active'),
+        supabase.from('newsletter_subscribers').select('id, is_active, subscribed_at'),
         supabase.from('newsletter_content').select('id'),
         supabase.from('newsletters_sent').select('id').eq('status', 'generated')
       ]);
 
       const totalSubs = subsResult.data?.length || 0;
       const activeSubs = subsResult.data?.filter(s => s.is_active).length || 0;
+      
+      // Calcular nuevos suscriptores este mes
+      const now = new Date();
+      const startThisMonth = startOfMonth(now);
+      const newThisMonth = subsResult.data?.filter(s => {
+        const subDate = parseISO(s.subscribed_at);
+        return subDate >= startThisMonth;
+      }).length || 0;
+      
+      // Calcular tasa de crecimiento (comparado con mes anterior)
+      const startLastMonth = startOfMonth(subMonths(now, 1));
+      const endLastMonth = endOfMonth(subMonths(now, 1));
+      const lastMonthSubs = subsResult.data?.filter(s => {
+        const subDate = parseISO(s.subscribed_at);
+        return subDate >= startLastMonth && subDate <= endLastMonth;
+      }).length || 0;
+      
+      const growthRate = lastMonthSubs > 0 
+        ? Math.round(((newThisMonth - lastMonthSubs) / lastMonthSubs) * 100)
+        : 0;
 
       setStats({
         totalSubscribers: totalSubs,
         activeSubscribers: activeSubs,
         totalContent: contentResult.data?.length || 0,
-        newslettersGenerated: generatedResult.data?.length || 0
+        newslettersGenerated: generatedResult.data?.length || 0,
+        newThisMonth,
+        growthRate
       });
+      
+      // Calcular crecimiento mensual para gráfico (últimos 12 meses)
+      calculateMonthlyGrowth(subsResult.data || []);
     } catch (error) {
       console.error('Error loading stats:', error);
     }
+  };
+  
+  const calculateMonthlyGrowth = (subscribers: any[]) => {
+    const now = new Date();
+    const labels: string[] = [];
+    const data: number[] = [];
+    
+    for (let i = 11; i >= 0; i--) {
+      const monthDate = subMonths(now, i);
+      const monthStart = startOfMonth(monthDate);
+      const monthEnd = endOfMonth(monthDate);
+      
+      const count = subscribers.filter(s => {
+        const subDate = parseISO(s.subscribed_at);
+        return subDate >= monthStart && subDate <= monthEnd;
+      }).length;
+      
+      labels.push(format(monthDate, 'MMM yyyy', { locale: es }));
+      data.push(count);
+    }
+    
+    setMonthlyGrowth({ labels, data });
   };
 
   const loadContents = async () => {
@@ -551,6 +617,88 @@ export default function AdminNewsletter() {
                   </div>
                   <FileDown className="w-12 h-12 text-red-600" />
                 </div>
+              </div>
+            </div>
+            
+            {/* Additional Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white p-6 rounded-lg shadow">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-500 text-sm">Nuevos Este Mes</p>
+                    <p className="text-3xl font-bold text-blue-600">{stats.newThisMonth}</p>
+                    {stats.growthRate !== 0 && (
+                      <p className={`text-sm mt-1 flex items-center ${stats.growthRate > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        <TrendingUp className="h-4 w-4 mr-1" />
+                        {stats.growthRate > 0 ? '+' : ''}{stats.growthRate}% vs mes anterior
+                      </p>
+                    )}
+                  </div>
+                  <TrendingUp className="w-12 h-12 text-blue-600" />
+                </div>
+              </div>
+              
+              <div className="bg-white p-6 rounded-lg shadow">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-500 text-sm">Tasa de Actividad</p>
+                    <p className="text-3xl font-bold text-green-600">
+                      {stats.totalSubscribers > 0 
+                        ? Math.round((stats.activeSubscribers / stats.totalSubscribers) * 100)
+                        : 0}%
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {stats.activeSubscribers} de {stats.totalSubscribers} activos
+                    </p>
+                  </div>
+                  <BarChart3 className="w-12 h-12 text-green-600" />
+                </div>
+              </div>
+            </div>
+            
+            {/* Growth Chart */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+                Crecimiento de Suscriptores (Últimos 12 Meses)
+              </h2>
+              <div className="h-80">
+                <Line
+                  data={{
+                    labels: monthlyGrowth.labels,
+                    datasets: [
+                      {
+                        label: 'Nuevos Suscriptores',
+                        data: monthlyGrowth.data,
+                        borderColor: 'rgb(220, 38, 38)',
+                        backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                      },
+                    ],
+                  }}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        display: true,
+                        position: 'top' as const,
+                      },
+                      tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                      },
+                    },
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                        ticks: {
+                          stepSize: 1,
+                        },
+                      },
+                    },
+                  }}
+                />
               </div>
             </div>
 

@@ -12,21 +12,21 @@
         "id": "2",
         "content": "Implementar galería de imágenes animada",
         "details": "Carrusel de fotos de eventos UGT en la página principal con navegación con flechas y puntos indicadores, imágenes con overlay de texto explicativo",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "3": {
         "id": "3",
         "content": "Implementar contador de suscriptores en tiempo real",
         "details": "Mostrar número de suscriptores del newsletter en el panel admin con gráfico de crecimiento mensual y métricas básicas de engagement",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       },
       "4": {
         "id": "4",
         "content": "Implementar tema oscuro/claro",
         "details": "Toggle para cambiar entre tema claro y oscuro, persistir preferencia del usuario, adaptar colores corporativos UGT para ambos temas",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       }
     }

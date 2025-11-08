@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { LogOut, User, LayoutDashboard } from 'lucide-react';
 import { toast } from 'sonner';
+import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
   const { user, signOut, isAdmin } = useAuth();
@@ -59,6 +60,7 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center space-x-3">
+            <ThemeToggle />
             {user ? (
               <>
                 {isAdmin && (

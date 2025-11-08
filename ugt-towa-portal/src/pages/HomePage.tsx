@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import ImageGallery from '@/components/ImageGallery';
 import { supabase, Communique, Survey } from '@/lib/supabase';
 import { Calendar, FileText, Vote, MessageSquare, QrCode } from 'lucide-react';
 import { format } from 'date-fns';
@@ -86,7 +87,10 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12">
+      {/* Galería de Eventos */}
+      <ImageGallery />
+
+      <div className="container mx-auto px-4 py-12 dark:bg-gray-900 transition-colors">
 
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
