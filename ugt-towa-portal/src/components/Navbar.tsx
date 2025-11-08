@@ -45,6 +45,11 @@ export default function Navbar() {
             <Link to="/citas" className="text-gray-700 hover:text-red-600 transition">
               Citas
             </Link>
+            {user && (
+              <Link to="/documentos" className="text-gray-700 hover:text-red-600 transition">
+                Documentos
+              </Link>
+            )}
             <Link to="/encuestas" className="text-gray-700 hover:text-red-600 transition">
               Encuestas
             </Link>

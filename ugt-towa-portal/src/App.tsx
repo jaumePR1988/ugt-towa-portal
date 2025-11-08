@@ -13,6 +13,7 @@ import ComunicadoDetailPage from './pages/ComunicadoDetailPage';
 import CitasPage from './pages/CitasPage';
 import EncuestasPage from './pages/EncuestasPage';
 import NewsletterPage from './pages/NewsletterPage';
+import DocumentosPage from './pages/DocumentosPage';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -23,6 +24,7 @@ import AdminCitas from './pages/admin/AdminCitas';
 import AdminDisponibilidad from './pages/admin/AdminDisponibilidad';
 import AdminEncuestas from './pages/admin/AdminEncuestas';
 import AdminComentarios from './pages/admin/AdminComentarios';
+import AdminDocumentos from './pages/admin/AdminDocumentos';
 
 // Components
 import PrivateRoute from './components/PrivateRoute';
@@ -52,6 +54,14 @@ function App() {
             element={
               <PrivateRoute>
                 <CitasPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/documentos"
+            element={
+              <PrivateRoute>
+                <DocumentosPage />
               </PrivateRoute>
             }
           />
@@ -118,6 +128,14 @@ function App() {
             element={
               <AdminRoute>
                 <AdminComentarios />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/documentos"
+            element={
+              <AdminRoute>
+                <AdminDocumentos />
               </AdminRoute>
             }
           />

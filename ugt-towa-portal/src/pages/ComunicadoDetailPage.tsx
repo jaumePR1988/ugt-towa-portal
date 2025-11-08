@@ -3,19 +3,22 @@ import { useParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase, Communique, Comment as CommentType, CommentReaction } from '@/lib/supabase';
-import { Calendar, MessageSquare, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { supabase, Communique, Comment as CommentType, CommentReaction, CommentReply } from '@/lib/supabase';
+import { Calendar, MessageSquare, ThumbsUp, ThumbsDown, Trash2, Reply } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { toast } from 'sonner';
 
 export default function ComunicadoDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [communique, setCommunique] = useState<Communique | null>(null);
   const [comments, setComments] = useState<CommentType[]>([]);
+  const [replies, setReplies] = useState<Record<string, CommentReply[]>>({});
   const [reactions, setReactions] = useState<Record<string, CommentReaction[]>>({});
   const [newComment, setNewComment] = useState('');
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyContent, setReplyContent] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,12 +26,14 @@ export default function ComunicadoDetailPage() {
       loadCommunique();
       loadComments();
       subscribeToComments();
+      subscribeToReplies();
     }
   }, [id]);
 
   useEffect(() => {
     if (comments.length > 0) {
       loadReactions();
+      loadReplies();
     }
   }, [comments]);
 
@@ -53,6 +58,28 @@ export default function ComunicadoDetailPage() {
       .order('created_at', { ascending: false });
     
     if (data) setComments(data);
+  }
+
+  async function loadReplies() {
+    if (comments.length === 0) return;
+    
+    const { data } = await supabase
+      .from('comment_replies')
+      .select(`
+        *,
+        author:profiles(full_name)
+      `)
+      .in('comment_id', comments.map(c => c.id))
+      .order('created_at', { ascending: true });
+    
+    if (data) {
+      const grouped = data.reduce((acc, reply) => {
+        if (!acc[reply.comment_id]) acc[reply.comment_id] = [];
+        acc[reply.comment_id].push(reply);
+        return acc;
+      }, {} as Record<string, CommentReply[]>);
+      setReplies(grouped);
+    }
   }
 
   async function loadReactions() {
@@ -82,7 +109,6 @@ export default function ComunicadoDetailPage() {
     const existingReaction = reactions[commentId]?.find(r => r.user_id === user.id);
 
     if (existingReaction) {
-      // Si ya reaccionó, eliminar la reacción
       const { error } = await supabase
         .from('comment_reactions')
         .delete()
@@ -93,7 +119,6 @@ export default function ComunicadoDetailPage() {
         loadReactions();
       }
     } else {
-      // Crear nueva reacción
       const { error } = await supabase
         .from('comment_reactions')
         .insert([{
@@ -109,6 +134,42 @@ export default function ComunicadoDetailPage() {
     }
   }
 
+  async function handleDeleteComment(commentId: string) {
+    if (!confirm('¿Estás seguro de eliminar este comentario? Esta acción no se puede deshacer.')) {
+      return;
+    }
+
+    const { error } = await supabase
+      .from('comments')
+      .delete()
+      .eq('id', commentId);
+
+    if (error) {
+      toast.error('Error al eliminar comentario');
+    } else {
+      toast.success('Comentario eliminado');
+      loadComments();
+    }
+  }
+
+  async function handleDeleteReply(replyId: string) {
+    if (!confirm('¿Estás seguro de eliminar esta respuesta?')) {
+      return;
+    }
+
+    const { error } = await supabase
+      .from('comment_replies')
+      .delete()
+      .eq('id', replyId);
+
+    if (error) {
+      toast.error('Error al eliminar respuesta');
+    } else {
+      toast.success('Respuesta eliminada');
+      loadReplies();
+    }
+  }
+
   function subscribeToComments() {
     const channel = supabase
       .channel(`comments:${id}`)
@@ -119,6 +180,23 @@ export default function ComunicadoDetailPage() {
         filter: `post_id=eq.${id}`
       }, () => {
         loadComments();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }
+
+  function subscribeToReplies() {
+    const channel = supabase
+      .channel(`replies:${id}`)
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'comment_replies'
+      }, () => {
+        loadReplies();
       })
       .subscribe();
 
@@ -149,6 +227,28 @@ export default function ComunicadoDetailPage() {
     }
   }
 
+  async function handleSubmitReply(commentId: string) {
+    if (!user || !replyContent.trim()) return;
+
+    try {
+      const { error } = await supabase
+        .from('comment_replies')
+        .insert([{
+          comment_id: commentId,
+          user_id: user.id,
+          content: replyContent
+        }]);
+
+      if (error) throw error;
+
+      setReplyContent('');
+      setReplyingTo(null);
+      toast.success('Respuesta publicada');
+    } catch (error) {
+      toast.error('Error al publicar respuesta');
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -172,6 +272,8 @@ export default function ComunicadoDetailPage() {
       </div>
     );
   }
+
+  const isAdmin = profile?.role === 'admin';
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -236,6 +338,7 @@ export default function ComunicadoDetailPage() {
                 const likes = commentReactions.filter(r => r.reaction_type === 'like').length;
                 const dislikes = commentReactions.filter(r => r.reaction_type === 'dislike').length;
                 const userReaction = commentReactions.find(r => r.user_id === user?.id);
+                const commentReplies = replies[comment.id] || [];
 
                 return (
                   <div key={comment.id} className="border-l-4 border-red-600 pl-4 py-2">
@@ -251,29 +354,110 @@ export default function ComunicadoDetailPage() {
                           </p>
                         </div>
                       </div>
-                      {user && (
-                        <div className="flex items-center gap-2 ml-4">
+                      <div className="flex items-center gap-2 ml-4">
+                        {user && (
+                          <>
+                            <button
+                              onClick={() => handleReaction(comment.id, 'like')}
+                              className={`flex items-center gap-1 px-2 py-1 rounded hover:bg-gray-100 ${
+                                userReaction?.reaction_type === 'like' ? 'text-red-600' : 'text-gray-500'
+                              }`}
+                            >
+                              <ThumbsUp className="h-4 w-4" />
+                              <span className="text-sm">{likes}</span>
+                            </button>
+                            <button
+                              onClick={() => handleReaction(comment.id, 'dislike')}
+                              className={`flex items-center gap-1 px-2 py-1 rounded hover:bg-gray-100 ${
+                                userReaction?.reaction_type === 'dislike' ? 'text-red-600' : 'text-gray-500'
+                              }`}
+                            >
+                              <ThumbsDown className="h-4 w-4" />
+                              <span className="text-sm">{dislikes}</span>
+                            </button>
+                          </>
+                        )}
+                        {isAdmin && (
                           <button
-                            onClick={() => handleReaction(comment.id, 'like')}
-                            className={`flex items-center gap-1 px-2 py-1 rounded hover:bg-gray-100 ${
-                              userReaction?.reaction_type === 'like' ? 'text-red-600' : 'text-gray-500'
-                            }`}
+                            onClick={() => handleDeleteComment(comment.id)}
+                            className="p-1 text-red-600 hover:bg-red-50 rounded transition"
+                            title="Eliminar comentario"
                           >
-                            <ThumbsUp className="h-4 w-4" />
-                            <span className="text-sm">{likes}</span>
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {user && (
+                      <button
+                        onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
+                        className="mt-2 flex items-center gap-1 text-sm text-red-600 hover:text-red-700"
+                      >
+                        <Reply className="h-3 w-3" />
+                        Responder
+                      </button>
+                    )}
+
+                    {replyingTo === comment.id && (
+                      <div className="mt-3 ml-4">
+                        <textarea
+                          value={replyContent}
+                          onChange={(e) => setReplyContent(e.target.value)}
+                          placeholder="Escribe una respuesta..."
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600 resize-none text-sm"
+                          rows={2}
+                        />
+                        <div className="flex gap-2 mt-2">
+                          <button
+                            onClick={() => handleSubmitReply(comment.id)}
+                            className="px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
+                          >
+                            Enviar
                           </button>
                           <button
-                            onClick={() => handleReaction(comment.id, 'dislike')}
-                            className={`flex items-center gap-1 px-2 py-1 rounded hover:bg-gray-100 ${
-                              userReaction?.reaction_type === 'dislike' ? 'text-red-600' : 'text-gray-500'
-                            }`}
+                            onClick={() => {
+                              setReplyingTo(null);
+                              setReplyContent('');
+                            }}
+                            className="px-4 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 text-sm"
                           >
-                            <ThumbsDown className="h-4 w-4" />
-                            <span className="text-sm">{dislikes}</span>
+                            Cancelar
                           </button>
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
+
+                    {commentReplies.length > 0 && (
+                      <div className="mt-3 ml-8 space-y-2">
+                        {commentReplies.map(reply => (
+                          <div key={reply.id} className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <p className="text-sm text-gray-700">{reply.content}</p>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <p className="text-xs font-medium text-gray-900">
+                                    {reply.author?.full_name || 'Usuario'}
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    {format(new Date(reply.created_at), "d MMM yyyy 'a las' HH:mm", { locale: es })}
+                                  </p>
+                                </div>
+                              </div>
+                              {isAdmin && (
+                                <button
+                                  onClick={() => handleDeleteReply(reply.id)}
+                                  className="p-1 text-red-600 hover:bg-red-100 rounded transition ml-2"
+                                  title="Eliminar respuesta"
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 );
               })}

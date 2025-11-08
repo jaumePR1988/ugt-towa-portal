@@ -172,6 +172,46 @@ https://9vplhbixy5tu.space.minimax.io
 - validate-email-domain: https://zaxdscclkeytakcowgww.supabase.co/functions/v1/validate-email-domain
 - upload-delegate-photo: https://zaxdscclkeytakcowgww.supabase.co/functions/v1/upload-delegate-photo
 
+## Nueva Iteración - 02-Nov-2025 20:15
+### Mejoras Avanzadas - COMPLETADAS ✅
+
+**Backend Implementado:**
+- [x] Tabla comment_replies (6 columnas, 4 RLS policies)
+- [x] Tabla documents (10 columnas, 4 RLS policies)
+- [x] Bucket 'documents' creado (10MB, múltiples tipos)
+- [x] Edge Functions desplegadas y activas:
+  * upload-delegate-photo (fotos 5MB)
+  * upload-document (docs 10MB)
+
+**Frontend Implementado:**
+- [x] ComunicadoDetailPage.tsx:
+  * Botón borrar comentarios (solo admin, icono Trash2)
+  * Sistema respuestas completo con formulario desplegable
+  * Respuestas anidadas con indentación
+  * Tiempo real para respuestas
+  * Borrar respuestas (admin)
+- [x] DocumentosPage.tsx (pública, requiere auth):
+  * Filtros por 5 categorías
+  * Grid responsive de documentos
+  * Descarga segura con metadata
+- [x] AdminDocumentos.tsx:
+  * Subida con validación
+  * Tabla gestión CRUD
+  * Instrucciones claras
+- [x] Navegación actualizada:
+  * Navbar: "Documentos" visible solo si logueado
+  * AdminDashboard: enlace a gestión documentos
+
+**Verificaciones:**
+- [x] Build exitoso (2418 módulos)
+- [x] Desplegado: https://4lwl7ausot7n.space.minimax.io
+- [x] Todas rutas HTTP 200
+- [x] Backend verificado (tablas, RLS, buckets, functions)
+
+### URL de Producción: https://4lwl7ausot7n.space.minimax.io
+
+**Estado**: COMPLETADO - Listo para uso en producción
+
 ## Proyecto Completado - 100% ✓
 
 ### Backend Supabase - 100% ✓
