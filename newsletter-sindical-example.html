@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter UGT Towa - Noviembre 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .newsletter-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #e50000 0%, #ff3333 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .header h2 {
+            font-size: 16px;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+        
+        .logo {
+            background: white;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #e50000;
+            font-size: 24px;
+        }
+        
+        .intro-section {
+            padding: 30px 20px;
+            background: #f8f9fa;
+            text-align: center;
+        }
+        
+        .intro-section h3 {
+            color: #e50000;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .intro-section p {
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .section {
+            padding: 25px 20px;
+        }
+        
+        .section h3 {
+            color: #e50000;
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e50000;
+            padding-bottom: 5px;
+        }
+        
+        .news-item {
+            display: flex;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .news-item img {
+            width: 120px;
+            height: 80px;
+            object-fit: cover;
+        }
+        
+        .news-content {
+            flex: 1;
+            padding: 15px;
+        }
+        
+        .news-content h4 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .news-content p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .date-badge {
+            background: #e50000;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .stats-section {
+            background: #f8f9fa;
+            padding: 25px 20px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .stat-card {
+            text-align: center;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e50000;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .upcoming-events {
+            background: #f8f9fa;
+            padding: 25px 20px;
+        }
+        
+        .event-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #e50000;
+        }
+        
+        .event-date {
+            font-weight: bold;
+            color: #e50000;
+            font-size: 14px;
+        }
+        
+        .event-title {
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .footer {
+            background: #333;
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+        
+        .footer p {
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .social-links {
+            margin-top: 15px;
+        }
+        
+        .social-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 16px;
+        }
+        
+        @media (max-width: 600px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .news-item {
+                flex-direction: column;
+            }
+            
+            .news-item img {
+                width: 100%;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="newsletter-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">UGT</div>
+            <h1>Newsletter Sindical</h1>
+            <h2>Towa Pharmaceutical Europe - Noviembre 2025</h2>
+        </div>
+        
+        <!-- Intro -->
+        <div class="intro-section">
+            <h3>🎉 ¡Un mes lleno de logros y avances!</h3>
+            <p>Hola compañero/a, te enviamos las últimas novedades de nuestro sindicato. Este mes hemos conseguido importantes avances para la mejora de nuestras condiciones laborales. ¡Sigue leyendo para conocer todos los detalles!</p>
+        </div>
+        
+        <!-- Noticias Destacadas -->
+        <div class="section">
+            <h3>📰 Noticias Destacadas</h3>
+            
+            <div class="news-item">
+                <img src="https://via.placeholder.com/120x80/ff6b6b/ffffff?text=👷" alt="Nueva directiva">
+                <div class="news-content">
+                    <div class="date-badge">15 Nov 2025</div>
+                    <h4>Acuerdo alcanzado en horarios flexibles</h4>
+                    <p>Tras negociaciones intensas, hemos conseguido un acuerdo para implementar horarios más flexibles. Se aplicará a partir de enero 2026.</p>
+                </div>
+            </div>
+            
+            <div class="news-item">
+                <img src="="https://via.placeholder.com/120x80/4ecdc4/ffffff?text=💰" alt="Mejoras salariales">
+                <div class="news-content">
+                    <div class="date-badge">8 Nov 2025</div>
+                    <h4>Incremento salarial del 3.2% para 2026</h4>
+                    <p>Nos complace comunicar que se ha acordado un incremento salarial del 3.2% efectivo desde enero del próximo año.</p>
+                </div>
+            </div>
+            
+            <div class="news-item">
+                <img src="https://via.placeholder.com/120x80/45b7d1/ffffff?text=🏥" alt="Beneficios salud">
+                <div class="news-content">
+                    <div class="date-badge">2 Nov 2025</div>
+                    <h4>Mejora en el plan de salud familiar</h4>
+                    <p>Ampliación de la cobertura médica para familiares directos y nuevos tratamientos incluidos en nuestro seguro de salud.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Estadísticas del Mes -->
+        <div class="stats-section">
+            <h3>📊 Estadísticas Noviembre 2025</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">156</span>
+                    <div class="stat-label">Citas Realizadas</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">89%</span>
+                    <div class="stat-label">Participación Encuestas</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">3</span>
+                    <div class="stat-label">Nuevos Asociados</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Próximos Eventos -->
+        <div class="upcoming-events">
+            <h3>📅 Próximos Eventos</h3>
+            
+            <div class="event-item">
+                <div class="event-date">📅 25 Noviembre 2025 - 10:00h</div>
+                <div class="event-title">Asamblea General de Delegados</div>
+                <p>Sala de Conferencias - Revisión trimestral y planificación 2026</p>
+            </div>
+            
+            <div class="event-item">
+                <div class="event-date">📅 10 Diciembre 2025 - 16:00h</div>
+                <div class="event-title">Jornada de Prevención de Riesgos</div>
+                <p>Auditorio Principal - Formación obligatoria para todos los trabajadores</p>
+            </div>
+            
+            <div class="event-item">
+                <div class="event-date">📅 18 Diciembre 2025 - 12:00h</div>
+                <div class="event-title">Celebración Navideña del sindicato</div>
+                <p>Cantina de la empresa - Evento social y reconocimiento a delegado del año</p>
+            </div>
+        </div>
+        
+        <!-- Sección de la Sección Sindical -->
+        <div class="section">
+            <h3>🏢 Directivas de la Sección Sindical</h3>
+            <div class="news-item">
+                <img src="https://via.placeholder.com/120x80/96ceb4/ffffff?text=👥" alt="Equipo directivo">
+                <div class="news-content">
+                    <h4>Nuevas incorporaciones al comité</h4>
+                    <p>Nos complace dar la bienvenida a María González como nueva delegada de prevención y a Carlos Ruiz como representante de calidad. ¡Bienvenidos al equipo!</p>
+                </div>
+            </div>
+            
+            <div class="news-item">
+                <img src="https://via.placeholder.com/120x80/ffeaa7/ffffff?text=📋" alt="Comunicados">
+                <div class="news-content">
+                    <h4>Recordatorio: Próximas fechas límite</h4>
+                    <p>• Solicitud vacaciones 2026: hasta 20 diciembre
+                    <br>• Renovación seguro vida: hasta 15 diciembre
+                    <br>• Certificados formación: hasta 30 noviembre</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sugerencias y Buzón -->
+        <div class="section" style="background: #f8f9fa;">
+            <h3>💬 Tu Voz Importa</h3>
+            <p style="text-align: center; color: #666; margin-bottom: 20px;">
+                ¿Tienes alguna sugerencia o propuesta? ¡No dudes en enviarla a través de nuestro buzón de sugerencias!
+            </p>
+            <div style="text-align: center;">
+                <a href="#" style="background: #e50000; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Enviar Sugerencia</a>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>UGT Towa Pharmaceutical Europe</strong></p>
+            <p>Sección Sindical - Representando tus derechos laborales</p>
+            <p>📧 contactos.towa@ugt.org | 📞 933 123 456</p>
+            
+            <div class="social-links">
+                <a href="#">🌐 Web</a>
+                <a href="#">📘 Facebook</a>
+                <a href="#">🐦 Twitter</a>
+                <a href="#">📱 WhatsApp</a>
+            </div>
+            
+            <p style="margin-top: 15px; font-size: 12px; opacity: 0.8;">
+                Si no deseas recibir este newsletter, responde con "BAJA" en el asunto.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
