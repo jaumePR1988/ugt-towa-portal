@@ -3,9 +3,9 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Modificar sistema de Newsletter - Solo PDF (sin emails)",
-        "details": "1. Eliminar funcionalidad de envío de emails (Resend)\n2. Mantener generación de borrador mensual automático (cron job)\n3. Agregar generación de PDF profesional con diseño UGT\n4. Añadir botón 'Descargar PDF' en el panel\n5. Mantener vista previa antes de generar PDF\n6. Conservar gestión de contenido manual\n7. Mantener statistics de generación (no de envío)\n8. Preservar edición y revisión manual del contenido\n9. Generar PDF con todas las secciones: noticias, eventos, estadísticas, directivas, sugerencias\n10. PDF debe incluir logo UGT y diseño profesional",
-        "status": "completed",
+        "content": "Mejoras adicionales al Portal UGT Towa",
+        "details": "1. Habilitar gestión de categorías en 'Documentos': Panel admin para crear/editar/eliminar categorías de documentos, persistencia en base de datos, interfaz para gestión admin\n2. Actualizar datos de contacto en PDF newsletter: Extraer datos de contacto de la página web, reemplazar footer hardcodeado, actualización dinámica\n3. Incluir gráficos en PDF de encuestas: Integrar gráficos de Chart.js en PDF generado, captura visual de estadísticas, layout optimizado\n4. Sistema exportación Excel: Botón 'Exportar Suscriptores' en panel newsletter, generación de archivo Excel con datos de suscriptores, descarga directa",
+        "status": "pending",
         "priority": "high"
       }
     }
