@@ -338,9 +338,9 @@ function generateNewsletterHTML(contentByType: any, monthName: string, qrCode: a
 
         ${qrCode ? `
         <div class="section" style="text-align: center; margin-top: 40px;">
-            <h2 class="section-title">Envía tus Sugerencias de Forma Anónima</h2>
+            <h2 class="section-title">Afiliate a UGT</h2>
             <div style="display: inline-block; border: 4px solid #e50000; border-radius: 8px; padding: 20px; background-color: white;">
-                <img src="${qrCode.image_url}" alt="QR Code Sugerencias" style="max-width: 200px; width: 100%; height: auto; margin: 0 auto; display: block;" />
+                <img src="${qrCode.image_url}" alt="QR de Afiliacion UGT" style="max-width: 200px; width: 100%; height: auto; margin: 0 auto; display: block;" />
                 ${qrCode.description ? `<p style="margin-top: 15px; color: #666; font-size: 14px;">${qrCode.description}</p>` : ''}
             </div>
         </div>

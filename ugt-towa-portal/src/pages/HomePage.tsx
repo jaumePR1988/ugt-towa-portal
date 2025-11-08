@@ -239,28 +239,28 @@ export default function HomePage() {
 
             {/* QR Code */}
             <div className="flex flex-col items-center justify-center">
-              <div className="w-full max-w-sm">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
-                  Codigo QR
+              <div className="w-full max-w-[200px] mx-auto">
+                <h3 className="text-base font-semibold text-gray-900 mb-3 text-center">
+                  QR de Afiliacion
                 </h3>
                 {qrCode ? (
-                  <div className="border-4 border-red-600 rounded-lg p-4 bg-white shadow-lg">
+                  <div className="border-3 border-red-600 rounded-lg p-2 bg-white shadow-md">
                     <img
                       src={qrCode.image_url}
                       alt={qrCode.title}
                       className="w-full h-auto"
                     />
                     {qrCode.description && (
-                      <p className="text-sm text-gray-600 mt-3 text-center">
+                      <p className="text-xs text-gray-600 mt-2 text-center">
                         {qrCode.description}
                       </p>
                     )}
                   </div>
                 ) : (
-                  <div className="border-4 border-gray-300 border-dashed rounded-lg p-12 bg-gray-50 flex flex-col items-center justify-center min-h-[300px]">
-                    <QrCode className="h-16 w-16 text-gray-400 mb-4" />
-                    <p className="text-gray-500 text-center">
-                      QR Code no disponible
+                  <div className="border-3 border-gray-300 border-dashed rounded-lg p-6 bg-gray-50 flex flex-col items-center justify-center min-h-[180px]">
+                    <QrCode className="h-12 w-12 text-gray-400 mb-3" />
+                    <p className="text-xs text-gray-500 text-center">
+                      QR de Afiliacion no disponible
                     </p>
                   </div>
                 )}

@@ -353,6 +353,60 @@ https://9vplhbixy5tu.space.minimax.io
 
 **Estado Final**: LISTO PARA PRODUCCIÓN ✅
 
+## Ajustes de Diseno QR - 09-Nov-2025 01:46
+### Ajustes en Diseno y Textos del QR
+**Estado**: COMPLETADO Y DESPLEGADO
+
+**URL Base**: https://8hchjhs9z5cw.space.minimax.io
+
+**Cambios Implementados:**
+
+1. Tamano del QR Reducido
+   - Contenedor cambiado de max-w-sm (384px) a max-w-[200px]
+   - Border reducido de 4px a 3px
+   - Padding reducido de p-4 a p-2
+   - Min-height reducido de 300px a 180px en placeholder
+   - Iconos y textos mas pequenos para proporcion
+
+2. Textos Actualizados a Afiliacion
+   - HomePage.tsx:
+     * "Codigo QR" → "QR de Afiliacion"
+     * "QR Code no disponible" → "QR de Afiliacion no disponible"
+   - Newsletter PDF:
+     * "Envia tus Sugerencias de Forma Anonima" → "Afiliate a UGT"
+     * alt text actualizado: "QR de Afiliacion UGT"
+
+3. Mejor Alineacion y Centrado
+   - mx-auto agregado para centrado horizontal
+   - Textos reducidos de text-lg a text-base
+   - Descripcion reducida de text-sm a text-xs
+   - Padding optimizado para aspecto mas compacto
+
+4. Diseno Responsive Mejorado
+   - QR mantiene tamano fijo 200px max en desktop
+   - Escala apropiadamente en moviles
+   - Grid mantiene 2 columnas en desktop, 1 en movil
+
+**Archivos Modificados:**
+- /workspace/ugt-towa-portal/src/pages/HomePage.tsx
+- /workspace/supabase/functions/generate-monthly-draft/index.ts
+
+**Edge Functions:**
+- generate-monthly-draft: v6 ACTIVE
+
+**Build y Despliegue:**
+- Build exitoso: 2677 modulos
+- Desplegado en: https://8hchjhs9z5cw.space.minimax.io
+
+**Criterios de Exito - Verificados:**
+- [x] QR mas pequeno (200x200px maximo)
+- [x] Mejor alineacion y centrado
+- [x] Textos actualizados para "afiliacion"
+- [x] Mantiene funcionalidad completa
+- [x] Se ve bien en movil y desktop
+
+**Estado Final**: AJUSTES DE DISENO COMPLETADOS
+
 ## Nueva Funcionalidad - 09-Nov-2025 01:35
 ### Sistema de Gestion de QR Codes
 **Estado**: COMPLETADO Y DESPLEGADO
