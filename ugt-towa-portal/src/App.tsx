@@ -31,6 +31,7 @@ import AdminSugerencias from './pages/admin/AdminSugerencias';
 import AdminEncuestasAnalisis from './pages/admin/AdminEncuestasAnalisis';
 import AdminNewsletter from './pages/admin/AdminNewsletter';
 import AdminCategoriasDocumentos from './pages/admin/AdminCategoriasDocumentos';
+import AdminQR from './pages/admin/AdminQR';
 
 // Components
 import PrivateRoute from './components/PrivateRoute';
@@ -176,6 +177,14 @@ function App() {
             element={
               <AdminRoute>
                 <AdminCategoriasDocumentos />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/qr"
+            element={
+              <AdminRoute>
+                <AdminQR />
               </AdminRoute>
             }
           />

@@ -353,6 +353,71 @@ https://9vplhbixy5tu.space.minimax.io
 
 **Estado Final**: LISTO PARA PRODUCCIÓN ✅
 
+## Nueva Funcionalidad - 09-Nov-2025 01:35
+### Sistema de Gestion de QR Codes
+**Estado**: COMPLETADO Y DESPLEGADO
+
+**URL Base**: https://c869tgnxr92v.space.minimax.io
+
+**Funcionalidades Implementadas:**
+
+1. Backend Completo
+   - Tabla qr_codes creada con RLS
+   - Bucket qr-codes en Storage (5MB, imagenes PNG/JPG/WEBP)
+   - Edge Function upload-qr-code desplegada (version 1)
+   - Validacion de archivos y tamano
+   - Solo un QR activo a la vez
+
+2. Panel Admin QR (/admin/qr)
+   - AdminQR.tsx creado (323 lineas)
+   - Subida de imagen QR con preview
+   - Validacion de formatos y tamano
+   - Metadata: titulo y descripcion
+   - Funcionalidad de eliminar QR
+   - Vista previa del QR activo
+
+3. Homepage Actualizada
+   - Seccion de sugerencias con grid 2 columnas
+   - Formulario a la izquierda
+   - Cuadrado grande de QR a la derecha (border rojo)
+   - Placeholder cuando no hay QR
+   - Carga automatica del QR activo
+
+4. Newsletter PDF con QR
+   - generate-monthly-draft actualizado (version 5)
+   - QR incluido automaticamente en PDF
+   - Seccion dedicada: "Envia tus Sugerencias de Forma Anonima"
+   - QR centrado con border rojo
+   - Descripcion opcional mostrada
+
+**Archivos Creados:**
+- /workspace/ugt-towa-portal/src/pages/admin/AdminQR.tsx
+- /workspace/supabase/functions/upload-qr-code/index.ts
+
+**Archivos Modificados:**
+- /workspace/ugt-towa-portal/src/pages/HomePage.tsx
+- /workspace/ugt-towa-portal/src/App.tsx
+- /workspace/ugt-towa-portal/src/pages/admin/AdminDashboard.tsx
+- /workspace/supabase/functions/generate-monthly-draft/index.ts
+
+**Edge Functions:**
+- upload-qr-code: v1 ACTIVE
+- generate-monthly-draft: v5 ACTIVE
+
+**Build y Despliegue:**
+- Build exitoso: 2677 modulos
+- Desplegado en: https://c869tgnxr92v.space.minimax.io
+
+**Criterios de Exito - Verificados:**
+- [x] Cuadrado grande de QR en pagina de sugerencias anonimas
+- [x] Panel admin permite subir imagen QR
+- [x] QR se muestra en tiempo real
+- [x] QR aparece automaticamente en PDF de newsletter
+- [x] Funcionalidad de eliminar QR
+- [x] Validaciones y manejo de errores
+
+**Estado Final**: SISTEMA QR COMPLETAMENTE FUNCIONAL
+
 ## Correcciones Aplicadas - 09-Nov-2025 01:26
 ### Correcciones en PDFs del Portal
 **Estado**: COMPLETADO Y DESPLEGADO

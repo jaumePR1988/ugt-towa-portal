@@ -52,7 +52,26 @@ Deno.serve(async (req) => {
         const monthName = now.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
         const subject = `Newsletter UGT Towa - ${monthName.charAt(0).toUpperCase() + monthName.slice(1)}`;
 
-        const htmlContent = generateNewsletterHTML(contentByType, monthName);
+        // Obtener QR code activo
+        const qrResponse = await fetch(
+            `${supabaseUrl}/rest/v1/qr_codes?is_active=eq.true&order=created_at.desc&limit=1`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${serviceRoleKey}`,
+                    'apikey': serviceRoleKey,
+                }
+            }
+        );
+
+        let qrCode = null;
+        if (qrResponse.ok) {
+            const qrData = await qrResponse.json();
+            if (qrData && qrData.length > 0) {
+                qrCode = qrData[0];
+            }
+        }
+
+        const htmlContent = generateNewsletterHTML(contentByType, monthName, qrCode);
 
         // Verificar si ya existe un borrador para este mes
         const existingDraftResponse = await fetch(
@@ -143,7 +162,7 @@ Deno.serve(async (req) => {
     }
 });
 
-function generateNewsletterHTML(contentByType: any, monthName: string): string {
+function generateNewsletterHTML(contentByType: any, monthName: string, qrCode: any = null): string {
     const baseUrl = Deno.env.get('SUPABASE_URL') || '';
     
     return `
@@ -314,6 +333,16 @@ function generateNewsletterHTML(contentByType: any, monthName: string): string {
                     <p>${item.content}</p>
                 </div>
             `).join('')}
+        </div>
+        ` : ''}
+
+        ${qrCode ? `
+        <div class="section" style="text-align: center; margin-top: 40px;">
+            <h2 class="section-title">Envía tus Sugerencias de Forma Anónima</h2>
+            <div style="display: inline-block; border: 4px solid #e50000; border-radius: 8px; padding: 20px; background-color: white;">
+                <img src="${qrCode.image_url}" alt="QR Code Sugerencias" style="max-width: 200px; width: 100%; height: auto; margin: 0 auto; display: block;" />
+                ${qrCode.description ? `<p style="margin-top: 15px; color: #666; font-size: 14px;">${qrCode.description}</p>` : ''}
+            </div>
         </div>
         ` : ''}
 

@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { supabase, Communique, Survey } from '@/lib/supabase';
-import { Calendar, FileText, Vote, MessageSquare } from 'lucide-react';
+import { Calendar, FileText, Vote, MessageSquare, QrCode } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 export default function HomePage() {
   const [communiques, setCommuniques] = useState<Communique[]>([]);
   const [activeSurvey, setActiveSurvey] = useState<Survey | null>(null);
+  const [qrCode, setQrCode] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,6 +37,16 @@ export default function HomePage() {
         .limit(1)
         .maybeSingle();
       if (surveyData) setActiveSurvey(surveyData);
+
+      // Cargar QR code activo
+      const { data: qrData } = await supabase
+        .from('qr_codes')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (qrData) setQrCode(qrData);
     } finally {
       setLoading(false);
     }
@@ -219,7 +230,43 @@ export default function HomePage() {
           <p className="text-gray-600 mb-6">
             Comparte tus ideas, comentarios o preocupaciones de forma completamente anónima
           </p>
-          <SuggestionsForm />
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Formulario */}
+            <div>
+              <SuggestionsForm />
+            </div>
+
+            {/* QR Code */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="w-full max-w-sm">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
+                  Codigo QR
+                </h3>
+                {qrCode ? (
+                  <div className="border-4 border-red-600 rounded-lg p-4 bg-white shadow-lg">
+                    <img
+                      src={qrCode.image_url}
+                      alt={qrCode.title}
+                      className="w-full h-auto"
+                    />
+                    {qrCode.description && (
+                      <p className="text-sm text-gray-600 mt-3 text-center">
+                        {qrCode.description}
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <div className="border-4 border-gray-300 border-dashed rounded-lg p-12 bg-gray-50 flex flex-col items-center justify-center min-h-[300px]">
+                    <QrCode className="h-16 w-16 text-gray-400 mb-4" />
+                    <p className="text-gray-500 text-center">
+                      QR Code no disponible
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
