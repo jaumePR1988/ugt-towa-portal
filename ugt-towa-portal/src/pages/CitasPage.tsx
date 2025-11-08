@@ -15,7 +15,7 @@ const TIME_SLOTS = [
 export default function CitasPage() {
   const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [selectedType, setSelectedType] = useState<'comite' | 'sindical' | 'prevencion'>('comite');
+  const [selectedType, setSelectedType] = useState<'sindical' | 'prevencion'>('sindical');
   const [slots, setSlots] = useState<AppointmentSlot[]>([]);
   const [myAppointments, setMyAppointments] = useState<Appointment[]>([]);
 
@@ -159,17 +159,7 @@ export default function CitasPage() {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-md p-6 mb-6">
               <h2 className="text-xl font-bold mb-4">Selecciona Tipo de Delegado</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <button
-                  onClick={() => setSelectedType('comite')}
-                  className={`p-4 rounded-lg border-2 font-semibold transition ${
-                    selectedType === 'comite'
-                      ? 'border-red-600 bg-red-50 text-red-700'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  Comité de Empresa
-                </button>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <button
                   onClick={() => setSelectedType('sindical')}
                   className={`p-4 rounded-lg border-2 font-semibold transition ${
@@ -188,7 +178,7 @@ export default function CitasPage() {
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
-                  Prevención
+                  Delegados de Prevención
                 </button>
               </div>
             </div>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { supabase } from '@/lib/supabase';
-import { LayoutDashboard, FileText, Calendar, Vote, Users, MessageSquare, Tag, FolderOpen } from 'lucide-react';
+import { LayoutDashboard, FileText, Calendar, Vote, Users, MessageSquare, Tag, FolderOpen, Inbox, BarChart3 } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -46,7 +46,9 @@ export default function AdminDashboard() {
     { to: '/admin/citas', icon: Calendar, title: 'Citas', desc: 'Ver y gestionar citas' },
     { to: '/admin/disponibilidad', icon: Calendar, title: 'Disponibilidad', desc: 'Configurar slots de citas' },
     { to: '/admin/encuestas', icon: Vote, title: 'Encuestas', desc: 'Crear y gestionar encuestas' },
+    { to: '/admin/encuestas-analisis', icon: BarChart3, title: 'Análisis de Encuestas', desc: 'Ver estadísticas y exportar datos' },
     { to: '/admin/comentarios', icon: MessageSquare, title: 'Gestión de Comentarios', desc: 'Moderar y eliminar comentarios' },
+    { to: '/admin/sugerencias', icon: Inbox, title: 'Buzón de Sugerencias', desc: 'Ver y gestionar sugerencias de usuarios' },
     { to: '/admin/documentos', icon: FolderOpen, title: 'Documentos', desc: 'Gestionar documentos relevantes' }
   ];
 

@@ -27,6 +27,8 @@ import AdminDisponibilidad from './pages/admin/AdminDisponibilidad';
 import AdminEncuestas from './pages/admin/AdminEncuestas';
 import AdminComentarios from './pages/admin/AdminComentarios';
 import AdminDocumentos from './pages/admin/AdminDocumentos';
+import AdminSugerencias from './pages/admin/AdminSugerencias';
+import AdminEncuestasAnalisis from './pages/admin/AdminEncuestasAnalisis';
 
 // Components
 import PrivateRoute from './components/PrivateRoute';
@@ -140,6 +142,22 @@ function App() {
             element={
               <AdminRoute>
                 <AdminDocumentos />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/sugerencias"
+            element={
+              <AdminRoute>
+                <AdminSugerencias />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/encuestas-analisis"
+            element={
+              <AdminRoute>
+                <AdminEncuestasAnalisis />
               </AdminRoute>
             }
           />

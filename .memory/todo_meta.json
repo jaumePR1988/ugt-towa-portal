@@ -5,28 +5,28 @@
         "id": "1",
         "content": "Eliminar tipo de delegado 'Comité de Empresa' en el sistema de citas",
         "details": "1. Actualizar la base de datos para eliminar 'Comité de Empresa' como opción de tipo de delegado en las citas. 2. Actualizar el frontend para que no muestre esta opción. 3. Migrar datos existentes si los hay. 4. Actualizar validaciones.",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
         "content": "Reparar sistema de buzón de sugerencias en panel de administración",
         "details": "1. Arreglar consulta SQL que no muestra mensajes del buzón de sugerencias. 2. Implementar funcionalidad de borrado de mensajes. 3. Actualizar contador para que sea preciso. 4. Mejorar interfaz de gestión de mensajes.",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "3": {
         "id": "3",
         "content": "Implementar visualización de datos de encuestas con gráficos circulares",
         "details": "1. Crear página de análisis de encuestas en panel admin. 2. Implementar gráficos circulares con Chart.js o similar. 3. Mostrar datos agregados por pregunta y respuesta. 4. Incluir estadísticas de participación.",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       },
       "4": {
         "id": "4",
         "content": "Añadir funcionalidad de exportación de datos (PDF y Excel)",
         "details": "1. Implementar exportación de datos de encuestas a PDF con gráficos incluidos. 2. Implementar exportación a Excel con todos los datos tabulados. 3. Añadir botones de exportación en página de análisis. 4. Crear templates de reporte profesionales.",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       }
     }

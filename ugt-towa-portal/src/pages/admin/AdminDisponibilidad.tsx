@@ -11,15 +11,14 @@ const TIME_SLOTS = [
 ];
 
 const DELEGATE_TYPES = [
-  { value: 'comite', label: 'Comité de Empresa' },
   { value: 'sindical', label: 'Delegados Sindicales' },
-  { value: 'prevencion', label: 'Prevención' }
+  { value: 'prevencion', label: 'Delegados de Prevención' }
 ];
 
 export default function AdminDisponibilidad() {
   const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [selectedDelegateType, setSelectedDelegateType] = useState<'comite' | 'sindical' | 'prevencion'>('comite');
+  const [selectedDelegateType, setSelectedDelegateType] = useState<'sindical' | 'prevencion'>('sindical');
   const [slots, setSlots] = useState<AppointmentSlot[]>([]);
   const [blockReason, setBlockReason] = useState('');
   const [showBlockModal, setShowBlockModal] = useState(false);
@@ -153,7 +152,7 @@ export default function AdminDisponibilidad() {
         {/* Selector de tipo de delegado */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">Tipo de Delegado</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {DELEGATE_TYPES.map(type => (
               <button
                 key={type.value}
