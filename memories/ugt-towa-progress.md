@@ -353,6 +353,32 @@ https://9vplhbixy5tu.space.minimax.io
 
 **Estado Final**: LISTO PARA PRODUCCIÓN ✅
 
+## Correcciones Aplicadas - 09-Nov-2025 01:26
+### Correcciones en PDFs del Portal
+**Estado**: COMPLETADO Y DESPLEGADO
+
+**URL Base**: https://3rj753l53a95.space.minimax.io
+
+**Correcciones Implementadas:**
+1. Graficos redimensionados en PDF de encuestas
+   - Tamaño reducido de ancho completo a 100mm (centrado)
+   - Scale reducido de 2 a 1.5 para mejor calidad sin exceso de tamaño
+   - Grafico ahora se ve apropiado y proporcional en PDF
+   - AdminEncuestasAnalisis.tsx actualizado
+
+2. Footer del PDF de newsletter con datos reales
+   - Email actualizado: jpedragosa@towapharmaceutical.com
+   - Direccion real: Poligono Industrial, Carrer de Sant Marti, 75-97, 08107 Martorelles, Barcelona
+   - Removido telefono placeholder y datos genericos
+   - generate-monthly-draft/index.ts actualizado y redesplegado (version 4)
+
+**Build y Despliegue:**
+- Edge Function redesplegada: generate-monthly-draft v4
+- Build frontend exitoso: 2676 modulos
+- Desplegado en: https://86cpd1fwqx8x.space.minimax.io
+
+**Estado Final**: CORRECCIONES APLICADAS EXITOSAMENTE
+
 ## Tarea Actual - 09-Nov-2025 01:06
 ### 4 Mejoras Adicionales en Portal UGT Towa
 **Estado**: ✅ COMPLETADO Y DESPLEGADO

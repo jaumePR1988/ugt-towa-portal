@@ -232,13 +232,14 @@ export default function AdminEncuestasAnalisis() {
           if (chartElement) {
             try {
               const canvas = await html2canvas(chartElement, {
-                scale: 2,
+                scale: 1.5,
                 useCORS: true,
                 backgroundColor: '#ffffff'
               });
               
               const imgData = canvas.toDataURL('image/png');
-              const imgWidth = pageWidth - 40;
+              // Reducir tamaño a 100mm de ancho (aproximadamente la mitad de la página)
+              const imgWidth = 100;
               const imgHeight = (canvas.height * imgWidth) / canvas.width;
               
               // Verificar si hay suficiente espacio en la página
@@ -247,7 +248,9 @@ export default function AdminEncuestasAnalisis() {
                 yPosition = 20;
               }
               
-              pdf.addImage(imgData, 'PNG', 20, yPosition, imgWidth, imgHeight);
+              // Centrar gráfico horizontalmente
+              const xPosition = (pageWidth - imgWidth) / 2;
+              pdf.addImage(imgData, 'PNG', xPosition, yPosition, imgWidth, imgHeight);
               yPosition += imgHeight + 10;
             } catch (err) {
               console.error('Error capturando gráfico:', err);

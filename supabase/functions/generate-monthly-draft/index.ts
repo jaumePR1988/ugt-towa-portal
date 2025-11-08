@@ -322,9 +322,8 @@ function generateNewsletterHTML(contentByType: any, monthName: string): string {
             <p>Comprometidos con la defensa de los derechos laborales y el bienestar de todos los trabajadores</p>
             <p style="margin-top: 10px;">
                 <strong>Contacto:</strong><br />
-                Email: ugt@towapharmaceutical.com<br />
-                Teléfono: +34 XXX XXX XXX<br />
-                Towa Pharmaceutical Europe
+                Email: jpedragosa@towapharmaceutical.com<br />
+                Dirección: Polígono Industrial, Carrer de Sant Martí, 75-97, 08107 Martorelles, Barcelona
             </p>
             <p style="margin-top: 10px; font-size: 11px; color: #999;">
                 © 2025 UGT Towa Pharmaceutical Europe. Todos los derechos reservados.
