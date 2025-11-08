@@ -5,7 +5,7 @@
         "id": "1",
         "content": "Implementar sistema de Newsletter Mensual Sindical completo",
         "details": "1. Crear base de datos (tablas: newsletter_subscribers, newsletter_content, newsletters_sent, email_analytics)\n2. Desarrollar panel de administración (/admin/newsletter) para gestión de contenido\n3. Crear sistema de selección de contenido con formularios para noticias, eventos, estadísticas, directivas y sugerencias\n4. Implementar vista previa del newsletter y sistema de aprobación antes del envío\n5. Desarrollar sistema de envío automatizado con control de dominio @towapharmaceutical.com\n6. Configurar cron job mensual automático (primer día de cada mes)\n7. Crear sistema de estadísticas (aperturas, clics, bounces)\n8. Implementar editor visual con subida de imágenes\n9. Crear templates de email responsive con diseño UGT (#e50000)\n10. Implementar gestión de suscripciones y desuscripciones",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       }
     }

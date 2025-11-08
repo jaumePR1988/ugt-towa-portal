@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { supabase } from '@/lib/supabase';
-import { LayoutDashboard, FileText, Calendar, Vote, Users, MessageSquare, Tag, FolderOpen, Inbox, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, FileText, Calendar, Vote, Users, MessageSquare, Tag, FolderOpen, Inbox, BarChart3, Mail } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -49,7 +49,8 @@ export default function AdminDashboard() {
     { to: '/admin/encuestas-analisis', icon: BarChart3, title: 'Análisis de Encuestas', desc: 'Ver estadísticas y exportar datos' },
     { to: '/admin/comentarios', icon: MessageSquare, title: 'Gestión de Comentarios', desc: 'Moderar y eliminar comentarios' },
     { to: '/admin/sugerencias', icon: Inbox, title: 'Buzón de Sugerencias', desc: 'Ver y gestionar sugerencias de usuarios' },
-    { to: '/admin/documentos', icon: FolderOpen, title: 'Documentos', desc: 'Gestionar documentos relevantes' }
+    { to: '/admin/documentos', icon: FolderOpen, title: 'Documentos', desc: 'Gestionar documentos relevantes' },
+    { to: '/admin/newsletter', icon: Mail, title: 'Newsletter Mensual', desc: 'Gestionar newsletter sindical mensual' }
   ];
 
   return (

@@ -353,6 +353,51 @@ https://9vplhbixy5tu.space.minimax.io
 
 **Estado Final**: LISTO PARA PRODUCCIÓN ✅
 
+## Nueva Tarea - 08-Nov-2025 23:29
+### Sistema de Newsletter Mensual Sindical
+**Estado**: ✅ COMPLETADO
+
+**URL Desplegada**: https://x7kes7q19igb.space.minimax.io/admin/newsletter
+
+**Backend Completado (100%):**
+- ✅ 4 tablas creadas (subscribers, content, newsletters_sent, analytics)
+- ✅ RLS configurado con políticas separadas
+- ✅ Bucket newsletter-images creado (5MB)
+- ✅ 4 Edge Functions desplegadas y testeadas
+- ✅ Cron job configurado (día 1 de cada mes a las 9 AM, Job ID: 2)
+- ✅ Suscriptores iniciales: 3 activos
+- ✅ Contenido de ejemplo: 6 elementos publicados
+- ✅ Borrador generado: "Newsletter UGT Towa - Noviembre de 2025"
+
+**Frontend Completado (100%):**
+- ✅ AdminNewsletter.tsx creado (820 líneas, 3 tabs funcionales)
+- ✅ Dashboard con estadísticas en tiempo real
+- ✅ Gestión de contenido (crear, editar, eliminar)
+- ✅ Subida de imágenes integrada
+- ✅ Vista previa de newsletters (modal HTML)
+- ✅ Envío de newsletters con confirmación
+- ✅ Ruta /admin/newsletter agregada
+- ✅ Enlace en AdminDashboard agregado
+- ✅ Build exitoso (2675 módulos)
+- ✅ Desplegado en producción
+
+**Testing Completado:**
+- ✅ Edge Functions testeadas (4/4 funcionando)
+- ✅ Subida de imágenes verificada
+- ✅ Generación de borradores verificada
+- ✅ Frontend navegación verificada
+- ✅ Visualización de contenido confirmada (6 elementos)
+- ✅ Dashboard estadísticas verificadas
+- ✅ RLS corregido (columna created_at agregada)
+
+**Pendiente (Configuración Usuario):**
+- ⏳ Configurar RESEND_API_KEY para envío real
+- ⏳ Testear envío completo con emails reales
+- ⏳ Verificar tracking de aperturas/clics
+
+**Documentación:**
+- 📄 /workspace/SISTEMA_NEWSLETTER_COMPLETO.md
+
 ## Notas
 - Logo disponible: user_input_files/UGT-logo.jpg
 - Dominio email restringido: @towapharmaceutical.com

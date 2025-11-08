@@ -29,6 +29,7 @@ import AdminComentarios from './pages/admin/AdminComentarios';
 import AdminDocumentos from './pages/admin/AdminDocumentos';
 import AdminSugerencias from './pages/admin/AdminSugerencias';
 import AdminEncuestasAnalisis from './pages/admin/AdminEncuestasAnalisis';
+import AdminNewsletter from './pages/admin/AdminNewsletter';
 
 // Components
 import PrivateRoute from './components/PrivateRoute';
@@ -158,6 +159,14 @@ function App() {
             element={
               <AdminRoute>
                 <AdminEncuestasAnalisis />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/newsletter"
+            element={
+              <AdminRoute>
+                <AdminNewsletter />
               </AdminRoute>
             }
           />
