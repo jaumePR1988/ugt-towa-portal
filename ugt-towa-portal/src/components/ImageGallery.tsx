@@ -68,20 +68,20 @@ export default function ImageGallery() {
   }
 
   return (
-    <section className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors">
+    <section className="py-8 bg-gray-50 dark:bg-gray-800 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             Galería de Eventos
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
+          <p className="text-base text-gray-600 dark:text-gray-300">
             Momentos destacados de nuestra actividad sindical
           </p>
         </div>
 
         <div className="relative group">
           {/* Carrusel */}
-          <div className="relative h-96 md:h-[500px] overflow-hidden rounded-lg shadow-xl">
+          <div className="relative h-64 md:h-80 overflow-hidden rounded-lg shadow-xl">
             {images.map((image, index) => (
               <div
                 key={image.id}
@@ -97,17 +97,17 @@ export default function ImageGallery() {
                 
                 {/* Overlay con información */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end">
-                  <div className="p-6 md:p-8 text-white w-full">
-                    <h3 className="text-2xl md:text-3xl font-bold mb-2">
+                  <div className="p-4 md:p-6 text-white w-full">
+                    <h3 className="text-xl md:text-2xl font-bold mb-1">
                       {image.title}
                     </h3>
                     {image.description && (
-                      <p className="text-base md:text-lg text-gray-200 max-w-3xl">
+                      <p className="text-sm md:text-base text-gray-200 max-w-3xl line-clamp-2">
                         {image.description}
                       </p>
                     )}
                     {image.event_date && (
-                      <p className="text-sm text-gray-300 mt-2">
+                      <p className="text-xs md:text-sm text-gray-300 mt-1">
                         {new Date(image.event_date).toLocaleDateString('es-ES', {
                           year: 'numeric',
                           month: 'long',

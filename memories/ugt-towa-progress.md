@@ -539,6 +539,55 @@ Grid 2 columnas:
 
 **Estado Final**: AJUSTES DE DISENO COMPLETADOS
 
+## Reducción Tamaño Galería - 09-Nov-2025 03:37
+### Ajuste de Tamaño en ImageGallery
+**Estado**: EN DESARROLLO
+
+**Cambios Implementados:**
+1. Reducción de altura del carrusel:
+   - Móvil: de h-96 (384px) a h-64 (256px)
+   - Desktop: de md:h-[500px] a md:h-80 (320px)
+   - Reducción aproximada del 33% en altura
+2. Optimización del overlay de texto:
+   - Padding reducido: p-6 md:p-8 a p-4 md:p-6
+   - Título reducido: text-2xl md:text-3xl a text-xl md:text-2xl
+   - Descripción reducida: text-base md:text-lg a text-sm md:text-base
+   - Fecha reducida: text-sm a text-xs md:text-sm
+   - line-clamp-2 agregado a descripción
+3. Sección más compacta:
+   - Padding vertical: py-16 a py-8
+   - Margen título: mb-12 a mb-6
+   - Título sección: text-3xl a text-2xl
+   - Descripción sección: text-lg a text-base
+
+**Funcionalidad Preservada:**
+- Navegación con flechas izquierda/derecha
+- Dots indicadores
+- Auto-rotación cada 4.5 segundos
+- Overlay con título, descripción y fecha
+- Responsive design
+
+**Archivo Modificado:**
+- /workspace/ugt-towa-portal/src/components/ImageGallery.tsx
+
+**Build y Despliegue:**
+- [x] Build exitoso (2680 módulos)
+- [x] Desplegado en: https://5xxsi5tu8wt6.space.minimax.io
+- [x] Testing comprehensivo completado
+
+**Testing Realizado:**
+- ✅ Galería se muestra correctamente
+- ✅ Altura más compacta (40-50% del viewport)
+- ✅ Título "Galería de Eventos" verificado
+- ✅ Flechas de navegación funcionales
+- ✅ Dots de navegación operativos
+- ✅ Overlay con texto legible
+- ✅ Imágenes con buena proporción
+- ✅ Sin errores en consola
+- ✅ 3 slides funcionando correctamente
+
+**Estado Final**: COMPLETADO Y DESPLEGADO ✅
+
 ## Nueva Funcionalidad - 09-Nov-2025 01:35
 ### Sistema de Gestion de QR Codes
 **Estado**: COMPLETADO Y DESPLEGADO
