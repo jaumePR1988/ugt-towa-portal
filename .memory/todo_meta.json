@@ -3,38 +3,31 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Botón de borrar comentarios visible solo para administradores",
-        "details": "Agregar botón de eliminar directamente en cada comentario: 1. Mostrar botón 'Borrar' solo si el usuario es admin. 2. Icono pequeño y discreto al lado de cada comentario. 3. Modal de confirmación antes de eliminar. 4. Solo visible en página de detalle del comunicado, no en homepage.",
-        "status": "completed",
+        "content": "Eliminar tipo de delegado 'Comité de Empresa' en el sistema de citas",
+        "details": "1. Actualizar la base de datos para eliminar 'Comité de Empresa' como opción de tipo de delegado en las citas. 2. Actualizar el frontend para que no muestre esta opción. 3. Migrar datos existentes si los hay. 4. Actualizar validaciones.",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Sistema de respuestas a comentarios",
-        "details": "Implementar sistema de hilos de conversación: 1. Crear tabla 'comment_replies' en base de datos. 2. Botón 'Responder' en cada comentario. 3. Formulario de respuesta con textarea. 4. Vista jerárquica: comentario padre + respuestas (indentadas). 5. Mostrar autor de cada respuesta. 6. Mantener tiempo real para nuevas respuestas.",
-        "status": "completed",
+        "content": "Reparar sistema de buzón de sugerencias en panel de administración",
+        "details": "1. Arreglar consulta SQL que no muestra mensajes del buzón de sugerencias. 2. Implementar funcionalidad de borrado de mensajes. 3. Actualizar contador para que sea preciso. 4. Mejorar interfaz de gestión de mensajes.",
+        "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Apartado 'Documentos relevantes' solo para usuarios logueados",
-        "details": "Crear nueva sección de documentos corporativos: 1. Nueva tabla 'documents' con campos: id, title, file_url, description, category, created_at. 2. Nueva página '/documentos' protegida (solo usuarios logueados). 3. Panel admin para subir/gestionar documentos. 4. Categorías de documentos (Nóminas, Contratos, Políticas, etc.). 5. Descarga segura de archivos.",
-        "status": "completed",
+        "content": "Implementar visualización de datos de encuestas con gráficos circulares",
+        "details": "1. Crear página de análisis de encuestas en panel admin. 2. Implementar gráficos circulares con Chart.js o similar. 3. Mostrar datos agregados por pregunta y respuesta. 4. Incluir estadísticas de participación.",
+        "status": "pending",
         "priority": "medium"
       },
       "4": {
         "id": "4",
-        "content": "Reparar subida de fotos en perfiles de 'Quiénes Somos'",
-        "details": "Solucionar problema de carga de imágenes de delegados: 1. Verificar Edge Function de subida de fotos. 2. Comprobar permisos de Storage bucket. 3. Verificar formulario de subida en AdminQuienesSomos. 4. Asegurar que las fotos se muestren correctamente en página pública. 5. Manejo de errores y feedback al usuario.",
-        "status": "completed",
-        "priority": "high"
-      },
-      "5": {
-        "id": "5",
-        "content": "Testing y despliegue de nuevas funcionalidades",
-        "details": "Verificar todas las mejoras implementadas: 1. Probar botón de borrar comentarios (solo admin). 2. Testear sistema de respuestas. 3. Verificar apartado de documentos con autenticación. 4. Comprobar subida de fotos reparada. 5. Build y despliegue actualizado.",
-        "status": "completed",
-        "priority": "low"
+        "content": "Añadir funcionalidad de exportación de datos (PDF y Excel)",
+        "details": "1. Implementar exportación de datos de encuestas a PDF con gráficos incluidos. 2. Implementar exportación a Excel con todos los datos tabulados. 3. Añadir botones de exportación en página de análisis. 4. Crear templates de reporte profesionales.",
+        "status": "pending",
+        "priority": "medium"
       }
     }
   }
