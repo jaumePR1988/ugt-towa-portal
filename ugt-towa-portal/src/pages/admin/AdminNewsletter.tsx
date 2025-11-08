@@ -10,6 +10,9 @@ import {
 import { toast } from 'sonner';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 type ContentType = 'news' | 'events' | 'statistics' | 'directives' | 'suggestions';
 
@@ -380,6 +383,45 @@ export default function AdminNewsletter() {
     }
   };
 
+  const exportSubscribersToExcel = () => {
+    try {
+      toast.info('Generando archivo Excel...');
+
+      // Preparar datos para Excel
+      const excelData = subscribers.map((sub, index) => ({
+        '#': index + 1,
+        'Email': sub.email,
+        'Nombre': sub.name || 'Sin nombre',
+        'Estado': sub.is_active ? 'Activo' : 'Inactivo',
+        'Fecha de Suscripción': format(new Date(sub.subscribed_at), "d 'de' MMMM, yyyy HH:mm", { locale: es })
+      }));
+
+      // Crear workbook
+      const worksheet = XLSX.utils.json_to_sheet(excelData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Suscriptores');
+
+      // Ajustar anchos de columnas
+      const colWidths = [
+        { wch: 5 },   // #
+        { wch: 35 },  // Email
+        { wch: 25 },  // Nombre
+        { wch: 10 },  // Estado
+        { wch: 30 }   // Fecha
+      ];
+      worksheet['!cols'] = colWidths;
+
+      // Generar archivo
+      const fileName = `suscriptores-newsletter-${format(new Date(), 'yyyy-MM-dd')}.xlsx`;
+      XLSX.writeFile(workbook, fileName);
+
+      toast.success(`Archivo Excel descargado: ${fileName}`);
+    } catch (error) {
+      console.error('Error exportando a Excel:', error);
+      toast.error('Error al exportar a Excel');
+    }
+  };
+
   const getContentTypeIcon = (type: ContentType) => {
     switch (type) {
       case 'news': return <FileText className="w-5 h-5 text-blue-600" />;
@@ -546,7 +588,16 @@ export default function AdminNewsletter() {
 
             {/* Recent Subscribers */}
             <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-bold mb-4">Suscriptores Recientes</h2>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">Suscriptores Recientes</h2>
+                <button
+                  onClick={exportSubscribersToExcel}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2 text-sm"
+                >
+                  <Download className="w-4 h-4" />
+                  Exportar a Excel
+                </button>
+              </div>
               <div className="overflow-x-auto">
                 <table className="min-w-full">
                   <thead className="bg-gray-50">

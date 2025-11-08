@@ -3,10 +3,31 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Mejoras adicionales al Portal UGT Towa",
-        "details": "1. Habilitar gestión de categorías en 'Documentos': Panel admin para crear/editar/eliminar categorías de documentos, persistencia en base de datos, interfaz para gestión admin\n2. Actualizar datos de contacto en PDF newsletter: Extraer datos de contacto de la página web, reemplazar footer hardcodeado, actualización dinámica\n3. Incluir gráficos en PDF de encuestas: Integrar gráficos de Chart.js en PDF generado, captura visual de estadísticas, layout optimizado\n4. Sistema exportación Excel: Botón 'Exportar Suscriptores' en panel newsletter, generación de archivo Excel con datos de suscriptores, descarga directa",
-        "status": "pending",
+        "content": "Implementar panel admin para gestión de categorías de documentos",
+        "details": "Crear interfaz para que el admin pueda crear, editar y eliminar categorías de documentos desde el panel de administración",
+        "status": "completed",
         "priority": "high"
+      },
+      "2": {
+        "id": "2",
+        "content": "Actualizar datos de contacto en footer del PDF de newsletter",
+        "details": "Modificar el footer del PDF generado para usar los datos reales de contacto de la página web de contacto (en lugar de datos placeholder)",
+        "status": "completed",
+        "priority": "medium"
+      },
+      "3": {
+        "id": "3",
+        "content": "Incluir gráficos circulares en PDF de exportación de encuestas",
+        "details": "Modificar la generación del PDF de encuestas para que también incluya los gráficos circulares de Chart.js, no solo el texto de resultados",
+        "status": "completed",
+        "priority": "medium"
+      },
+      "4": {
+        "id": "4",
+        "content": "Implementar exportación de suscriptores a Excel",
+        "details": "Crear botón en el panel admin para descargar la lista de suscriptores del newsletter en formato Excel con sus emails y datos",
+        "status": "completed",
+        "priority": "medium"
       }
     }
   }

@@ -319,10 +319,15 @@ function generateNewsletterHTML(contentByType: any, monthName: string): string {
 
         <div class="footer">
             <p><strong>UGT - Sección Sindical Towa Pharmaceutical Europe</strong></p>
-            <p>Polígono Industrial Can Mitjans, C/ Masia Can Mitjans, 08232 Viladecavalls, Barcelona</p>
-            <p>Email: delegadosugt@towapharmaceutical.com</p>
-            <p style="margin-top: 15px;">
-                <a href="${baseUrl}/functions/v1/track-email-event?event=unsubscribe" style="color: #666;">Cancelar suscripción</a>
+            <p>Comprometidos con la defensa de los derechos laborales y el bienestar de todos los trabajadores</p>
+            <p style="margin-top: 10px;">
+                <strong>Contacto:</strong><br />
+                Email: ugt@towapharmaceutical.com<br />
+                Teléfono: +34 XXX XXX XXX<br />
+                Towa Pharmaceutical Europe
+            </p>
+            <p style="margin-top: 10px; font-size: 11px; color: #999;">
+                © 2025 UGT Towa Pharmaceutical Europe. Todos los derechos reservados.
             </p>
         </div>
     </div>

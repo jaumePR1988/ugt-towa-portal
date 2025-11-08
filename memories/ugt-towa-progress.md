@@ -353,30 +353,55 @@ https://9vplhbixy5tu.space.minimax.io
 
 **Estado Final**: LISTO PARA PRODUCCIÓN ✅
 
-## Tarea Actual - 09-Nov-2025 00:31
+## Tarea Actual - 09-Nov-2025 01:06
+### 4 Mejoras Adicionales en Portal UGT Towa
+**Estado**: ✅ COMPLETADO Y DESPLEGADO
+
+**URL Base**: https://qogqxpguk47k.space.minimax.io
+
+**Mejoras Implementadas:**
+1. ✅ **Panel admin para categorías de documentos**
+   - Tabla document_categories creada con RLS
+   - AdminCategoriasDocumentos.tsx (339 líneas)
+   - 5 categorías por defecto insertadas: Nóminas, Contratos, Políticas, Procedimientos, Otros
+   - Ruta /admin/categorias-documentos agregada
+   - Enlace en AdminDashboard con icono FolderTree
+   - AdminDocumentos.tsx actualizado para cargar categorías dinámicamente
+   - TESTING: ✅ Página verificada, todas categorías visibles
+
+2. ✅ **Footer del PDF de newsletter actualizado**
+   - Email: ugt@towapharmaceutical.com
+   - Teléfono: +34 XXX XXX XXX
+   - Descripción de UGT Towa
+   - Copyright 2025
+   - generate-monthly-draft/index.ts actualizado y redesplegado
+
+3. ✅ **Gráficos en PDF de exportación de encuestas**
+   - AdminEncuestasAnalisis.tsx actualizado con useRef
+   - html2canvas implementado para capturar gráficos Chart.js
+   - Gráficos incluidos automáticamente en PDF exportado
+   - Una página por encuesta con gráfico visual
+
+4. ✅ **Exportación de suscriptores a Excel**
+   - Función exportSubscribersToExcel() implementada
+   - Botón "Exportar a Excel" con icono Download
+   - Librería xlsx integrada
+   - Exporta: #, Email, Nombre, Estado, Fecha de Suscripción
+   - Formato profesional con columnas ajustadas
+
+**Build y Despliegue:**
+- Build exitoso (2676 módulos)
+- Desplegado en: https://qogqxpguk47k.space.minimax.io
+- Testing inicial completado exitosamente
+
+**Estado Final**: LISTO PARA USO EN PRODUCCIÓN ✅
+
+## Tarea Anterior - 09-Nov-2025 00:31
 ### Modificar Newsletter - Agregar PDF (sin emails)
 **Estado**: ✅ COMPLETADO
-
-**URL Desplegada**: https://1mbtx97n738h.space.minimax.io/admin/newsletter
-
-**Cambios Completados:**
-- ✅ BD modificada (columnas renombradas, email_analytics eliminada)
-- ✅ Edge Function generate-newsletter-pdf creada y desplegada
-- ✅ AdminNewsletter.tsx reescrito (871 líneas)
-- ✅ Eliminadas referencias a envío de emails
-- ✅ Agregada funcionalidad de generación de PDF con jsPDF + html2canvas
-- ✅ Cambiado tab "Newsletters Enviados" → "Newsletters Generados"
-- ✅ Cambiadas estadísticas (enviados/aperturas → generados/descargas)
-- ✅ Build exitoso (2675 módulos)
-- ✅ Desplegado en producción
-- ✅ Testing completado (todas las verificaciones exitosas)
-- ✅ Documentación actualizada (SISTEMA_NEWSLETTER_PDF.md)
-
-**Resultado Final:**
 - Sistema sin envío de emails
 - Generación de PDF funcional
 - Control total manual para el usuario
-- 2 newsletters en borrador listos para generar PDF
 
 ## Tarea Anterior - 08-Nov-2025 23:29
 ### Sistema de Newsletter Mensual Sindical

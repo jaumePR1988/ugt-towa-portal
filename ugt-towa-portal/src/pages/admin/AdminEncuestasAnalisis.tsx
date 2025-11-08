@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { supabase } from '@/lib/supabase';
@@ -42,6 +42,7 @@ export default function AdminEncuestasAnalisis() {
   const [surveys, setSurveys] = useState<Survey[]>([]);
   const [analyses, setAnalyses] = useState<SurveyAnalysis[]>([]);
   const [loading, setLoading] = useState(true);
+  const chartRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   useEffect(() => {
     loadSurveysAndAnalyze();
@@ -146,7 +147,7 @@ export default function AdminEncuestasAnalisis() {
   }
 
   async function exportToPDF() {
-    toast.info('Generando PDF...');
+    toast.info('Generando PDF con gráficos...');
 
     try {
       const pdf = new jsPDF('p', 'mm', 'a4');
@@ -178,12 +179,12 @@ export default function AdminEncuestasAnalisis() {
       pdf.text(`Total de respuestas: ${totalResponses}`, 15, yPosition);
       yPosition += 12;
 
-      // Detalles de cada encuesta
+      // Detalles de cada encuesta con gráficos
       for (let i = 0; i < analyses.length; i++) {
         const analysis = analyses[i];
 
-        // Nueva página si no hay suficiente espacio
-        if (yPosition > pageHeight - 60) {
+        // Nueva página para cada encuesta
+        if (i > 0) {
           pdf.addPage();
           yPosition = 20;
         }
@@ -216,23 +217,47 @@ export default function AdminEncuestasAnalisis() {
             ? ((count / analysis.totalResponses) * 100).toFixed(1) 
             : '0.0';
 
-          if (yPosition > pageHeight - 15) {
-            pdf.addPage();
-            yPosition = 20;
-          }
-
           pdf.setFontSize(9);
-          pdf.text(label, 20, yPosition + 5);
+          pdf.text(label.substring(0, 50), 20, yPosition + 5); // Limitar longitud
           pdf.text(count.toString(), pageWidth - 50, yPosition + 5);
           pdf.text(`${percentage}%`, pageWidth - 25, yPosition + 5);
           yPosition += 6;
         });
 
         yPosition += 10;
+
+        // Capturar y agregar gráfico si hay respuestas
+        if (analysis.totalResponses > 0 && chartRefs.current[`chart-${i}`]) {
+          const chartElement = chartRefs.current[`chart-${i}`];
+          if (chartElement) {
+            try {
+              const canvas = await html2canvas(chartElement, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+              });
+              
+              const imgData = canvas.toDataURL('image/png');
+              const imgWidth = pageWidth - 40;
+              const imgHeight = (canvas.height * imgWidth) / canvas.width;
+              
+              // Verificar si hay suficiente espacio en la página
+              if (yPosition + imgHeight > pageHeight - 20) {
+                pdf.addPage();
+                yPosition = 20;
+              }
+              
+              pdf.addImage(imgData, 'PNG', 20, yPosition, imgWidth, imgHeight);
+              yPosition += imgHeight + 10;
+            } catch (err) {
+              console.error('Error capturando gráfico:', err);
+            }
+          }
+        }
       }
 
       pdf.save(`analisis-encuestas-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
-      toast.success('PDF generado correctamente');
+      toast.success('PDF generado correctamente con gráficos');
     } catch (error) {
       console.error('Error al generar PDF:', error);
       toast.error('Error al generar el PDF');
@@ -417,7 +442,10 @@ export default function AdminEncuestasAnalisis() {
                           Distribución de Respuestas
                         </h3>
                         <div className="flex justify-center">
-                          <div className="w-80 h-80">
+                          <div 
+                            ref={el => chartRefs.current[`chart-${index}`] = el}
+                            className="w-80 h-80"
+                          >
                             <Pie 
                               data={getChartData(analysis)} 
                               options={{

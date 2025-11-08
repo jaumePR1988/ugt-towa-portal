@@ -30,6 +30,7 @@ import AdminDocumentos from './pages/admin/AdminDocumentos';
 import AdminSugerencias from './pages/admin/AdminSugerencias';
 import AdminEncuestasAnalisis from './pages/admin/AdminEncuestasAnalisis';
 import AdminNewsletter from './pages/admin/AdminNewsletter';
+import AdminCategoriasDocumentos from './pages/admin/AdminCategoriasDocumentos';
 
 // Components
 import PrivateRoute from './components/PrivateRoute';
@@ -167,6 +168,14 @@ function App() {
             element={
               <AdminRoute>
                 <AdminNewsletter />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/categorias-documentos"
+            element={
+              <AdminRoute>
+                <AdminCategoriasDocumentos />
               </AdminRoute>
             }
           />

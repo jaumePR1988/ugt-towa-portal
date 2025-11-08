@@ -8,11 +8,16 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { toast } from 'sonner';
 
-const CATEGORIES = ['Nóminas', 'Contratos', 'Políticas', 'Procedimientos', 'Otros'];
+interface DocumentCategory {
+  id: string;
+  name: string;
+  description: string;
+}
 
 export default function AdminDocumentos() {
   const { user } = useAuth();
   const [documents, setDocuments] = useState<Document[]>([]);
+  const [categories, setCategories] = useState<DocumentCategory[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
@@ -27,7 +32,29 @@ export default function AdminDocumentos() {
 
   useEffect(() => {
     loadDocuments();
+    loadCategories();
   }, []);
+
+  async function loadCategories() {
+    const { data, error } = await supabase
+      .from('document_categories')
+      .select('*')
+      .order('name');
+
+    if (error) {
+      toast.error('Error al cargar categorías');
+      // Fallback a categorías por defecto si hay error
+      setCategories([
+        { id: '1', name: 'Nóminas', description: '' },
+        { id: '2', name: 'Contratos', description: '' },
+        { id: '3', name: 'Políticas', description: '' },
+        { id: '4', name: 'Procedimientos', description: '' },
+        { id: '5', name: 'Otros', description: '' }
+      ]);
+    } else if (data) {
+      setCategories(data);
+    }
+  }
 
   async function loadDocuments() {
     const { data, error } = await supabase
@@ -127,7 +154,7 @@ export default function AdminDocumentos() {
     setFormData({
       title: '',
       description: '',
-      category: 'Otros',
+      category: categories.length > 0 ? categories[0].name : 'Otros',
       file_url: '',
       file_size: 0,
       file_type: ''
@@ -273,8 +300,8 @@ export default function AdminDocumentos() {
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                   className="w-full p-2 border rounded"
                 >
-                  {CATEGORIES.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.name}>{cat.name}</option>
                   ))}
                 </select>
               </div>
