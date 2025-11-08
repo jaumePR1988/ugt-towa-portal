@@ -3,8 +3,8 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Implementar sistema de Newsletter Mensual Sindical completo",
-        "details": "1. Crear base de datos (tablas: newsletter_subscribers, newsletter_content, newsletters_sent, email_analytics)\n2. Desarrollar panel de administración (/admin/newsletter) para gestión de contenido\n3. Crear sistema de selección de contenido con formularios para noticias, eventos, estadísticas, directivas y sugerencias\n4. Implementar vista previa del newsletter y sistema de aprobación antes del envío\n5. Desarrollar sistema de envío automatizado con control de dominio @towapharmaceutical.com\n6. Configurar cron job mensual automático (primer día de cada mes)\n7. Crear sistema de estadísticas (aperturas, clics, bounces)\n8. Implementar editor visual con subida de imágenes\n9. Crear templates de email responsive con diseño UGT (#e50000)\n10. Implementar gestión de suscripciones y desuscripciones",
+        "content": "Modificar sistema de Newsletter - Solo PDF (sin emails)",
+        "details": "1. Eliminar funcionalidad de envío de emails (Resend)\n2. Mantener generación de borrador mensual automático (cron job)\n3. Agregar generación de PDF profesional con diseño UGT\n4. Añadir botón 'Descargar PDF' en el panel\n5. Mantener vista previa antes de generar PDF\n6. Conservar gestión de contenido manual\n7. Mantener statistics de generación (no de envío)\n8. Preservar edición y revisión manual del contenido\n9. Generar PDF con todas las secciones: noticias, eventos, estadísticas, directivas, sugerencias\n10. PDF debe incluir logo UGT y diseño profesional",
         "status": "completed",
         "priority": "high"
       }

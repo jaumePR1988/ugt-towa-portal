@@ -353,11 +353,34 @@ https://9vplhbixy5tu.space.minimax.io
 
 **Estado Final**: LISTO PARA PRODUCCIÓN ✅
 
-## Nueva Tarea - 08-Nov-2025 23:29
-### Sistema de Newsletter Mensual Sindical
+## Tarea Actual - 09-Nov-2025 00:31
+### Modificar Newsletter - Agregar PDF (sin emails)
 **Estado**: ✅ COMPLETADO
 
-**URL Desplegada**: https://x7kes7q19igb.space.minimax.io/admin/newsletter
+**URL Desplegada**: https://1mbtx97n738h.space.minimax.io/admin/newsletter
+
+**Cambios Completados:**
+- ✅ BD modificada (columnas renombradas, email_analytics eliminada)
+- ✅ Edge Function generate-newsletter-pdf creada y desplegada
+- ✅ AdminNewsletter.tsx reescrito (871 líneas)
+- ✅ Eliminadas referencias a envío de emails
+- ✅ Agregada funcionalidad de generación de PDF con jsPDF + html2canvas
+- ✅ Cambiado tab "Newsletters Enviados" → "Newsletters Generados"
+- ✅ Cambiadas estadísticas (enviados/aperturas → generados/descargas)
+- ✅ Build exitoso (2675 módulos)
+- ✅ Desplegado en producción
+- ✅ Testing completado (todas las verificaciones exitosas)
+- ✅ Documentación actualizada (SISTEMA_NEWSLETTER_PDF.md)
+
+**Resultado Final:**
+- Sistema sin envío de emails
+- Generación de PDF funcional
+- Control total manual para el usuario
+- 2 newsletters en borrador listos para generar PDF
+
+## Tarea Anterior - 08-Nov-2025 23:29
+### Sistema de Newsletter Mensual Sindical
+**Estado**: ✅ COMPLETADO (ahora modificando)
 
 **Backend Completado (100%):**
 - ✅ 4 tablas creadas (subscribers, content, newsletters_sent, analytics)

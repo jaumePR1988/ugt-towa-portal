@@ -3,11 +3,13 @@ import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import Navbar from '../../components/Navbar';
 import { 
-  Mail, Send, Users, BarChart3, Plus, Trash2, Edit, Eye, 
+  Mail, FileDown, Users, BarChart3, Plus, Trash2, Edit, Eye, 
   FileText, Calendar, TrendingUp, MessageSquare, Lightbulb,
-  AlertCircle, CheckCircle, Clock, Image as ImageIcon
+  AlertCircle, CheckCircle, Clock, Download
 } from 'lucide-react';
 import { toast } from 'sonner';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 type ContentType = 'news' | 'events' | 'statistics' | 'directives' | 'suggestions';
 
@@ -27,10 +29,11 @@ interface NewsletterSent {
   subject: string;
   content: string;
   sent_at: string;
-  total_sent: number;
-  opened_count: number;
-  clicked_count: number;
-  status: 'draft' | 'approved' | 'sent' | 'failed';
+  total_generated: number;
+  pdf_downloads: number;
+  pdf_url: string | null;
+  pdf_generated_at: string | null;
+  status: 'draft' | 'generated';
 }
 
 interface Subscriber {
@@ -43,7 +46,7 @@ interface Subscriber {
 
 export default function AdminNewsletter() {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'content' | 'sent'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'content' | 'generated'>('dashboard');
   const [loading, setLoading] = useState(false);
   
   // Dashboard stats
@@ -51,7 +54,7 @@ export default function AdminNewsletter() {
     totalSubscribers: 0,
     activeSubscribers: 0,
     totalContent: 0,
-    newslettersSent: 0
+    newslettersGenerated: 0
   });
 
   // Content management
@@ -67,7 +70,7 @@ export default function AdminNewsletter() {
   });
   const [uploadingImage, setUploadingImage] = useState(false);
 
-  // Newsletters sent
+  // Newsletters
   const [newsletters, setNewsletters] = useState<NewsletterSent[]>([]);
   const [selectedNewsletter, setSelectedNewsletter] = useState<NewsletterSent | null>(null);
   const [showPreview, setShowPreview] = useState(false);
@@ -85,10 +88,10 @@ export default function AdminNewsletter() {
 
   const loadDashboardStats = async () => {
     try {
-      const [subsResult, contentResult, sentResult] = await Promise.all([
+      const [subsResult, contentResult, generatedResult] = await Promise.all([
         supabase.from('newsletter_subscribers').select('id, is_active'),
         supabase.from('newsletter_content').select('id'),
-        supabase.from('newsletters_sent').select('id').eq('status', 'sent')
+        supabase.from('newsletters_sent').select('id').eq('status', 'generated')
       ]);
 
       const totalSubs = subsResult.data?.length || 0;
@@ -98,7 +101,7 @@ export default function AdminNewsletter() {
         totalSubscribers: totalSubs,
         activeSubscribers: activeSubs,
         totalContent: contentResult.data?.length || 0,
-        newslettersSent: sentResult.data?.length || 0
+        newslettersGenerated: generatedResult.data?.length || 0
       });
     } catch (error) {
       console.error('Error loading stats:', error);
@@ -295,28 +298,83 @@ export default function AdminNewsletter() {
     setShowPreview(true);
   };
 
-  const handleSendNewsletter = async (newsletter: NewsletterSent) => {
-    if (!confirm(`¿Enviar newsletter "${newsletter.subject}" a todos los suscriptores activos?`)) return;
+  const handleGeneratePDF = async (newsletter: NewsletterSent) => {
+    if (!confirm(`¿Generar PDF del newsletter "${newsletter.subject}"?`)) return;
 
     setLoading(true);
+    toast.info('Generando PDF... puede tardar unos segundos');
 
     try {
-      const { data, error } = await supabase.functions.invoke('send-newsletter', {
-        body: {
-          newsletterId: newsletter.id,
-          subject: newsletter.subject,
-          htmlContent: newsletter.content
-        }
+      // Crear elemento temporal con el HTML del newsletter
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = newsletter.content;
+      tempDiv.style.width = '210mm'; // A4 width
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.left = '-9999px';
+      tempDiv.style.background = 'white';
+      tempDiv.style.padding = '20px';
+      document.body.appendChild(tempDiv);
+
+      // Convertir a canvas
+      const canvas = await html2canvas(tempDiv, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff'
       });
 
-      if (error) throw error;
+      // Crear PDF
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
 
-      toast.success(data.data.message);
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = 210; // A4 width in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      // Agregar primera página
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= 297; // A4 height
+
+      // Agregar páginas adicionales si es necesario
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= 297;
+      }
+
+      // Descargar PDF
+      const fileName = `newsletter-ugt-towa-${new Date().toISOString().split('T')[0]}.pdf`;
+      pdf.save(fileName);
+
+      // Limpiar
+      document.body.removeChild(tempDiv);
+
+      // Actualizar estadísticas
+      const currentGenerated = newsletter.total_generated || 0;
+      const { error: updateError } = await supabase
+        .from('newsletters_sent')
+        .update({
+          total_generated: currentGenerated + 1,
+          pdf_generated_at: new Date().toISOString(),
+          status: 'generated'
+        })
+        .eq('id', newsletter.id);
+
+      if (updateError) throw updateError;
+
+      toast.success('PDF generado y descargado exitosamente');
       loadNewsletters();
       loadDashboardStats();
     } catch (error) {
-      console.error('Error sending newsletter:', error);
-      toast.error('Error enviando newsletter');
+      console.error('Error generating PDF:', error);
+      toast.error('Error generando PDF');
     } finally {
       setLoading(false);
     }
@@ -345,10 +403,8 @@ export default function AdminNewsletter() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'sent': return <CheckCircle className="w-5 h-5 text-green-600" />;
+      case 'generated': return <CheckCircle className="w-5 h-5 text-green-600" />;
       case 'draft': return <Clock className="w-5 h-5 text-gray-600" />;
-      case 'approved': return <CheckCircle className="w-5 h-5 text-blue-600" />;
-      case 'failed': return <AlertCircle className="w-5 h-5 text-red-600" />;
       default: return <Clock className="w-5 h-5 text-gray-600" />;
     }
   };
@@ -360,7 +416,7 @@ export default function AdminNewsletter() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestión de Newsletter</h1>
-          <p className="text-gray-600">Sistema de newsletter mensual sindical</p>
+          <p className="text-gray-600">Sistema de newsletter mensual sindical - Generación de PDF</p>
         </div>
 
         {/* Tabs */}
@@ -394,16 +450,16 @@ export default function AdminNewsletter() {
                 </div>
               </button>
               <button
-                onClick={() => setActiveTab('sent')}
+                onClick={() => setActiveTab('generated')}
                 className={`px-6 py-4 text-sm font-medium border-b-2 ${
-                  activeTab === 'sent'
+                  activeTab === 'generated'
                     ? 'border-red-600 text-red-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <Mail className="w-5 h-5" />
-                  Newsletters Enviados
+                  <FileDown className="w-5 h-5" />
+                  Newsletters Generados
                 </div>
               </button>
             </nav>
@@ -448,10 +504,10 @@ export default function AdminNewsletter() {
               <div className="bg-white p-6 rounded-lg shadow">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-500 text-sm">Newsletters Enviados</p>
-                    <p className="text-3xl font-bold text-red-600">{stats.newslettersSent}</p>
+                    <p className="text-gray-500 text-sm">PDFs Generados</p>
+                    <p className="text-3xl font-bold text-red-600">{stats.newslettersGenerated}</p>
                   </div>
-                  <Mail className="w-12 h-12 text-red-600" />
+                  <FileDown className="w-12 h-12 text-red-600" />
                 </div>
               </div>
             </div>
@@ -721,11 +777,11 @@ export default function AdminNewsletter() {
           </div>
         )}
 
-        {/* Sent Newsletters Tab */}
-        {activeTab === 'sent' && (
+        {/* Generated Newsletters Tab */}
+        {activeTab === 'generated' && (
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-bold mb-4">Newsletters Enviados</h2>
+              <h2 className="text-xl font-bold mb-4">Newsletters Generados</h2>
 
               <div className="space-y-4">
                 {newsletters.map((newsletter) => (
@@ -737,9 +793,9 @@ export default function AdminNewsletter() {
                           <h3 className="font-semibold text-gray-900">{newsletter.subject}</h3>
                         </div>
                         <p className="text-sm text-gray-500">
-                          {newsletter.status === 'sent' 
-                            ? `Enviado el ${new Date(newsletter.sent_at).toLocaleDateString('es-ES')}`
-                            : 'Borrador'
+                          {newsletter.status === 'generated' 
+                            ? `PDF generado el ${new Date(newsletter.pdf_generated_at || '').toLocaleDateString('es-ES')}`
+                            : 'Borrador - PDF no generado aún'
                           }
                         </p>
                       </div>
@@ -751,32 +807,26 @@ export default function AdminNewsletter() {
                           <Eye className="w-4 h-4" />
                           Vista Previa
                         </button>
-                        {newsletter.status === 'draft' && (
-                          <button
-                            onClick={() => handleSendNewsletter(newsletter)}
-                            disabled={loading}
-                            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:bg-gray-400 flex items-center gap-2"
-                          >
-                            <Send className="w-4 h-4" />
-                            Enviar
-                          </button>
-                        )}
+                        <button
+                          onClick={() => handleGeneratePDF(newsletter)}
+                          disabled={loading}
+                          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:bg-gray-400 flex items-center gap-2"
+                        >
+                          <FileDown className="w-4 h-4" />
+                          Generar PDF
+                        </button>
                       </div>
                     </div>
 
-                    {newsletter.status === 'sent' && (
-                      <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t">
+                    {newsletter.status === 'generated' && (
+                      <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t">
                         <div className="text-center">
-                          <p className="text-2xl font-bold text-gray-900">{newsletter.total_sent}</p>
-                          <p className="text-sm text-gray-500">Enviados</p>
+                          <p className="text-2xl font-bold text-gray-900">{newsletter.total_generated}</p>
+                          <p className="text-sm text-gray-500">Generaciones</p>
                         </div>
                         <div className="text-center">
-                          <p className="text-2xl font-bold text-green-600">{newsletter.opened_count}</p>
-                          <p className="text-sm text-gray-500">Aperturas</p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-2xl font-bold text-blue-600">{newsletter.clicked_count}</p>
-                          <p className="text-sm text-gray-500">Clics</p>
+                          <p className="text-2xl font-bold text-green-600">{newsletter.pdf_downloads || 0}</p>
+                          <p className="text-sm text-gray-500">Descargas</p>
                         </div>
                       </div>
                     )}
