@@ -3,30 +3,30 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Implementar panel admin para gestión de categorías de documentos",
-        "details": "Crear interfaz para que el admin pueda crear, editar y eliminar categorías de documentos desde el panel de administración",
+        "content": "Crear visualización de la galería de imágenes animada",
+        "details": "Generar mockups visuales de cómo se verá la galería de imágenes en la página principal del portal UGT",
         "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Actualizar datos de contacto en footer del PDF de newsletter",
-        "details": "Modificar el footer del PDF generado para usar los datos reales de contacto de la página web de contacto (en lugar de datos placeholder)",
-        "status": "completed",
-        "priority": "medium"
+        "content": "Implementar galería de imágenes animada",
+        "details": "Carrusel de fotos de eventos UGT en la página principal con navegación con flechas y puntos indicadores, imágenes con overlay de texto explicativo",
+        "status": "pending",
+        "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Incluir gráficos circulares en PDF de exportación de encuestas",
-        "details": "Modificar la generación del PDF de encuestas para que también incluya los gráficos circulares de Chart.js, no solo el texto de resultados",
-        "status": "completed",
+        "content": "Implementar contador de suscriptores en tiempo real",
+        "details": "Mostrar número de suscriptores del newsletter en el panel admin con gráfico de crecimiento mensual y métricas básicas de engagement",
+        "status": "pending",
         "priority": "medium"
       },
       "4": {
         "id": "4",
-        "content": "Implementar exportación de suscriptores a Excel",
-        "details": "Crear botón en el panel admin para descargar la lista de suscriptores del newsletter en formato Excel con sus emails y datos",
-        "status": "completed",
+        "content": "Implementar tema oscuro/claro",
+        "details": "Toggle para cambiar entre tema claro y oscuro, persistir preferencia del usuario, adaptar colores corporativos UGT para ambos temas",
+        "status": "pending",
         "priority": "medium"
       }
     }
