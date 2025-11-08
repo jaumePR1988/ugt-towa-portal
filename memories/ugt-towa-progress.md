@@ -247,6 +247,50 @@ https://9vplhbixy5tu.space.minimax.io
 - URL producción: https://wpz9aiwwenbf.space.minimax.io
 - Reporte de testing: /workspace/test-progress.md
 
+## Nueva Iteración - 08-Nov-2025 17:38
+### Tarea: Implementar Recuperación de Contraseña
+**Estado**: ✅ COMPLETADA
+**Usuario**: jpedragosa@towapharmaceutical.com puede ahora recuperar contraseña
+
+**Implementaciones Completadas:**
+- [x] Actualizar AuthContext con funciones resetPassword y updatePassword
+- [x] Crear ForgotPasswordPage.tsx (solicitar email)
+- [x] Crear ResetPasswordPage.tsx (resetear con token)
+- [x] Actualizar LoginPage.tsx con enlace "¿Has olvidado tu contraseña?"
+- [x] Actualizar App.tsx con nuevas rutas (/forgot-password, /reset-password)
+- [x] Build exitoso (2420 módulos)
+- [x] Desplegar aplicación actualizada
+- [x] Testing E2E exitoso
+
+**URL Actualizada**: https://hhtsz37ny3vm.space.minimax.io
+
+**Archivos Creados:**
+- /workspace/ugt-towa-portal/src/pages/ForgotPasswordPage.tsx (100 líneas)
+- /workspace/ugt-towa-portal/src/pages/ResetPasswordPage.tsx (135 líneas)
+
+**Archivos Modificados:**
+- /workspace/ugt-towa-portal/src/contexts/AuthContext.tsx (añadidas funciones resetPassword y updatePassword)
+- /workspace/ugt-towa-portal/src/pages/LoginPage.tsx (añadido enlace de recuperación)
+- /workspace/ugt-towa-portal/src/App.tsx (añadidas rutas /forgot-password y /reset-password)
+
+**Testing Realizado:**
+- ✅ Página de login muestra enlace "¿Has olvidado tu contraseña?"
+- ✅ Navegación a /forgot-password funcional
+- ✅ Envío de email de recuperación exitoso para jpedragosa@towapharmaceutical.com
+- ✅ Mensaje de confirmación correcto
+- ✅ Sin errores en consola
+- ✅ Página de reset implementada con validación
+
+**Flujo Funcional:**
+1. Usuario hace clic en "¿Has olvidado tu contraseña?" en login
+2. Introduce su email @towapharmaceutical.com
+3. Sistema envía email con enlace de recuperación
+4. Usuario recibe email y hace clic en el enlace
+5. Se redirige a /reset-password con token de recuperación
+6. Usuario introduce nueva contraseña (mínimo 6 caracteres)
+7. Contraseña actualizada exitosamente
+8. Redirección automática a /login
+
 ## Notas
 - Logo disponible: user_input_files/UGT-logo.jpg
 - Dominio email restringido: @towapharmaceutical.com
