@@ -60,28 +60,42 @@ export default function HomePage() {
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-red-600 to-red-700 text-white">
         <div className="container mx-auto px-4 py-20">
-          <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Bienvenido al Portal Sindical UGT Towa
-            </h1>
-            <p className="text-xl text-red-100 mb-8">
-              Tu plataforma para estar informadas/os, participar y conectar con tus representantes sindicales
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Link
-                to="/citas"
-                className="inline-flex items-center px-6 py-3 bg-white text-red-600 rounded-lg font-semibold hover:bg-gray-100 transition"
-              >
-                <Calendar className="h-5 w-5 mr-2" />
-                Solicitar Cita
-              </Link>
-              <Link
-                to="/comunicados"
-                className="inline-flex items-center px-6 py-3 border-2 border-white text-white rounded-lg font-semibold hover:bg-red-800 transition"
-              >
-                <FileText className="h-5 w-5 mr-2" />
-                Ver Comunicados
-              </Link>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            {/* Contenido */}
+            <div>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                Bienvenido al Portal Sindical UGT Towa
+              </h1>
+              <p className="text-xl text-red-100 mb-8">
+                Tu plataforma para estar informadas/os, participar y conectar con tus representantes sindicales
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <Link
+                  to="/citas"
+                  className="inline-flex items-center px-6 py-3 bg-white text-red-600 rounded-lg font-semibold hover:bg-gray-100 transition"
+                >
+                  <Calendar className="h-5 w-5 mr-2" />
+                  Solicitar Cita
+                </Link>
+                <Link
+                  to="/comunicados"
+                  className="inline-flex items-center px-6 py-3 border-2 border-white text-white rounded-lg font-semibold hover:bg-red-800 transition"
+                >
+                  <FileText className="h-5 w-5 mr-2" />
+                  Ver Comunicados
+                </Link>
+              </div>
+            </div>
+
+            {/* Bandera UGT */}
+            <div className="flex justify-center md:justify-end">
+              <div className="relative w-full max-w-md">
+                <img
+                  src="https://zaxdscclkeytakcowgww.supabase.co/storage/v1/object/public/event-images/bandera-ugt-2024.jpg"
+                  alt="Bandera UGT"
+                  className="w-full h-auto rounded-lg shadow-2xl object-cover"
+                />
+              </div>
             </div>
           </div>
         </div>

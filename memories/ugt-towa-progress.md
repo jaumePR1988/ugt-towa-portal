@@ -565,6 +565,50 @@ Grid 2 columnas:
 
 **Estado Final**: IMAGEN DISPONIBLE EN LA GALERÍA ✅
 
+## Bandera UGT en Hero Section - 09-Nov-2025 17:08
+### Bandera UGT Colocada en Hero Section
+**Estado**: ✅ COMPLETADO Y DESPLEGADO
+
+**URL Base**: https://m0s4kdlsawfo.space.minimax.io
+
+**Cambios Implementados:**
+1. Hero Section rediseñada con grid de 2 columnas:
+   - Columna izquierda: Contenido de bienvenida
+   - Columna derecha: Imagen de la bandera UGT
+2. Imagen de bandera:
+   - URL: https://zaxdscclkeytakcowgww.supabase.co/storage/v1/object/public/event-images/bandera-ugt-2024.jpg
+   - Responsive con max-w-md
+   - Rounded corners y shadow para estilo profesional
+3. Diseño responsive:
+   - Desktop: 2 columnas (contenido | bandera)
+   - Móvil: 1 columna apilada
+
+**Archivos Modificados:**
+- /workspace/ugt-towa-portal/src/pages/HomePage.tsx (líneas 60-88)
+
+**Build y Despliegue:**
+- Build exitoso: 2680 módulos
+- Desplegado en: https://m0s4kdlsawfo.space.minimax.io
+
+**Testing Realizado:**
+- ✅ Grid de 2 columnas verificado en desktop
+- ✅ Texto de bienvenida en columna izquierda
+- ✅ Bandera UGT visible y cargada en columna derecha
+- ✅ Diseño responsive funcional en móvil
+- ✅ Galería de eventos separada funciona correctamente
+- ✅ Flechas de navegación del carrusel operativas
+- ✅ Dots indicadores funcionales
+- ✅ Sin errores en consola
+
+**Criterios de Éxito - Verificados:**
+- [x] Bandera visible en la hero section (reemplazando el rojo)
+- [x] Tamaño y posición apropiados
+- [x] Responsive para móvil y desktop
+- [x] La galería de imágenes sigue funcionando por separado
+- [x] Diseño visual atractivo y profesional
+
+**Estado Final**: BANDERA UGT IMPLEMENTADA EXITOSAMENTE ✅
+
 ## Reducción Tamaño Galería - 09-Nov-2025 03:37
 ### Ajuste de Tamaño en ImageGallery
 **Estado**: EN DESARROLLO
