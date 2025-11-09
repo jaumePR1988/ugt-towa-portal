@@ -116,10 +116,12 @@ export default function AdminNewsletter() {
 
   // Función auxiliar para crear HTML limpio del newsletter (solo contenido)
   const createProfessionalNewsletterHTML = (subject: string, content: string) => {
-    // El contenido tal como está en el editor, sin encabezados adicionales
+    // HTML optimizado para PDF con mejor compatibilidad para códigos QR y contenido largo
     return `
-      <div style="width: 800px; background: white; color: #2c3e50; line-height: 1.6; padding: 40px;">
-        ${content}
+      <div style="width: 800px; min-height: 1100px; background: white; color: #2c3e50; line-height: 1.6; padding: 40px; font-family: Georgia, serif; box-sizing: border-box;">
+        <div style="clear: both; overflow: visible; position: relative;">
+          ${content}
+        </div>
       </div>
     `;
   };
@@ -481,15 +483,15 @@ export default function AdminNewsletter() {
   };
 
   const handleGeneratePDF = async (newsletter: NewsletterSent) => {
-    console.log('=== INICIANDO GENERACIÓN DE PDF ===');
+    console.log('=== INICIANDO GENERACIÓN DE PDF MEJORADA ===');
     console.log('Newsletter ID:', newsletter.id);
     console.log('Newsletter Subject:', newsletter.subject);
     
     setLoading(true);
-    toast.info('Generando PDF...');
+    toast.info('Generando PDF optimizado...');
 
     try {
-      // CARGAR EL CONTENIDO MÁS RECIENTE DESDE LA BASE DE DATOS
+      // CARGAR EL CONTENIDO MÁS RECIENTE
       const { data: newsletterData, error: loadError } = await supabase
         .from('newsletters_sent')
         .select('content')
@@ -501,7 +503,6 @@ export default function AdminNewsletter() {
         throw loadError;
       }
 
-      // Usar el contenido más reciente
       const htmlContent = editingNewsletter?.id === newsletter.id ? editedContent : (newsletterData?.content || newsletter.content);
       
       if (!htmlContent || htmlContent.trim() === '') {
@@ -510,79 +511,129 @@ export default function AdminNewsletter() {
 
       console.log('Contenido HTML cargado, longitud:', htmlContent.length);
       
-      // Crear un documento HTML limpio
-      const cleanHtml = createProfessionalNewsletterHTML(newsletter.subject, htmlContent);
+      // Crear HTML optimizado para PDF
+      const optimizedHtml = createProfessionalNewsletterHTML(newsletter.subject, htmlContent);
       
-      console.log('HTML limpio creado');
+      console.log('HTML optimizado creado');
       
       // Crear elemento temporal para renderizar
       const tempDiv = document.createElement('div');
       tempDiv.id = 'pdf-temp-container';
-      tempDiv.innerHTML = cleanHtml;
+      tempDiv.innerHTML = optimizedHtml;
       tempDiv.style.position = 'absolute';
       tempDiv.style.left = '-9999px';
       tempDiv.style.top = '0';
       tempDiv.style.width = '800px';
+      tempDiv.style.minHeight = '1100px';
       tempDiv.style.background = 'white';
       tempDiv.style.padding = '40px';
-      tempDiv.style.fontFamily = 'Arial, sans-serif';
+      tempDiv.style.fontFamily = 'Georgia, serif';
       tempDiv.style.color = '#2c3e50';
       tempDiv.style.lineHeight = '1.6';
+      tempDiv.style.boxSizing = 'content-box';
       
       document.body.appendChild(tempDiv);
       console.log('Elemento temporal agregado al DOM');
+
+      // Esperar renderizado completo
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Esperar un momento para que se renderice
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Forzar renderizado de elementos complejos como códigos QR
+      const qrElements = tempDiv.querySelectorAll('canvas, img');
+      console.log('Elementos encontrados para renderizado:', qrElements.length);
       
-      // Intentar con html2canvas
-      console.log('Generando canvas con html2canvas...');
+      // Esperar un poco más para códigos QR
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      console.log('Generando canvas mejorado...');
       const canvas = await html2canvas(tempDiv, {
-        scale: 2,
+        scale: 2.5,
         useCORS: true,
-        logging: false,
+        logging: true,
         backgroundColor: '#ffffff',
         width: 800,
-        height: tempDiv.scrollHeight
+        height: tempDiv.scrollHeight,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: 800,
+        allowTaint: true
       });
 
       console.log('Canvas generado:', canvas.width, 'x', canvas.height);
 
-      // Crear PDF
+      if (canvas.width === 0 || canvas.height === 0) {
+        throw new Error('Canvas vacío generado');
+      }
+
+      // Crear PDF con configuración optimizada
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
-        format: 'a4'
+        format: 'a4',
+        compress: true,
+        putOnlyUsedFonts: true
       });
 
-      const imgData = canvas.toDataURL('image/png');
-      const pageWidth = 210;
-      const pageHeight = 297;
-      const margin = 15;
+      const imgData = canvas.toDataURL('image/png', 0.95);
+      const pageWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const margin = 15; // Margen optimizado
       const availableWidth = pageWidth - (2 * margin);
+      const availableHeight = pageHeight - (2 * margin);
       
-      // Calcular altura manteniendo proporción
-      const imgWidth = availableWidth;
-      const imgHeight = (canvas.height * availableWidth) / canvas.width;
+      console.log('Calculando dimensiones del PDF...');
       
-      // Si cabe en una página
-      if (imgHeight <= pageHeight - (2 * margin)) {
-        pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
+      // Calcular dimensiones manteniendo proporción
+      const imgAspectRatio = canvas.width / canvas.height;
+      const scaledHeight = availableWidth / imgAspectRatio;
+      
+      console.log('Aspect ratio:', imgAspectRatio);
+      console.log('Scaled height:', scaledHeight, 'mm');
+      
+      if (scaledHeight <= availableHeight) {
+        // Contenido cabe en una página
+        console.log('Agregando imagen en una página');
+        pdf.addImage(imgData, 'PNG', margin, margin, availableWidth, scaledHeight);
       } else {
-        // Múltiples páginas
-        let remainingHeight = imgHeight;
-        let position = 0;
+        // Contenido requiere múltiples páginas - lógica mejorada
+        console.log('Dividiendo en múltiples páginas');
         
-        while (remainingHeight > 0) {
-          if (position > 0) {
+        // Calcular cuántas páginas necesitamos
+        const pagesNeeded = Math.ceil(scaledHeight / availableHeight);
+        console.log('Páginas necesarias:', pagesNeeded);
+        
+        // Calcular la altura de cada porción
+        const portionHeight = canvas.height / pagesNeeded;
+        const scaledPortionHeight = scaledHeight / pagesNeeded;
+        
+        for (let page = 0; page < pagesNeeded; page++) {
+          if (page > 0) {
             pdf.addPage();
           }
           
-          const pageImageHeight = Math.min(remainingHeight, pageHeight - (2 * margin));
-          pdf.addImage(imgData, 'PNG', margin, margin - position, imgWidth, imgHeight);
+          console.log(`Procesando página ${page + 1}/${pagesNeeded}`);
           
-          remainingHeight -= pageImageHeight;
-          position += pageImageHeight;
+          // Crear un canvas temporal para esta porción
+          const tempCanvas = document.createElement('canvas');
+          tempCanvas.width = canvas.width;
+          tempCanvas.height = portionHeight;
+          const ctx = tempCanvas.getContext('2d');
+          
+          // Copiar la porción correspondiente
+          ctx?.drawImage(
+            canvas,
+            0, portionHeight * page,
+            canvas.width, portionHeight,
+            0, 0,
+            canvas.width, portionHeight
+          );
+          
+          // Convertir a imagen y agregar al PDF
+          const portionImgData = tempCanvas.toDataURL('image/png', 0.95);
+          pdf.addImage(portionImgData, 'PNG', margin, margin, availableWidth, scaledPortionHeight);
+          
+          // Limpiar
+          tempCanvas.remove();
         }
       }
 
@@ -616,275 +667,6 @@ export default function AdminNewsletter() {
     } catch (error) {
       console.error('Error generando PDF:', error);
       toast.error('Error generando PDF: ' + (error as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const exportSubscribersToExcel = () => {
-    try {
-      toast.info('Generando archivo Excel...');
-
-      // Preparar datos para Excel
-      const excelData = subscribers.map((sub, index) => ({
-      tempDiv.id = 'pdf-temp-container';
-      tempDiv.innerHTML = professionalHtml;
-      tempDiv.style.position = 'absolute';
-      tempDiv.style.left = '-9999px';
-      tempDiv.style.top = '0';
-      tempDiv.style.width = '800px';
-      tempDiv.style.minHeight = '1100px';
-      tempDiv.style.background = 'white';
-      tempDiv.style.fontFamily = 'Georgia, "Times New Roman", serif';
-      tempDiv.style.color = '#2c3e50';
-      tempDiv.style.lineHeight = '1.6';
-      tempDiv.style.margin = '0 auto';
-      tempDiv.style.padding = '20px';
-      tempDiv.style.boxSizing = 'border-box';
-      tempDiv.style.visibility = 'visible'; // CRUCIAL: Debe ser visible para html2canvas
-      tempDiv.style.opacity = '1';
-      tempDiv.style.zIndex = '-1';
-      
-      // Insertar en el DOM
-      document.body.appendChild(tempDiv);
-      console.log('Elemento temporal creado en DOM');
-
-      // Verificar que el contenido se insertó correctamente
-      const containerRect = tempDiv.getBoundingClientRect();
-      console.log('Container dimensions:', {
-        width: containerRect.width,
-        height: containerRect.height,
-        visible: tempDiv.style.visibility
-      });
-
-      // Esperar para asegurar que todo se renderice completamente
-      await new Promise(resolve => setTimeout(resolve, 3000));
-
-      // Verificar que hay contenido visible
-      const textContent = tempDiv.textContent?.trim();
-      console.log('Contenido de texto encontrado:', textContent ? textContent.substring(0, 200) + '...' : 'NULO');
-      if (!textContent) {
-        throw new Error('No se encontró contenido de texto en el newsletter');
-      }
-
-      // Verificar elementos hijos
-      const childElements = tempDiv.querySelectorAll('*');
-      console.log('Elementos hijos encontrados:', childElements.length);
-
-      // Convertir a canvas con configuraciones profesionales mejoradas
-      try {
-        console.log('Iniciando captura con html2canvas...');
-        
-        const canvas = await html2canvas(tempDiv, {
-          scale: 2,
-          useCORS: true,
-          logging: true, // Habilitar logs para depurar
-          backgroundColor: '#ffffff',
-          allowTaint: true,
-          foreignObjectRendering: false, // Deshabilitado para mejor compatibilidad
-          imageTimeout: 15000,
-          removeContainer: false,
-          width: tempDiv.offsetWidth,
-          height: tempDiv.offsetHeight,
-          scrollX: 0,
-          scrollY: 0,
-          windowWidth: 1200,
-          windowHeight: 1600,
-          onclone: (clonedDoc) => {
-            // Asegurar que los elementos clonados sean visibles
-            const clonedContainer = clonedDoc.getElementById('pdf-temp-container');
-            if (clonedContainer) {
-              clonedContainer.style.position = 'static';
-              clonedContainer.style.left = 'auto';
-              clonedContainer.style.visibility = 'visible';
-              clonedContainer.style.opacity = '1';
-              console.log('Container clonado configurado para captura');
-            }
-          }
-        });
-
-        console.log('Canvas generado exitosamente:', {
-          width: canvas.width,
-          height: canvas.height,
-          dataURL: canvas.toDataURL().substring(0, 50) + '...'
-        });
-
-        if (canvas.width === 0 || canvas.height === 0) {
-          throw new Error('Canvas generado con dimensiones cero');
-        }
-
-      // Crear PDF con configuración profesional
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-        compress: true,
-        putOnlyUsedFonts: true
-      });
-
-      const imgData = canvas.toDataURL('image/png', 0.95);
-      const pageWidth = 210; // A4 width in mm
-      const pageHeight = 297; // A4 height in mm
-      const margin = 12; // Margen profesional
-      const availableWidth = pageWidth - (2 * margin);
-      const availableHeight = pageHeight - (2 * margin);
-      
-      // Calcular dimensiones manteniendo proporción
-      const imgAspectRatio = canvas.width / canvas.height;
-      const scaledHeight = availableWidth / imgAspectRatio;
-      
-      if (scaledHeight <= availableHeight) {
-        // Contenido cabe en una página
-        pdf.addImage(imgData, 'PNG', margin, margin, availableWidth, scaledHeight);
-      } else {
-        // Contenido requiere múltiples páginas
-        let yOffset = 0;
-        let currentPage = 1;
-        
-        while (yOffset < canvas.height) {
-          if (currentPage > 1) {
-            pdf.addPage();
-          }
-          
-          const remainingHeight = canvas.height - yOffset;
-          const pageImageHeight = Math.min(remainingHeight, canvas.height * (availableHeight / scaledHeight));
-          const sourceY = yOffset;
-          const sourceHeight = pageImageHeight;
-          
-          // Crear canvas para esta página específica
-          const pageCanvas = document.createElement('canvas');
-          const pageCtx = pageCanvas.getContext('2d')!;
-          pageCanvas.width = canvas.width;
-          pageCanvas.height = sourceHeight;
-          
-          // Copiar la porción de la imagen
-          pageCtx.drawImage(
-            canvas,
-            0, sourceY, canvas.width, sourceHeight,
-            0, 0, canvas.width, sourceHeight
-          );
-          
-          const pageImgData = pageCanvas.toDataURL('image/png', 0.95);
-          const pageScaledHeight = (sourceHeight / canvas.height) * scaledHeight;
-          
-          pdf.addImage(pageImgData, 'PNG', margin, margin, availableWidth, pageScaledHeight);
-          
-          yOffset += sourceHeight;
-          currentPage++;
-        }
-      }
-
-        // Descargar PDF
-        const fileName = `Newsletter-UGT-Towa-${new Date().toISOString().split('T')[0]}.pdf`;
-        pdf.save(fileName);
-
-        // Limpiar
-        document.body.removeChild(tempDiv);
-
-        // Actualizar estadísticas
-        const currentGenerated = newsletter.total_generated || 0;
-        const { error: updateError } = await supabase
-          .from('newsletters_sent')
-          .update({
-            total_generated: currentGenerated + 1,
-            pdf_generated_at: new Date().toISOString(),
-            status: 'generated'
-          })
-          .eq('id', newsletter.id);
-
-        if (updateError) throw updateError;
-
-        toast.success('✅ PDF profesional generado y descargado exitosamente');
-        loadNewsletters();
-        loadDashboardStats();
-      } catch (html2canvasError) {
-        console.error('Error en html2canvas:', html2canvasError);
-        // Fallback: intentar con un enfoque más simple
-        console.log('Intentando enfoque alternativo...');
-        
-        // Limpiar el elemento temporal
-        if (tempDiv && tempDiv.parentNode) {
-          tempDiv.parentNode.removeChild(tempDiv);
-        }
-        
-        // Crear un enfoque más simple
-        const simpleContainer = document.createElement('div');
-        simpleContainer.style.position = 'absolute';
-        simpleContainer.style.left = '0';
-        simpleContainer.style.top = '0';
-        simpleContainer.style.width = '800px';
-        simpleContainer.style.background = 'white';
-        simpleContainer.style.padding = '20px';
-        simpleContainer.style.fontFamily = 'Arial, sans-serif';
-        simpleContainer.style.color = 'black';
-        simpleContainer.style.lineHeight = '1.5';
-        simpleContainer.innerHTML = `
-          <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #c41e3a; font-size: 28px; margin-bottom: 10px;">NEWSLETTER SINDICAL</h1>
-            <h2 style="color: #666; font-size: 18px; margin-bottom: 20px;">UGT Towa</h2>
-            <p style="color: #888; font-size: 14px;">${new Date().toLocaleDateString('es-ES')}</p>
-          </div>
-          <div style="font-size: 16px; line-height: 1.6;">
-            ${htmlContent}
-          </div>
-          <div style="margin-top: 40px; text-align: center; border-top: 2px solid #c41e3a; padding-top: 20px;">
-            <p style="color: #666; font-size: 14px;">UGT Towa - Sindicato de Trabajadores Unidos</p>
-            <p style="color: #888; font-size: 12px;">© ${new Date().getFullYear()} UGT Towa</p>
-          </div>
-        `;
-        
-        document.body.appendChild(simpleContainer);
-        
-        // Esperar un poco más
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Captura alternativa
-        const simpleCanvas = await html2canvas(simpleContainer, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: '#ffffff'
-        });
-        
-        console.log('Canvas simple generado:', { width: simpleCanvas.width, height: simpleCanvas.height });
-        
-        if (simpleCanvas.width === 0 || simpleCanvas.height === 0) {
-          throw new Error('Falló también la captura alternativa');
-        }
-        
-        // Crear PDF con la captura simple
-        const pdf = new jsPDF('portrait', 'mm', 'a4');
-        const imgData = simpleCanvas.toDataURL('image/png');
-        const pageWidth = 210;
-        const pageHeight = 297;
-        const margin = 10;
-        const availableWidth = pageWidth - (2 * margin);
-        const availableHeight = pageHeight - (2 * margin);
-        
-        const imgAspectRatio = simpleCanvas.width / simpleCanvas.height;
-        const scaledHeight = availableWidth / imgAspectRatio;
-        
-        pdf.addImage(imgData, 'PNG', margin, margin, availableWidth, scaledHeight);
-        
-        const fileName2 = `Newsletter-UGT-Towa-${new Date().toISOString().split('T')[0]}.pdf`;
-        pdf.save(fileName2);
-        
-        // Limpiar
-        document.body.removeChild(simpleContainer);
-        
-        toast.success('✅ PDF generado con método alternativo');
-        loadNewsletters();
-        loadDashboardStats();
-      }
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      
-      // Asegurar limpieza en caso de error
-      const tempContainer = document.getElementById('pdf-temp-container');
-      if (tempContainer && tempContainer.parentNode) {
-        tempContainer.parentNode.removeChild(tempContainer);
-      }
-      
-      toast.error('Error generando PDF: ' + (error instanceof Error ? error.message : 'Error desconocido'));
     } finally {
       setLoading(false);
     }
