@@ -114,6 +114,16 @@ export default function AdminNewsletter() {
     return () => clearInterval(interval);
   }, []);
 
+  // Función auxiliar para crear HTML limpio del newsletter (solo contenido)
+  const createProfessionalNewsletterHTML = (subject: string, content: string) => {
+    // El contenido tal como está en el editor, sin encabezados adicionales
+    return `
+      <div style="width: 800px; background: white; color: #2c3e50; line-height: 1.6; padding: 40px;">
+        ${content}
+      </div>
+    `;
+  };
+
   const loadDashboardStats = async () => {
     try {
       const [subsResult, contentResult, generatedResult] = await Promise.all([
@@ -369,7 +379,9 @@ export default function AdminNewsletter() {
 
   const handlePreviewNewsletter = async (newsletter: NewsletterSent) => {
     setSelectedNewsletter(newsletter);
-    setPreviewHtml(newsletter.content || '');
+    // Usar la función de creación de HTML para mostrar contenido limpio, sin encabezados adicionales
+    const cleanHtml = createProfessionalNewsletterHTML(newsletter.subject, newsletter.content || '');
+    setPreviewHtml(cleanHtml);
     setShowPreview(true);
   };
 
@@ -469,10 +481,12 @@ export default function AdminNewsletter() {
   };
 
   const handleGeneratePDF = async (newsletter: NewsletterSent) => {
-    if (!confirm(`¿Generar PDF del newsletter "${newsletter.subject}"?`)) return;
-
+    console.log('=== INICIANDO GENERACIÓN DE PDF ===');
+    console.log('Newsletter ID:', newsletter.id);
+    console.log('Newsletter Subject:', newsletter.subject);
+    
     setLoading(true);
-    toast.info('Generando PDF profesional...');
+    toast.info('Generando PDF...');
 
     try {
       // CARGAR EL CONTENIDO MÁS RECIENTE DESDE LA BASE DE DATOS
@@ -482,22 +496,137 @@ export default function AdminNewsletter() {
         .eq('id', newsletter.id)
         .single();
 
-      if (loadError) throw loadError;
+      if (loadError) {
+        console.error('Error cargando newsletter:', loadError);
+        throw loadError;
+      }
 
-      // Usar el contenido más reciente o el que se está editando actualmente
+      // Usar el contenido más reciente
       const htmlContent = editingNewsletter?.id === newsletter.id ? editedContent : (newsletterData?.content || newsletter.content);
       
       if (!htmlContent || htmlContent.trim() === '') {
         throw new Error('El contenido del newsletter está vacío');
       }
 
-      // Crear un documento HTML profesional completo
-      const professionalHtml = createProfessionalNewsletterHTML(newsletter.subject, htmlContent);
+      console.log('Contenido HTML cargado, longitud:', htmlContent.length);
       
-      console.log('HTML generado:', professionalHtml.substring(0, 500) + '...');
+      // Crear un documento HTML limpio
+      const cleanHtml = createProfessionalNewsletterHTML(newsletter.subject, htmlContent);
       
-      // Crear elemento temporal con el HTML profesional
+      console.log('HTML limpio creado');
+      
+      // Crear elemento temporal para renderizar
       const tempDiv = document.createElement('div');
+      tempDiv.id = 'pdf-temp-container';
+      tempDiv.innerHTML = cleanHtml;
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.left = '-9999px';
+      tempDiv.style.top = '0';
+      tempDiv.style.width = '800px';
+      tempDiv.style.background = 'white';
+      tempDiv.style.padding = '40px';
+      tempDiv.style.fontFamily = 'Arial, sans-serif';
+      tempDiv.style.color = '#2c3e50';
+      tempDiv.style.lineHeight = '1.6';
+      
+      document.body.appendChild(tempDiv);
+      console.log('Elemento temporal agregado al DOM');
+      
+      // Esperar un momento para que se renderice
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Intentar con html2canvas
+      console.log('Generando canvas con html2canvas...');
+      const canvas = await html2canvas(tempDiv, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        width: 800,
+        height: tempDiv.scrollHeight
+      });
+
+      console.log('Canvas generado:', canvas.width, 'x', canvas.height);
+
+      // Crear PDF
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pageWidth = 210;
+      const pageHeight = 297;
+      const margin = 15;
+      const availableWidth = pageWidth - (2 * margin);
+      
+      // Calcular altura manteniendo proporción
+      const imgWidth = availableWidth;
+      const imgHeight = (canvas.height * availableWidth) / canvas.width;
+      
+      // Si cabe en una página
+      if (imgHeight <= pageHeight - (2 * margin)) {
+        pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
+      } else {
+        // Múltiples páginas
+        let remainingHeight = imgHeight;
+        let position = 0;
+        
+        while (remainingHeight > 0) {
+          if (position > 0) {
+            pdf.addPage();
+          }
+          
+          const pageImageHeight = Math.min(remainingHeight, pageHeight - (2 * margin));
+          pdf.addImage(imgData, 'PNG', margin, margin - position, imgWidth, imgHeight);
+          
+          remainingHeight -= pageImageHeight;
+          position += pageImageHeight;
+        }
+      }
+
+      // Descargar
+      const fileName = `Newsletter-UGT-Towa-${new Date().toISOString().split('T')[0]}.pdf`;
+      pdf.save(fileName);
+      
+      console.log('PDF descargado:', fileName);
+
+      // Limpiar
+      document.body.removeChild(tempDiv);
+
+      // Actualizar base de datos
+      const { error: updateError } = await supabase
+        .from('newsletters_sent')
+        .update({
+          total_generated: (newsletter.total_generated || 0) + 1,
+          pdf_generated_at: new Date().toISOString(),
+          status: 'generated'
+        })
+        .eq('id', newsletter.id);
+
+      if (updateError) {
+        console.error('Error actualizando stats:', updateError);
+      }
+
+      toast.success('PDF generado y descargado exitosamente');
+      loadNewsletters();
+      loadDashboardStats();
+
+    } catch (error) {
+      console.error('Error generando PDF:', error);
+      toast.error('Error generando PDF: ' + (error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const exportSubscribersToExcel = () => {
+    try {
+      toast.info('Generando archivo Excel...');
+
+      // Preparar datos para Excel
+      const excelData = subscribers.map((sub, index) => ({
       tempDiv.id = 'pdf-temp-container';
       tempDiv.innerHTML = professionalHtml;
       tempDiv.style.position = 'absolute';
@@ -759,47 +888,6 @@ export default function AdminNewsletter() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const createProfessionalNewsletterHTML = (subject: string, content: string) => {
-    return `
-      <div style="width: 800px; min-height: 1100px; background: white; font-family: Georgia, serif; color: #2c3e50; line-height: 1.6;">
-        <!-- Header -->
-        <div style="background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%); color: white; padding: 40px 20px; text-align: center; border-bottom: 4px solid #a91b2c;">
-          <h1 style="font-size: 32px; font-weight: bold; margin: 0 0 10px 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">NEWSLETTER SINDICAL</h1>
-          <p style="font-size: 16px; margin: 0; opacity: 0.9;">UGT Towa - Comunicación y Noticias</p>
-          <p style="font-size: 14px; margin: 10px 0 0 0; opacity: 0.8;">${new Date().toLocaleDateString('es-ES', { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-          })}</p>
-        </div>
-        
-        <!-- Content -->
-        <div style="padding: 40px 20px;">
-          <div style="margin-bottom: 30px;">
-            ${content}
-          </div>
-          
-          <!-- Signature -->
-          <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #c41e3a; text-align: center;">
-            <p style="font-style: italic; color: #7f8c8d; margin: 0 0 5px 0;"><strong>UGT Towa</strong></p>
-            <p style="color: #7f8c8d; margin: 0; font-size: 14px;">Sindicato de Trabajadores Unidos</p>
-          </div>
-        </div>
-        
-        <!-- Footer -->
-        <div style="background: #2c3e50; color: white; padding: 30px 20px; text-align: center; margin-top: 20px;">
-          <h3 style="font-size: 18px; margin: 0 0 15px 0; color: #ecf0f1;">Contacto UGT Towa</h3>
-          <p style="font-size: 14px; margin: 0 0 8px 0; opacity: 0.9;">📧 info@ugttowa.org</p>
-          <p style="font-size: 14px; margin: 0 0 8px 0; opacity: 0.9;">📞 +34 XXX XXX XXX</p>
-          <p style="font-size: 14px; margin: 0 0 15px 0; opacity: 0.9;">🌐 www.ugttowa.org</p>
-          <p style="font-size: 12px; margin: 0; opacity: 0.7;">
-            © ${new Date().getFullYear()} UGT Towa. Todos los derechos reservados.
-          </p>
-        </div>
-      </div>
-    `;
   };
 
   const exportSubscribersToExcel = () => {
