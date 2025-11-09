@@ -3,15 +3,22 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Implementar editor visual WYSIWYG para newsletter",
-        "details": "Reemplazar el editor HTML manual por un editor visual más amigable para administradores que no sepan HTML. Evaluar opciones como Quill.js, TinyMCE o similar.",
+        "content": "Mejorar editor de newsletter con gestión por bloques",
+        "details": "Permitir añadir, quitar y reorganizar bloques de contenido de manera visual. Mejorar la experiencia de edición.",
         "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Arreglar funcionalidad checkbox de activación de afiliados",
-        "details": "En panel de administrador > gestión de usuarios, el checkbox para activar/desactivar usuarios como afiliados no funciona correctamente. No se marca al darle clic.",
+        "content": "Arreglar PDF en blanco en newsletter",
+        "details": "El PDF se genera en blanco. Revisar y corregir la función handleGeneratePDF.",
+        "status": "completed",
+        "priority": "high"
+      },
+      "3": {
+        "id": "3",
+        "content": "Corregir checkbox de afiliados para que persista cambios",
+        "details": "El checkbox se actualiza visualmente pero no persiste en la base de datos. Verificar la función toggleAffiliate y el estado real del usuario.",
         "status": "completed",
         "priority": "high"
       }

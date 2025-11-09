@@ -95,6 +95,10 @@ export default function AdminNewsletter() {
   
   // Estados para el editor visual
   const [showVisualEditor, setShowVisualEditor] = useState(true);
+  
+  // Estados para gestión de bloques
+  const [showBlockManager, setShowBlockManager] = useState(false);
+  const [blockElements, setBlockElements] = useState<Array<{id: string, type: string, content: string}>>([]);
 
   // Subscribers
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
@@ -423,6 +427,77 @@ export default function AdminNewsletter() {
     setShowVisualEditor(!showVisualEditor);
   };
 
+  // Funciones para gestión de bloques
+  const parseHtmlToBlocks = (html: string) => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    const elements = Array.from(tempDiv.children);
+    return elements.map((el, index) => ({
+      id: `block-${index}`,
+      type: el.tagName.toLowerCase(),
+      content: el.outerHTML
+    }));
+  };
+
+  const blocksToHtml = (blocks: Array<{id: string, type: string, content: string}>) => {
+    return blocks.map(block => block.content).join('\n');
+  };
+
+  const openBlockManager = () => {
+    const blocks = parseHtmlToBlocks(editedContent || '');
+    setBlockElements(blocks);
+    setShowBlockManager(true);
+  };
+
+  const addNewBlock = (type: string) => {
+    const templates = {
+      heading: '<h2>Nuevo Encabezado</h2>',
+      paragraph: '<p>Nuevo párrafo de texto...</p>',
+      image: '<img src="https://via.placeholder.com/400x200" alt="Imagen" style="max-width: 100%; height: auto;">',
+      list: '<ul><li>Elemento de lista 1</li><li>Elemento de lista 2</li><li>Elemento de lista 3</li></ul>',
+      table: '<table style="width: 100%; border-collapse: collapse;"><tr><th style="border: 1px solid #ddd; padding: 8px;">Columna 1</th><th style="border: 1px solid #ddd; padding: 8px;">Columna 2</th></tr><tr><td style="border: 1px solid #ddd; padding: 8px;">Dato 1</td><td style="border: 1px solid #ddd; padding: 8px;">Dato 2</td></tr></table>'
+    };
+    
+    const newBlock = {
+      id: `block-${Date.now()}`,
+      type,
+      content: templates[type as keyof typeof templates] || templates.paragraph
+    };
+    
+    setBlockElements(prev => [...prev, newBlock]);
+  };
+
+  const removeBlock = (id: string) => {
+    setBlockElements(prev => prev.filter(block => block.id !== id));
+  };
+
+  const moveBlock = (id: string, direction: 'up' | 'down') => {
+    setBlockElements(prev => {
+      const index = prev.findIndex(block => block.id === id);
+      if (index === -1) return prev;
+      
+      const newBlocks = [...prev];
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+      
+      if (targetIndex < 0 || targetIndex >= newBlocks.length) return prev;
+      
+      [newBlocks[index], newBlocks[targetIndex]] = [newBlocks[targetIndex], newBlocks[index]];
+      return newBlocks;
+    });
+  };
+
+  const saveBlocks = () => {
+    const newHtml = blocksToHtml(blockElements);
+    setEditedContent(newHtml);
+    setShowBlockManager(false);
+    
+    // Actualizar el editor visual
+    const contentEditable = document.querySelector('.visual-editor') as HTMLElement;
+    if (contentEditable) {
+      contentEditable.innerHTML = newHtml;
+    }
+  };
+
   const handleSaveEditedContent = async () => {
     if (!editingNewsletter) return;
 
@@ -456,8 +531,23 @@ export default function AdminNewsletter() {
     toast.info('Generando PDF... puede tardar unos segundos');
 
     try {
-      // Usar contenido editado si existe, sino usar el original
-      const htmlContent = editedContent || newsletter.content;
+      // CARGAR EL CONTENIDO MÁS RECIENTE DESDE LA BASE DE DATOS
+      const { data: newsletterData, error: loadError } = await supabase
+        .from('newsletters_sent')
+        .select('content')
+        .eq('id', newsletter.id)
+        .single();
+
+      if (loadError) throw loadError;
+
+      // Usar el contenido más reciente o el que se está editando actualmente
+      const htmlContent = editingNewsletter?.id === newsletter.id ? editedContent : (newsletterData?.content || newsletter.content);
+      
+      if (!htmlContent || htmlContent.trim() === '') {
+        throw new Error('El contenido del newsletter está vacío');
+      }
+      
+      console.log('Generando PDF con contenido:', htmlContent.substring(0, 200) + '...');
       
       // Crear elemento temporal con el HTML del newsletter
       const tempDiv = document.createElement('div');
@@ -472,6 +562,14 @@ export default function AdminNewsletter() {
       tempDiv.style.lineHeight = '1.6';
       document.body.appendChild(tempDiv);
 
+      // Verificar que hay contenido visible
+      const textContent = tempDiv.textContent?.trim();
+      if (!textContent) {
+        throw new Error('No se encontró contenido de texto en el newsletter');
+      }
+
+      console.log('Contenido de texto encontrado:', textContent.substring(0, 100) + '...');
+
       // Asegurar que las imágenes del QR se carguen antes de capturar
       const qrImages = tempDiv.querySelectorAll('img');
       await Promise.all(Array.from(qrImages).map(img => {
@@ -480,26 +578,39 @@ export default function AdminNewsletter() {
             resolve(true);
           } else {
             img.onload = () => resolve(true);
-            img.onerror = () => resolve(true); // Continuar aunque falle
+            img.onerror = () => {
+              console.warn('Error cargando imagen:', img.src);
+              resolve(true); // Continuar aunque falle
+            };
             // Timeout después de 5 segundos
-            setTimeout(() => resolve(true), 5000);
+            setTimeout(() => {
+              console.warn('Timeout cargando imagen:', img.src);
+              resolve(true);
+            }, 5000);
           }
         });
       }));
 
       // Esperar un poco más para asegurar carga de imágenes
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
       // Convertir a canvas
       const canvas = await html2canvas(tempDiv, {
-        scale: 1.5, // Reducido para evitar problemas de tamaño
+        scale: 1.2, // Reducido para evitar problemas de tamaño
         useCORS: true,
-        logging: false,
+        logging: true, // Habilitar logs para debug
         backgroundColor: '#ffffff',
         allowTaint: true,
         foreignObjectRendering: true,
-        imageTimeout: 5000
+        imageTimeout: 5000,
+        removeContainer: false
       });
+
+      console.log('Canvas generado:', { width: canvas.width, height: canvas.height });
+
+      if (canvas.width === 0 || canvas.height === 0) {
+        throw new Error('El canvas se generó con tamaño cero');
+      }
 
       // Crear PDF
       const pdf = new jsPDF({
@@ -1300,12 +1411,22 @@ export default function AdminNewsletter() {
                     >
                       {showVisualEditor ? 'HTML' : 'Visual'}
                     </button>
+                    <button
+                      onClick={openBlockManager}
+                      className="px-3 py-1 bg-blue-500 text-white border rounded hover:bg-blue-600 text-sm"
+                      title="Gestionar bloques de contenido"
+                    >
+                      Bloques
+                    </button>
                   </div>
                 </div>
                 
                 <p className="text-xs text-gray-500 mt-2">
                   <strong>Editor Visual:</strong> Use los botones para formatear el texto sin necesidad de HTML. 
                   {showVisualEditor ? ' Cambie a HTML para ver el código.' : ' Está editando directamente el código HTML.'}
+                </p>
+                <p className="text-xs text-blue-600 mt-1">
+                  <strong>Tip:</strong> Use el botón "Bloques" para añadir, quitar y reorganizar secciones completas de contenido.
                 </p>
               </div>
               
@@ -1360,6 +1481,135 @@ export default function AdminNewsletter() {
                 >
                   <Edit className="w-4 h-4" />
                   {loading ? 'Guardando...' : 'Guardar Cambios'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Block Manager Modal */}
+        {showBlockManager && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60] p-4">
+            <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+              <div className="p-4 border-b flex items-center justify-between">
+                <h3 className="text-lg font-semibold">Gestor de Bloques de Contenido</h3>
+                <button
+                  onClick={() => setShowBlockManager(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <span className="sr-only">Cerrar</span>
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              {/* Toolbar para añadir bloques */}
+              <div className="p-4 border-b bg-gray-50">
+                <div className="flex flex-wrap gap-2 items-center">
+                  <span className="text-sm font-medium text-gray-700 mr-2">Añadir bloque:</span>
+                  <button
+                    onClick={() => addNewBlock('heading')}
+                    className="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-sm"
+                  >
+                    Encabezado
+                  </button>
+                  <button
+                    onClick={() => addNewBlock('paragraph')}
+                    className="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-sm"
+                  >
+                    Párrafo
+                  </button>
+                  <button
+                    onClick={() => addNewBlock('image')}
+                    className="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-sm"
+                  >
+                    Imagen
+                  </button>
+                  <button
+                    onClick={() => addNewBlock('list')}
+                    className="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-sm"
+                  >
+                    Lista
+                  </button>
+                  <button
+                    onClick={() => addNewBlock('table')}
+                    className="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-sm"
+                  >
+                    Tabla
+                  </button>
+                </div>
+              </div>
+              
+              {/* Lista de bloques */}
+              <div className="flex-1 overflow-auto p-4">
+                <div className="space-y-4">
+                  {blockElements.length === 0 ? (
+                    <div className="text-center py-12 text-gray-500">
+                      <p>No hay bloques de contenido.</p>
+                      <p className="text-sm mt-1">Usa los botones de arriba para añadir bloques.</p>
+                    </div>
+                  ) : (
+                    blockElements.map((block, index) => (
+                      <div key={block.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-2">
+                            <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">
+                              {block.type.toUpperCase()}
+                            </span>
+                            <span className="text-sm text-gray-500">Bloque {index + 1}</span>
+                          </div>
+                          <div className="flex gap-1">
+                            <button
+                              onClick={() => moveBlock(block.id, 'up')}
+                              disabled={index === 0}
+                              className="p-1 text-gray-600 hover:text-gray-800 disabled:text-gray-400"
+                              title="Mover hacia arriba"
+                            >
+                              ↑
+                            </button>
+                            <button
+                              onClick={() => moveBlock(block.id, 'down')}
+                              disabled={index === blockElements.length - 1}
+                              className="p-1 text-gray-600 hover:text-gray-800 disabled:text-gray-400"
+                              title="Mover hacia abajo"
+                            >
+                              ↓
+                            </button>
+                            <button
+                              onClick={() => removeBlock(block.id)}
+                              className="p-1 text-red-600 hover:text-red-800"
+                              title="Eliminar bloque"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        </div>
+                        <div className="bg-white p-3 rounded border text-sm">
+                          <div dangerouslySetInnerHTML={{ __html: block.content }} />
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+              
+              {/* Footer con botones */}
+              <div className="p-4 border-t bg-gray-50 flex justify-end gap-3">
+                <button
+                  onClick={() => setShowBlockManager(false)}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={saveBlocks}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Aplicar Cambios
                 </button>
               </div>
             </div>

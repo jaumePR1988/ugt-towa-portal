@@ -35,30 +35,52 @@ export default function AdminAfiliados() {
     // Actualizar estado local inmediatamente para feedback visual
     setUpdatingUsers(prev => new Set(prev).add(userId));
     
+    const newStatus = !currentStatus;
+    
     // Actualizar la lista local inmediatamente
     setUsers(prevUsers => 
       prevUsers.map(user => 
         user.id === userId 
-          ? { ...user, is_affiliate: !currentStatus }
+          ? { ...user, is_affiliate: newStatus }
           : user
       )
     );
     
+    console.log(`Actualizando usuario ${userId} de ${currentStatus} a ${newStatus}`);
+    
     try {
-      const newStatus = !currentStatus;
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .update({ is_affiliate: newStatus })
-        .eq('id', userId);
+        .eq('id', userId)
+        .select('is_affiliate');
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error de Supabase:', error);
+        throw error;
+      }
 
+      console.log('Actualización exitosa en BD:', data);
+      
+      // Verificar que el cambio se persistió correctamente
+      if (data && data.length > 0) {
+        const updatedUser = data[0];
+        if (updatedUser.is_affiliate !== newStatus) {
+          throw new Error('El cambio no se persistió correctamente en la base de datos');
+        }
+      }
+      
       toast.success(newStatus ? 'Usuario marcado como afiliado' : 'Afiliación removida');
-      // Recargar la lista para asegurar consistencia
-      loadUsers();
+      
+      // Recargar la lista para asegurar consistencia con la BD
+      setTimeout(() => {
+        loadUsers();
+      }, 500); // Pequeño delay para asegurar que la BD se actualizó
+      
     } catch (error) {
       console.error('Error:', error);
-      toast.error('Error al actualizar el estado de afiliación');
+      toast.error('Error al actualizar el estado de afiliación: ' + (error instanceof Error ? error.message : 'Error desconocido'));
+      
       // Revertir cambios locales en caso de error
       setUsers(prevUsers => 
         prevUsers.map(user => 
