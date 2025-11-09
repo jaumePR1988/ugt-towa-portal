@@ -472,7 +472,7 @@ export default function AdminNewsletter() {
     if (!confirm(`¿Generar PDF del newsletter "${newsletter.subject}"?`)) return;
 
     setLoading(true);
-    toast.info('Generando PDF... puede tardar unos segundos');
+    toast.info('Generando PDF profesional...');
 
     try {
       // CARGAR EL CONTENIDO MÁS RECIENTE DESDE LA BASE DE DATOS
@@ -490,34 +490,32 @@ export default function AdminNewsletter() {
       if (!htmlContent || htmlContent.trim() === '') {
         throw new Error('El contenido del newsletter está vacío');
       }
+
+      // Crear un documento HTML profesional completo
+      const professionalHtml = createProfessionalNewsletterHTML(newsletter.subject, htmlContent);
       
-      console.log('Generando PDF con contenido:', htmlContent.substring(0, 200) + '...');
-      
-      // Crear elemento temporal con el HTML del newsletter
+      // Crear elemento temporal con el HTML profesional
       const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = htmlContent;
+      tempDiv.innerHTML = professionalHtml;
       tempDiv.style.position = 'absolute';
       tempDiv.style.left = '-9999px';
       tempDiv.style.top = '0';
-      tempDiv.style.width = '800px'; // Ancho fijo
-      tempDiv.style.maxWidth = '800px';
+      tempDiv.style.width = '794px'; // A4 width at 96 DPI
+      tempDiv.style.maxWidth = '794px';
       tempDiv.style.background = 'white';
-      tempDiv.style.padding = '30px';
-      tempDiv.style.boxSizing = 'border-box';
-      tempDiv.style.fontFamily = 'Arial, sans-serif';
-      tempDiv.style.fontSize = '14px'; // Tamaño de fuente más grande
-      tempDiv.style.lineHeight = '1.6'; // Mayor espaciado entre líneas
-      tempDiv.style.color = '#000';
-      tempDiv.style.textAlign = 'left';
-      tempDiv.style.margin = '0 auto';
-      
-      // Estilos adicionales para mejorar el renderizado
-      tempDiv.style.overflow = 'visible';
-      tempDiv.style.wordWrap = 'break-word';
-      tempDiv.style.whiteSpace = 'normal';
+      tempDiv.style.fontFamily = 'Georgia, "Times New Roman", serif';
+      tempDiv.style.color = '#2c3e50';
+      tempDiv.style.lineHeight = '1.6';
+      tempDiv.style.margin = '0';
+      tempDiv.style.padding = '0';
+      tempDiv.style.overflow = 'hidden';
+      tempDiv.style.visibility = 'hidden';
       tempDiv.style.display = 'block';
       
       document.body.appendChild(tempDiv);
+
+      // Esperar para asegurar que todo se renderice completamente
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
       // Verificar que hay contenido visible
       const textContent = tempDiv.textContent?.trim();
@@ -525,84 +523,91 @@ export default function AdminNewsletter() {
         throw new Error('No se encontró contenido de texto en el newsletter');
       }
 
-      console.log('Contenido de texto encontrado:', textContent.substring(0, 100) + '...');
-
-      // Espera para asegurar que todo se renderice
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Convertir a canvas con configuraciones mejoradas
+      // Convertir a canvas con configuraciones profesionales
       const canvas = await html2canvas(tempDiv, {
-        scale: 2, // Escala más alta para mejor calidad
+        scale: 2.5, // Alta resolución para calidad profesional
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
         allowTaint: true,
-        foreignObjectRendering: false,
+        foreignObjectRendering: true, // Habilitado para mejor renderizado
         imageTimeout: 0,
         removeContainer: false,
-        width: 800,
+        width: 794,
         height: undefined,
         scrollX: 0,
         scrollY: 0,
-        windowWidth: 800,
-        windowHeight: 1200,
+        windowWidth: 1200,
+        windowHeight: 1600,
         ignoreElements: (element) => {
           // Ignorar elementos que puedan causar problemas
           return element.tagName === 'SCRIPT' || element.tagName === 'STYLE';
         }
       });
 
-      console.log('Canvas generado:', { width: canvas.width, height: canvas.height });
-
-      if (canvas.width === 0 || canvas.height === 0) {
-        throw new Error('El canvas se generó con tamaño cero');
-      }
-
-      // Crear PDF con mejor configuración
+      // Crear PDF con configuración profesional
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
-        format: 'a4'
+        format: 'a4',
+        compress: true,
+        putOnlyUsedFonts: true
       });
 
-      const imgData = canvas.toDataURL('image/png', 1.0);
+      const imgData = canvas.toDataURL('image/png', 0.95);
       const pageWidth = 210; // A4 width in mm
       const pageHeight = 297; // A4 height in mm
-      const margin = 15; // Margen más amplio
+      const margin = 12; // Margen profesional
       const availableWidth = pageWidth - (2 * margin);
+      const availableHeight = pageHeight - (2 * margin);
       
       // Calcular dimensiones manteniendo proporción
       const imgAspectRatio = canvas.width / canvas.height;
-      const imgHeight = availableWidth / imgAspectRatio;
+      const scaledHeight = availableWidth / imgAspectRatio;
       
-      // Si el contenido cabe en una página
-      if (imgHeight <= (pageHeight - 2 * margin)) {
-        pdf.addImage(imgData, 'PNG', margin, margin, availableWidth, imgHeight);
+      if (scaledHeight <= availableHeight) {
+        // Contenido cabe en una página
+        pdf.addImage(imgData, 'PNG', margin, margin, availableWidth, scaledHeight);
       } else {
-        // Múltiples páginas - mejorar el manejo
-        let yPosition = margin;
-        let remainingHeight = imgHeight;
-        let page = 1;
+        // Contenido requiere múltiples páginas
+        let yOffset = 0;
+        let currentPage = 1;
         
-        while (remainingHeight > 0) {
-          if (page > 1) {
+        while (yOffset < canvas.height) {
+          if (currentPage > 1) {
             pdf.addPage();
           }
           
-          const currentPageHeight = pageHeight - 2 * margin;
-          const currentImgHeight = Math.min(remainingHeight, currentPageHeight);
+          const remainingHeight = canvas.height - yOffset;
+          const pageImageHeight = Math.min(remainingHeight, canvas.height * (availableHeight / scaledHeight));
+          const sourceY = yOffset;
+          const sourceHeight = pageImageHeight;
           
-          // Para contenido que se divide en páginas, usar la imagen completa
-          pdf.addImage(imgData, 'PNG', margin, yPosition, availableWidth, currentImgHeight);
+          // Crear canvas para esta página específica
+          const pageCanvas = document.createElement('canvas');
+          const pageCtx = pageCanvas.getContext('2d')!;
+          pageCanvas.width = canvas.width;
+          pageCanvas.height = sourceHeight;
           
-          remainingHeight -= currentPageHeight;
-          yPosition = margin;
-          page++;
+          // Copiar la porción de la imagen
+          pageCtx.drawImage(
+            canvas,
+            0, sourceY, canvas.width, sourceHeight,
+            0, 0, canvas.width, sourceHeight
+          );
+          
+          const pageImgData = pageCanvas.toDataURL('image/png', 0.95);
+          const pageScaledHeight = (sourceHeight / canvas.height) * scaledHeight;
+          
+          pdf.addImage(pageImgData, 'PNG', margin, margin, availableWidth, pageScaledHeight);
+          
+          yOffset += sourceHeight;
+          currentPage++;
         }
       }
 
       // Descargar PDF
-      const fileName = `newsletter-ugt-towa-${new Date().toISOString().split('T')[0]}.pdf`;
+      const fileName = `Newsletter-UGT-Towa-${new Date().toISOString().split('T')[0]}.pdf`;
       pdf.save(fileName);
 
       // Limpiar
@@ -621,7 +626,7 @@ export default function AdminNewsletter() {
 
       if (updateError) throw updateError;
 
-      toast.success('PDF generado y descargado exitosamente');
+      toast.success('✅ PDF profesional generado y descargado exitosamente');
       loadNewsletters();
       loadDashboardStats();
     } catch (error) {
@@ -630,6 +635,220 @@ export default function AdminNewsletter() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const createProfessionalNewsletterHTML = (subject: string, content: string) => {
+    return `
+      <!DOCTYPE html>
+      <html lang="es">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${subject}</title>
+        <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          
+          body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.7;
+            color: #2c3e50;
+            background: #ffffff;
+            max-width: 794px;
+            margin: 0 auto;
+            padding: 0;
+          }
+          
+          .newsletter-container {
+            background: #ffffff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            min-height: 1123px;
+            position: relative;
+          }
+          
+          .header {
+            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+            color: white;
+            padding: 40px 60px 30px 60px;
+            text-align: center;
+            border-bottom: 4px solid #a91b2c;
+          }
+          
+          .header h1 {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+          }
+          
+          .header .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            font-style: italic;
+          }
+          
+          .header .date {
+            margin-top: 15px;
+            font-size: 14px;
+            opacity: 0.8;
+          }
+          
+          .content-area {
+            padding: 40px 60px;
+            background: #ffffff;
+          }
+          
+          .content-area h1,
+          .content-area h2 {
+            color: #c41e3a;
+            margin-bottom: 20px;
+            font-weight: bold;
+          }
+          
+          .content-area h1 {
+            font-size: 28px;
+            border-bottom: 3px solid #c41e3a;
+            padding-bottom: 10px;
+          }
+          
+          .content-area h2 {
+            font-size: 24px;
+            margin-top: 30px;
+          }
+          
+          .content-area p {
+            margin-bottom: 18px;
+            text-align: justify;
+            font-size: 16px;
+            line-height: 1.8;
+          }
+          
+          .content-area ul,
+          .content-area ol {
+            margin: 20px 0;
+            padding-left: 30px;
+          }
+          
+          .content-area li {
+            margin-bottom: 10px;
+            font-size: 16px;
+            line-height: 1.7;
+          }
+          
+          .content-area strong {
+            color: #c41e3a;
+            font-weight: bold;
+          }
+          
+          .content-area em {
+            font-style: italic;
+            color: #34495e;
+          }
+          
+          .content-area u {
+            text-decoration: underline;
+            text-decoration-color: #c41e3a;
+            text-decoration-thickness: 2px;
+          }
+          
+          .content-area a {
+            color: #c41e3a;
+            text-decoration: none;
+            border-bottom: 1px solid #c41e3a;
+          }
+          
+          .content-area a:hover {
+            background-color: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 3px;
+          }
+          
+          .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px 60px;
+            text-align: center;
+            margin-top: 40px;
+          }
+          
+          .footer h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #ecf0f1;
+          }
+          
+          .footer p {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+          }
+          
+          .signature {
+            border-top: 2px solid #c41e3a;
+            padding-top: 20px;
+            margin-top: 30px;
+            text-align: center;
+            font-style: italic;
+            color: #7f8c8d;
+          }
+          
+          /* Espaciado adicional para mejorar la legibilidad */
+          .content-section {
+            margin-bottom: 40px;
+          }
+          
+          .highlight-box {
+            background: #f8f9fa;
+            border-left: 4px solid #c41e3a;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+          }
+          
+          .page-break {
+            page-break-before: always;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="newsletter-container">
+          <div class="header">
+            <h1>NEWSLETTER SINDICAL</h1>
+            <div class="subtitle">UGT Towa - Comunicación y Noticias</div>
+            <div class="date">${new Date().toLocaleDateString('es-ES', { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            })}</div>
+          </div>
+          
+          <div class="content-area">
+            <div class="content-section">
+              ${content}
+            </div>
+            
+            <div class="signature">
+              <p><strong>UGT Towa</strong></p>
+              <p>Sindicato de Trabajadores Unidos</p>
+            </div>
+          </div>
+          
+          <div class="footer">
+            <h3>Contacto UGT Towa</h3>
+            <p>📧 info@ugttowa.org</p>
+            <p>📞 +34 XXX XXX XXX</p>
+            <p>🌐 www.ugttowa.org</p>
+            <p style="margin-top: 15px; font-size: 12px;">
+              © ${new Date().getFullYear()} UGT Towa. Todos los derechos reservados.
+            </p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
   };
 
   const exportSubscribersToExcel = () => {
