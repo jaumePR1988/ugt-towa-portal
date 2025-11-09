@@ -224,7 +224,7 @@ export default function VotacionesPage() {
                 {displayPolls.map((poll) => {
                   const hasVoted = !!userVotes[poll.id];
                   const pollVotesCount = (votes[poll.id] || []).length;
-                  const options = JSON.parse(poll.options as any) as string[];
+                  const options = poll.options as string[];
 
                   return (
                     <div key={poll.id} className="bg-white rounded-lg shadow-md p-6">

@@ -1,3 +1,3 @@
-2025/11/09-09:10:36.308 661 Reusing MANIFEST /workspace/browser/user_data/Default/Service Worker/Database/MANIFEST-000001
-2025/11/09-09:10:36.327 661 Recovering log #3
-2025/11/09-09:10:36.329 661 Reusing old log /workspace/browser/user_data/Default/Service Worker/Database/000003.log 
+2025/11/09-12:49:19.962 54c Reusing MANIFEST /workspace/browser/user_data/Default/Service Worker/Database/MANIFEST-000001
+2025/11/09-12:49:19.988 54c Recovering log #3
+2025/11/09-12:49:19.991 54c Reusing old log /workspace/browser/user_data/Default/Service Worker/Database/000003.log 

@@ -79,7 +79,7 @@ export default function AdminVotacionesInternas() {
         .insert({
           question: question.trim(),
           description: description.trim() || null,
-          options: JSON.stringify(validOptions),
+          options: validOptions,
           start_date: startDate,
           end_date: endDate,
           is_active: true,
@@ -304,7 +304,7 @@ export default function AdminVotacionesInternas() {
           ) : (
             <div className="space-y-4">
               {polls.map((poll) => {
-                const options = JSON.parse(poll.options as any) as string[];
+                const options = poll.options as string[];
                 const isActive = new Date() >= new Date(poll.start_date) && new Date() <= new Date(poll.end_date);
 
                 return (
