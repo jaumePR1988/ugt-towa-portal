@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { LogOut, User, LayoutDashboard } from 'lucide-react';
 import { toast } from 'sonner';
@@ -7,6 +7,7 @@ import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
   const { user, signOut, isAdmin, isAffiliate } = useAuth();
+  const location = useLocation();
 
   const handleSignOut = async () => {
     try {
@@ -55,7 +56,14 @@ export default function Navbar() {
               Encuestas
             </Link>
             {isAffiliate && (
-              <Link to="/afiliados/dashboard" className="text-gray-700 hover:text-red-600 transition font-semibold">
+              <Link 
+                to="/afiliados/dashboard" 
+                className={`${
+                  location.pathname.startsWith('/afiliados') 
+                    ? 'text-red-600 font-semibold' 
+                    : 'text-gray-700 hover:text-red-600 transition'
+                }`}
+              >
                 Afiliados
               </Link>
             )}

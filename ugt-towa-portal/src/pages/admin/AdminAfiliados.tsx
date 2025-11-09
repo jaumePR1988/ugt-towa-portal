@@ -30,16 +30,17 @@ export default function AdminAfiliados() {
     }
   }
 
-  async function toggleAffiliate(userId: string, currentStatus: boolean) {
+  async function toggleAffiliate(userId: string, currentStatus: boolean | null) {
     try {
+      const newStatus = !currentStatus;
       const { error } = await supabase
         .from('profiles')
-        .update({ is_affiliate: !currentStatus })
+        .update({ is_affiliate: newStatus })
         .eq('id', userId);
 
       if (error) throw error;
 
-      toast.success(!currentStatus ? 'Usuario marcado como afiliado' : 'Afiliación removida');
+      toast.success(newStatus ? 'Usuario marcado como afiliado' : 'Afiliación removida');
       loadUsers();
     } catch (error) {
       console.error('Error:', error);
@@ -177,8 +178,8 @@ export default function AdminAfiliados() {
                         <label className="flex items-center cursor-pointer">
                           <input
                             type="checkbox"
-                            checked={user.is_affiliate || false}
-                            onChange={() => toggleAffiliate(user.id, user.is_affiliate || false)}
+                            checked={!!user.is_affiliate}
+                            onChange={() => toggleAffiliate(user.id, user.is_affiliate)}
                             className="h-5 w-5 text-red-600 focus:ring-red-500 border-gray-300 rounded cursor-pointer"
                           />
                           <span className="ml-2 text-sm text-gray-700">
