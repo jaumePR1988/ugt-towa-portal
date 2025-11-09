@@ -539,6 +539,32 @@ Grid 2 columnas:
 
 **Estado Final**: AJUSTES DE DISENO COMPLETADOS
 
+## Añadir Bandera UGT a la Galería - 09-Nov-2025 04:02
+### Imagen de Bandera UGT Añadida
+**Estado**: ✅ COMPLETADO
+
+**Imagen Añadida:**
+- Archivo: Bandera-logo-nuevo.jpg (150.18 KB)
+- Subida a: event-images/bandera-ugt-2024.jpg
+- URL: https://zaxdscclkeytakcowgww.supabase.co/storage/v1/object/public/event-images/bandera-ugt-2024.jpg
+- ID de registro: 314c560e-16fc-4fd0-8490-3b915a39b72e
+
+**Datos del Registro:**
+- Título: "Bandera de la UGT: Símbolo de Unidad y Lucha Obrera"
+- Descripción completa con contexto histórico y simbólico
+- Fecha del evento: 2024-11-09
+- Display order: 1 (primera posición)
+- Estado: Activo
+
+**Verificaciones Completadas:**
+- [x] Imagen subida correctamente al Storage (HTTP 200)
+- [x] Registro añadido a la base de datos con todos los campos
+- [x] URL de imagen accesible públicamente
+- [x] Galería ahora tiene 4 imágenes en total
+- [x] Bandera UGT aparece como primera (display_order = 1, fecha más reciente)
+
+**Estado Final**: IMAGEN DISPONIBLE EN LA GALERÍA ✅
+
 ## Reducción Tamaño Galería - 09-Nov-2025 03:37
 ### Ajuste de Tamaño en ImageGallery
 **Estado**: EN DESARROLLO
