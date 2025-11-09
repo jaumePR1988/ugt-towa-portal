@@ -12,6 +12,7 @@ interface AuthContextType {
   resetPassword: (email: string) => Promise<void>;
   updatePassword: (newPassword: string) => Promise<void>;
   isAdmin: boolean;
+  isAffiliate: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -112,9 +113,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const isAdmin = profile?.role === 'admin';
+  const isAffiliate = profile?.is_affiliate === true;
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, signIn, signUp, signOut, resetPassword, updatePassword, isAdmin }}>
+    <AuthContext.Provider value={{ user, profile, loading, signIn, signUp, signOut, resetPassword, updatePassword, isAdmin, isAffiliate }}>
       {children}
     </AuthContext.Provider>
   );

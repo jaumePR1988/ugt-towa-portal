@@ -565,6 +565,114 @@ Grid 2 columnas:
 
 **Estado Final**: IMAGEN DISPONIBLE EN LA GALERÍA ✅
 
+## Sistema de Afiliados Completo - 09-Nov-2025 18:04
+### Implementación de Funcionalidades Exclusivas para Afiliados
+**Estado**: ✅ COMPLETADO Y DESPLEGADO
+
+**URL de Producción**: https://zjkhcshraqac.space.minimax.io
+
+**Backend Completado:**
+- [x] Campo is_affiliate añadido a tabla profiles
+- [x] Tabla syndical_documents creada (documentos exclusivos)
+- [x] Tabla internal_polls creada (votaciones internas)
+- [x] Tabla poll_votes creada (registro de votos)
+- [x] Tabla affiliate_benefits creada (beneficios y descuentos)
+- [x] RLS configurado para todas las tablas
+- [x] Storage bucket syndical-documents creado (10MB, PDF/DOC/XLS)
+- [x] Datos de ejemplo insertados:
+  * Usuario admin (jpedragosa@towapharmaceutical.com) marcado como afiliado
+  * 4 documentos sindicales de ejemplo
+  * 2 votaciones internas activas
+  * 4 beneficios para afiliados
+
+**Frontend Completado:**
+- [x] AuthContext actualizado con isAffiliate
+- [x] Tipos actualizados en supabase.ts
+- [x] Navbar actualizado (muestra "Afiliados" solo a usuarios afiliados)
+- [x] Páginas de Afiliados creadas:
+  * AffiliateDashboard.tsx - Panel con estadísticas y accesos rápidos
+  * BibliotecaPage.tsx - Documentos sindicales con búsqueda y filtros
+  * VotacionesPage.tsx - Votaciones con gráficos Chart.js en tiempo real
+  * BeneficiosPage.tsx - Beneficios con códigos de descuento copiables
+- [x] Páginas Admin creadas:
+  * AdminAfiliados.tsx - Gestión de usuarios afiliados (checkbox)
+  * AdminDocumentosSindicales.tsx - Subida y gestión de documentos
+  * AdminVotacionesInternas.tsx - Crear votaciones con opciones múltiples
+  * AdminBeneficiosUGT.tsx - Gestionar empresas colaboradoras
+- [x] AffiliateRoute component creado para proteger rutas
+- [x] Rutas añadidas en App.tsx (4 afiliados + 4 admin)
+- [x] AdminDashboard actualizado con 4 nuevos enlaces
+- [x] Build exitoso (2689 módulos transformados)
+- [x] Desplegado en producción
+
+**Funcionalidades Implementadas:**
+
+1. **Sistema de Control de Acceso:**
+   - Campo is_affiliate en profiles
+   - Panel admin para marcar usuarios como afiliados
+   - Verificación en todas las rutas de afiliados
+   - Menú "Afiliados" solo visible para afiliados
+
+2. **Panel de Afiliado (/afiliados/dashboard):**
+   - Dashboard con información personal completa
+   - Estadísticas: votaciones participadas, beneficios disponibles, documentos
+   - Navegación lateral exclusiva a todas las secciones
+   - Accesos rápidos visuales con iconos
+
+3. **Biblioteca de Documentos (/afiliados/biblioteca):**
+   - Tabla syndical_documents con categorías (convenios, protocolos, normativa, formularios)
+   - Panel admin para subir/gestionar documentos (PDF, DOC, XLS hasta 10MB)
+   - Búsqueda por título y filtros por categoría
+   - Descarga exclusiva para afiliados autenticados
+   - 4 documentos de ejemplo precargados
+
+4. **Sistema de Votaciones Internas (/afiliados/votaciones):**
+   - Tabla internal_polls con opciones JSON y fechas
+   - Tabla poll_votes con constraint unique (previene doble votación)
+   - Panel admin para crear votaciones con fechas y opciones múltiples
+   - Gráficos de resultados en tiempo real (Chart.js Pie)
+   - Pestañas "Activas" y "Cerradas"
+   - 2 votaciones activas de ejemplo
+
+5. **Beneficios y Descuentos (/afiliados/beneficios):**
+   - Tabla affiliate_benefits con códigos y categorías
+   - Panel admin para gestionar empresas colaboradoras
+   - Catálogo visual con descuentos y porcentajes
+   - Botón copiar código al portapapeles (funcional)
+   - Filtros por categoría (deporte, salud, cultura, restauración)
+   - 4 beneficios de ejemplo con códigos reales
+
+**Rutas del Sistema:**
+
+**Rutas Públicas:**
+- / - HomePage con bandera UGT
+- /login - Login
+- /register - Registro
+
+**Rutas de Afiliados (requieren autenticación + is_affiliate=true):**
+- /afiliados/dashboard - Panel principal de afiliado
+- /afiliados/biblioteca - Documentos sindicales
+- /afiliados/votaciones - Votaciones internas
+- /afiliados/beneficios - Beneficios y descuentos
+
+**Rutas Admin (requieren autenticación + role='admin'):**
+- /admin/afiliados - Gestión de usuarios afiliados
+- /admin/documentos-sindicales - Gestión de documentos
+- /admin/votaciones-internas - Gestión de votaciones
+- /admin/beneficios-ugt - Gestión de beneficios
+
+**Credenciales de Testing:**
+- Email: jpedragosa@towapharmaceutical.com
+- Password: towa2022
+- Este usuario es admin Y afiliado (tiene acceso completo)
+
+**Archivos del Proyecto:**
+Frontend: 9 archivos nuevos (2257 líneas de código)
+Backend: 4 tablas + 1 storage bucket + RLS policies
+Build: dist/ (2689 módulos, 545KB gzip)
+
+**Estado Final**: SISTEMA COMPLETAMENTE FUNCIONAL Y LISTO PARA PRODUCCIÓN ✅
+
 ## Bandera UGT en Hero Section - 09-Nov-2025 17:08
 ### Bandera UGT Colocada en Hero Section
 **Estado**: ✅ COMPLETADO Y DESPLEGADO

@@ -33,10 +33,21 @@ import AdminNewsletter from './pages/admin/AdminNewsletter';
 import AdminCategoriasDocumentos from './pages/admin/AdminCategoriasDocumentos';
 import AdminQR from './pages/admin/AdminQR';
 import AdminGaleria from './pages/admin/AdminGaleria';
+import AdminAfiliados from './pages/admin/AdminAfiliados';
+import AdminDocumentosSindicales from './pages/admin/AdminDocumentosSindicales';
+import AdminVotacionesInternas from './pages/admin/AdminVotacionesInternas';
+import AdminBeneficiosUGT from './pages/admin/AdminBeneficiosUGT';
+
+// Affiliate Pages
+import AffiliateDashboard from './pages/affiliates/AffiliateDashboard';
+import BibliotecaPage from './pages/affiliates/BibliotecaPage';
+import VotacionesPage from './pages/affiliates/VotacionesPage';
+import BeneficiosPage from './pages/affiliates/BeneficiosPage';
 
 // Components
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
+import AffiliateRoute from './components/AffiliateRoute';
 
 import './index.css';
 
@@ -73,6 +84,40 @@ function App() {
               <PrivateRoute>
                 <DocumentosPage />
               </PrivateRoute>
+            }
+          />
+          
+          {/* Affiliate Routes */}
+          <Route
+            path="/afiliados/dashboard"
+            element={
+              <AffiliateRoute>
+                <AffiliateDashboard />
+              </AffiliateRoute>
+            }
+          />
+          <Route
+            path="/afiliados/biblioteca"
+            element={
+              <AffiliateRoute>
+                <BibliotecaPage />
+              </AffiliateRoute>
+            }
+          />
+          <Route
+            path="/afiliados/votaciones"
+            element={
+              <AffiliateRoute>
+                <VotacionesPage />
+              </AffiliateRoute>
+            }
+          />
+          <Route
+            path="/afiliados/beneficios"
+            element={
+              <AffiliateRoute>
+                <BeneficiosPage />
+              </AffiliateRoute>
             }
           />
           
@@ -194,6 +239,38 @@ function App() {
             element={
               <AdminRoute>
                 <AdminGaleria />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/afiliados"
+            element={
+              <AdminRoute>
+                <AdminAfiliados />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/documentos-sindicales"
+            element={
+              <AdminRoute>
+                <AdminDocumentosSindicales />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/votaciones-internas"
+            element={
+              <AdminRoute>
+                <AdminVotacionesInternas />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/beneficios-ugt"
+            element={
+              <AdminRoute>
+                <AdminBeneficiosUGT />
               </AdminRoute>
             }
           />

@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
-  const { user, signOut, isAdmin } = useAuth();
+  const { user, signOut, isAdmin, isAffiliate } = useAuth();
 
   const handleSignOut = async () => {
     try {
@@ -54,6 +54,11 @@ export default function Navbar() {
             <Link to="/encuestas" className="text-gray-700 hover:text-red-600 transition">
               Encuestas
             </Link>
+            {isAffiliate && (
+              <Link to="/afiliados/dashboard" className="text-gray-700 hover:text-red-600 transition font-semibold">
+                Afiliados
+              </Link>
+            )}
             <Link to="/newsletter" className="text-gray-700 hover:text-red-600 transition">
               Newsletter
             </Link>
