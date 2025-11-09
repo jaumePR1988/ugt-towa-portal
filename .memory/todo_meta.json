@@ -3,37 +3,16 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Implementar sistema de control de acceso para afiliados",
-        "details": "1. Modificar base de datos usuarios para añadir campo 'is_affiliate' boolean\n2. Actualizar panel admin para gestionar accesos con checkbox\n3. Modificar autenticación para mostrar contenido exclusivo solo a afiliados\n4. Actualizar navbar para mostrar enlaces exclusivos",
-        "status": "completed",
+        "content": "Corregir Dashboard de Afiliado",
+        "details": "1. Verificar por qué no aparece la página /afiliados/dashboard\n2. Comprobar rutas y componentes\n3. Asegurar que el dashboard cargue correctamente",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Panel de Afiliado con Dashboard de Datos",
-        "details": "1. Crear página /afiliados/dashboard\n2. Mostrar: datos personales, estado afiliación, estadísticas básicas\n3. Tarjetas con: fecha afiliación, sector, empresa, tiempo como afiliado\n4. Diseño responsive con navegación exclusiva",
-        "status": "completed",
-        "priority": "high"
-      },
-      "3": {
-        "id": "3",
-        "content": "Biblioteca de Documentos Sindicales",
-        "details": "1. Crear tabla 'syndical_documents' en base de datos\n2. Panel admin para subir/gestionar documentos (PDF, DOC)\n3. Página /afiliados/biblioteca con descarga exclusiva\n4. Categorías: convenios, protocolos, normativa, formularios\n5. Sistema de búsqueda y filtros",
-        "status": "completed",
-        "priority": "high"
-      },
-      "4": {
-        "id": "4",
-        "content": "Sistema de Votaciones Internas",
-        "details": "1. Crear tablas 'internal_polls' y 'poll_votes'\n2. Panel admin para crear votaciones (pregunta, opciones, fechas)\n3. Página /afiliados/votaciones para participar\n4. Gráficos de resultados en tiempo real\n5. Prevent doble votación por usuario",
-        "status": "completed",
-        "priority": "high"
-      },
-      "5": {
-        "id": "5",
-        "content": "Sistema de Beneficios y Descuentos",
-        "details": "1. Crear tabla 'affiliate_benefits'\n2. Panel admin para gestionar empresas colaboradoras\n3. Página /afiliados/beneficios con catálogo\n4. Mostrar: empresa, descuento, código, condiciones\n5. Botón de copia fácil para códigos descuento",
-        "status": "completed",
+        "content": "Rediseñar Votaciones Internas con formato de Encuestas",
+        "details": "1. Las votaciones internas deben seguir EXACTAMENTE el mismo formato y diseño que las encuestas públicas\n2. Solo mostrar votaciones internas a usuarios afiliados\n3. Usar el mismo layout, componentes y estructura que encuestas\n4. Eliminar cualquier error y asegurar funcionamiento",
+        "status": "pending",
         "priority": "high"
       }
     }
