@@ -89,6 +89,8 @@ export default function AdminNewsletter() {
   const [selectedNewsletter, setSelectedNewsletter] = useState<NewsletterSent | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [previewHtml, setPreviewHtml] = useState('');
+  const [editingNewsletter, setEditingNewsletter] = useState<NewsletterSent | null>(null);
+  const [editedContent, setEditedContent] = useState('');
 
   // Subscribers
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
@@ -367,6 +369,35 @@ export default function AdminNewsletter() {
     setShowPreview(true);
   };
 
+  const handleEditNewsletter = (newsletter: NewsletterSent) => {
+    setEditingNewsletter(newsletter);
+    setEditedContent(newsletter.content || '');
+  };
+
+  const handleSaveEditedContent = async () => {
+    if (!editingNewsletter) return;
+
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from('newsletters_sent')
+        .update({ content: editedContent })
+        .eq('id', editingNewsletter.id);
+
+      if (error) throw error;
+
+      toast.success('Contenido actualizado exitosamente');
+      setEditingNewsletter(null);
+      setEditedContent('');
+      loadNewsletters();
+    } catch (error) {
+      console.error('Error updating newsletter:', error);
+      toast.error('Error actualizando contenido');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleGeneratePDF = async (newsletter: NewsletterSent) => {
     if (!confirm(`¿Generar PDF del newsletter "${newsletter.subject}"?`)) return;
 
@@ -374,22 +405,49 @@ export default function AdminNewsletter() {
     toast.info('Generando PDF... puede tardar unos segundos');
 
     try {
+      // Usar contenido editado si existe, sino usar el original
+      const htmlContent = editedContent || newsletter.content;
+      
       // Crear elemento temporal con el HTML del newsletter
       const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = newsletter.content;
-      tempDiv.style.width = '210mm'; // A4 width
+      tempDiv.innerHTML = htmlContent;
+      tempDiv.style.width = '190mm'; // Reducido para mejor ajuste
       tempDiv.style.position = 'absolute';
       tempDiv.style.left = '-9999px';
       tempDiv.style.background = 'white';
       tempDiv.style.padding = '20px';
+      tempDiv.style.fontFamily = 'Arial, sans-serif';
+      tempDiv.style.fontSize = '14px';
+      tempDiv.style.lineHeight = '1.6';
       document.body.appendChild(tempDiv);
+
+      // Asegurar que las imágenes del QR se carguen antes de capturar
+      const qrImages = tempDiv.querySelectorAll('img');
+      await Promise.all(Array.from(qrImages).map(img => {
+        return new Promise((resolve) => {
+          if (img.complete) {
+            resolve(true);
+          } else {
+            img.onload = () => resolve(true);
+            img.onerror = () => resolve(true); // Continuar aunque falle
+            // Timeout después de 5 segundos
+            setTimeout(() => resolve(true), 5000);
+          }
+        });
+      }));
+
+      // Esperar un poco más para asegurar carga de imágenes
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       // Convertir a canvas
       const canvas = await html2canvas(tempDiv, {
-        scale: 2,
+        scale: 1.5, // Reducido para evitar problemas de tamaño
         useCORS: true,
         logging: false,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        allowTaint: true,
+        foreignObjectRendering: true,
+        imageTimeout: 5000
       });
 
       // Crear PDF
@@ -399,23 +457,29 @@ export default function AdminNewsletter() {
         format: 'a4'
       });
 
-      const imgData = canvas.toDataURL('image/png');
-      const imgWidth = 210; // A4 width in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const imgData = canvas.toDataURL('image/png', 0.8); // Reducir calidad para evitar problemas
+      const imgWidth = 190; // A4 width minus margins
+      const pageWidth = 210;
+      const pageHeight = 297;
+      const margin = 10;
+      const availableWidth = pageWidth - (2 * margin);
+      const imgHeight = (canvas.height * availableWidth) / canvas.width;
       
       let heightLeft = imgHeight;
       let position = 0;
+      let page = 1;
 
       // Agregar primera página
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= 297; // A4 height
+      pdf.addImage(imgData, 'PNG', margin, margin + position, availableWidth, imgHeight);
+      heightLeft -= (pageHeight - 2 * margin);
 
       // Agregar páginas adicionales si es necesario
       while (heightLeft > 0) {
+        page++;
         position = heightLeft - imgHeight;
         pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= 297;
+        pdf.addImage(imgData, 'PNG', margin, margin + position, availableWidth, imgHeight);
+        heightLeft -= (pageHeight - 2 * margin);
       }
 
       // Descargar PDF
@@ -443,7 +507,7 @@ export default function AdminNewsletter() {
       loadDashboardStats();
     } catch (error) {
       console.error('Error generating PDF:', error);
-      toast.error('Error generando PDF');
+      toast.error('Error generando PDF: ' + (error instanceof Error ? error.message : 'Error desconocido'));
     } finally {
       setLoading(false);
     }
@@ -1007,6 +1071,13 @@ export default function AdminNewsletter() {
                           Vista Previa
                         </button>
                         <button
+                          onClick={() => handleEditNewsletter(newsletter)}
+                          className="px-4 py-2 bg-orange-50 text-orange-600 rounded hover:bg-orange-100 flex items-center gap-2"
+                        >
+                          <Edit className="w-4 h-4" />
+                          Editar
+                        </button>
+                        <button
                           onClick={() => handleGeneratePDF(newsletter)}
                           disabled={loading}
                           className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:bg-gray-400 flex items-center gap-2"
@@ -1060,6 +1131,65 @@ export default function AdminNewsletter() {
               </div>
               <div className="flex-1 overflow-auto p-4">
                 <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Content Modal */}
+        {editingNewsletter && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+              <div className="p-4 border-b flex items-center justify-between">
+                <h3 className="text-lg font-semibold">Editar Contenido: {editingNewsletter.subject}</h3>
+                <button
+                  onClick={() => {
+                    setEditingNewsletter(null);
+                    setEditedContent('');
+                  }}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <span className="sr-only">Cerrar</span>
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="flex-1 overflow-auto p-4">
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Editor de Contenido HTML
+                  </label>
+                  <textarea
+                    value={editedContent}
+                    onChange={(e) => setEditedContent(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 font-mono text-sm"
+                    rows={20}
+                    placeholder="Edite el contenido HTML del newsletter aquí..."
+                  />
+                  <p className="text-xs text-gray-500 mt-2">
+                    Tip: Puede editar el HTML directamente. Asegúrese de que el QR y las imágenes se vean correctamente.
+                  </p>
+                </div>
+              </div>
+              <div className="p-4 border-t bg-gray-50 flex justify-end gap-3">
+                <button
+                  onClick={() => {
+                    setEditingNewsletter(null);
+                    setEditedContent('');
+                  }}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleSaveEditedContent}
+                  disabled={loading}
+                  className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:bg-gray-400 flex items-center gap-2"
+                >
+                  <Edit className="w-4 h-4" />
+                  Guardar Cambios
+                </button>
               </div>
             </div>
           </div>
