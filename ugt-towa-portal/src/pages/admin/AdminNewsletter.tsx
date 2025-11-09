@@ -91,6 +91,10 @@ export default function AdminNewsletter() {
   const [previewHtml, setPreviewHtml] = useState('');
   const [editingNewsletter, setEditingNewsletter] = useState<NewsletterSent | null>(null);
   const [editedContent, setEditedContent] = useState('');
+  const [showEditModal, setShowEditModal] = useState(false);
+  
+  // Estados para el editor visual
+  const [showVisualEditor, setShowVisualEditor] = useState(true);
 
   // Subscribers
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
@@ -372,6 +376,51 @@ export default function AdminNewsletter() {
   const handleEditNewsletter = (newsletter: NewsletterSent) => {
     setEditingNewsletter(newsletter);
     setEditedContent(newsletter.content || '');
+    setShowEditModal(true);
+    setShowVisualEditor(true);
+  };
+
+  // Funciones para el editor visual
+  const executeCommand = (command: string, value?: string) => {
+    document.execCommand(command, false, value);
+    // Actualizar el contenido después del comando
+    const contentEditable = document.querySelector('.visual-editor') as HTMLElement;
+    if (contentEditable) {
+      setEditedContent(contentEditable.innerHTML);
+    }
+  };
+
+  const handleEditorInput = () => {
+    const contentEditable = document.querySelector('.visual-editor') as HTMLElement;
+    if (contentEditable) {
+      setEditedContent(contentEditable.innerHTML);
+    }
+  };
+
+  const formatText = (command: string, value?: string) => {
+    if (value) {
+      executeCommand(command, value);
+    } else {
+      executeCommand(command);
+    }
+  };
+
+  const addLink = () => {
+    const url = prompt('Ingresa la URL del enlace:');
+    if (url) {
+      executeCommand('createLink', url);
+    }
+  };
+
+  const addImage = () => {
+    const url = prompt('Ingresa la URL de la imagen:');
+    if (url) {
+      executeCommand('insertImage', url);
+    }
+  };
+
+  const toggleSource = () => {
+    setShowVisualEditor(!showVisualEditor);
   };
 
   const handleSaveEditedContent = async () => {
@@ -387,8 +436,10 @@ export default function AdminNewsletter() {
       if (error) throw error;
 
       toast.success('Contenido actualizado exitosamente');
+      setShowEditModal(false);
       setEditingNewsletter(null);
       setEditedContent('');
+      setShowVisualEditor(true);
       loadNewsletters();
     } catch (error) {
       console.error('Error updating newsletter:', error);
@@ -1136,16 +1187,18 @@ export default function AdminNewsletter() {
           </div>
         )}
 
-        {/* Edit Content Modal */}
-        {editingNewsletter && (
+        {/* Edit Content Modal with Visual Editor */}
+        {showEditModal && editingNewsletter && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
               <div className="p-4 border-b flex items-center justify-between">
-                <h3 className="text-lg font-semibold">Editar Contenido: {editingNewsletter.subject}</h3>
+                <h3 className="text-lg font-semibold">Editar Newsletter: {editingNewsletter.subject}</h3>
                 <button
                   onClick={() => {
+                    setShowEditModal(false);
                     setEditingNewsletter(null);
                     setEditedContent('');
+                    setShowVisualEditor(true);
                   }}
                   className="text-gray-500 hover:text-gray-700"
                 >
@@ -1155,28 +1208,146 @@ export default function AdminNewsletter() {
                   </svg>
                 </button>
               </div>
-              <div className="flex-1 overflow-auto p-4">
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Editor de Contenido HTML
-                  </label>
-                  <textarea
-                    value={editedContent}
-                    onChange={(e) => setEditedContent(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 font-mono text-sm"
-                    rows={20}
-                    placeholder="Edite el contenido HTML del newsletter aquí..."
-                  />
-                  <p className="text-xs text-gray-500 mt-2">
-                    Tip: Puede editar el HTML directamente. Asegúrese de que el QR y las imágenes se vean correctamente.
-                  </p>
+              
+              {/* Toolbar del Editor */}
+              <div className="p-4 border-b bg-gray-50">
+                <div className="flex flex-wrap gap-2 items-center">
+                  <div className="flex gap-1 border-r pr-2 mr-2">
+                    <button
+                      onClick={() => formatText('bold')}
+                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100 font-bold"
+                      title="Negrita"
+                    >
+                      B
+                    </button>
+                    <button
+                      onClick={() => formatText('italic')}
+                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100 italic"
+                      title="Cursiva"
+                    >
+                      I
+                    </button>
+                    <button
+                      onClick={() => formatText('underline')}
+                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100 underline"
+                      title="Subrayado"
+                    >
+                      U
+                    </button>
+                  </div>
+                  
+                  <div className="flex gap-1 border-r pr-2 mr-2">
+                    <button
+                      onClick={() => formatText('insertUnorderedList')}
+                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100"
+                      title="Lista con viñetas"
+                    >
+                      •
+                    </button>
+                    <button
+                      onClick={() => formatText('insertOrderedList')}
+                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100"
+                      title="Lista numerada"
+                    >
+                      1.
+                    </button>
+                  </div>
+                  
+                  <div className="flex gap-1 border-r pr-2 mr-2">
+                    <button
+                      onClick={() => {
+                        const header = prompt('Nivel de encabezado (h1, h2, h3, h4, h5, h6):', 'h2');
+                        if (header && ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(header || '')) {
+                          formatText('formatBlock', header);
+                        }
+                      }}
+                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100"
+                      title="Encabezado"
+                    >
+                      H
+                    </button>
+                    <button
+                      onClick={() => formatText('formatBlock', 'p')}
+                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100"
+                      title="Párrafo"
+                    >
+                      P
+                    </button>
+                  </div>
+                  
+                  <div className="flex gap-1 border-r pr-2 mr-2">
+                    <button
+                      onClick={addLink}
+                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100"
+                      title="Agregar enlace"
+                    >
+                      Link
+                    </button>
+                    <button
+                      onClick={addImage}
+                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100"
+                      title="Agregar imagen"
+                    >
+                      IMG
+                    </button>
+                  </div>
+                  
+                  <div className="flex gap-1">
+                    <button
+                      onClick={toggleSource}
+                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-sm"
+                      title={showVisualEditor ? 'Ver código HTML' : 'Editor visual'}
+                    >
+                      {showVisualEditor ? 'HTML' : 'Visual'}
+                    </button>
+                  </div>
                 </div>
+                
+                <p className="text-xs text-gray-500 mt-2">
+                  <strong>Editor Visual:</strong> Use los botones para formatear el texto sin necesidad de HTML. 
+                  {showVisualEditor ? ' Cambie a HTML para ver el código.' : ' Está editando directamente el código HTML.'}
+                </p>
               </div>
+              
+              <div className="flex-1 overflow-auto p-4">
+                {showVisualEditor ? (
+                  <div className="border border-gray-300 rounded-lg">
+                    <div
+                      className="visual-editor p-4 min-h-96 outline-none"
+                      contentEditable
+                      suppressContentEditableWarning
+                      dangerouslySetInnerHTML={{ __html: editedContent }}
+                      onInput={handleEditorInput}
+                      style={{
+                        fontFamily: 'Arial, sans-serif',
+                        fontSize: '14px',
+                        lineHeight: '1.6'
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Código HTML
+                    </label>
+                    <textarea
+                      value={editedContent}
+                      onChange={(e) => setEditedContent(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 font-mono text-sm"
+                      rows={20}
+                      placeholder="Edite el contenido HTML del newsletter aquí..."
+                    />
+                  </div>
+                )}
+              </div>
+              
               <div className="p-4 border-t bg-gray-50 flex justify-end gap-3">
                 <button
                   onClick={() => {
+                    setShowEditModal(false);
                     setEditingNewsletter(null);
                     setEditedContent('');
+                    setShowVisualEditor(true);
                   }}
                   className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
                 >
@@ -1185,10 +1356,10 @@ export default function AdminNewsletter() {
                 <button
                   onClick={handleSaveEditedContent}
                   disabled={loading}
-                  className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:bg-gray-400 flex items-center gap-2"
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 flex items-center gap-2"
                 >
                   <Edit className="w-4 h-4" />
-                  Guardar Cambios
+                  {loading ? 'Guardando...' : 'Guardar Cambios'}
                 </button>
               </div>
             </div>

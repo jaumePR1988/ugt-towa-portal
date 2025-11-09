@@ -3,15 +3,15 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Corregir Dashboard de Afiliado",
-        "details": "1. Verificar por qué no aparece la página /afiliados/dashboard\n2. Comprobar rutas y componentes\n3. Asegurar que el dashboard cargue correctamente",
+        "content": "Implementar editor visual WYSIWYG para newsletter",
+        "details": "Reemplazar el editor HTML manual por un editor visual más amigable para administradores que no sepan HTML. Evaluar opciones como Quill.js, TinyMCE o similar.",
         "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Rediseñar Votaciones Internas con formato de Encuestas",
-        "details": "1. Las votaciones internas deben seguir EXACTAMENTE el mismo formato y diseño que las encuestas públicas\n2. Solo mostrar votaciones internas a usuarios afiliados\n3. Usar el mismo layout, componentes y estructura que encuestas\n4. Eliminar cualquier error y asegurar funcionamiento",
+        "content": "Arreglar funcionalidad checkbox de activación de afiliados",
+        "details": "En panel de administrador > gestión de usuarios, el checkbox para activar/desactivar usuarios como afiliados no funciona correctamente. No se marca al darle clic.",
         "status": "completed",
         "priority": "high"
       }

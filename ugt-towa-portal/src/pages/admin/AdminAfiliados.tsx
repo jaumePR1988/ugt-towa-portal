@@ -11,6 +11,7 @@ export default function AdminAfiliados() {
   const [users, setUsers] = useState<Profile[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [updatingUsers, setUpdatingUsers] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     loadUsers();
@@ -31,6 +32,18 @@ export default function AdminAfiliados() {
   }
 
   async function toggleAffiliate(userId: string, currentStatus: boolean | null) {
+    // Actualizar estado local inmediatamente para feedback visual
+    setUpdatingUsers(prev => new Set(prev).add(userId));
+    
+    // Actualizar la lista local inmediatamente
+    setUsers(prevUsers => 
+      prevUsers.map(user => 
+        user.id === userId 
+          ? { ...user, is_affiliate: !currentStatus }
+          : user
+      )
+    );
+    
     try {
       const newStatus = !currentStatus;
       const { error } = await supabase
@@ -41,10 +54,25 @@ export default function AdminAfiliados() {
       if (error) throw error;
 
       toast.success(newStatus ? 'Usuario marcado como afiliado' : 'Afiliación removida');
+      // Recargar la lista para asegurar consistencia
       loadUsers();
     } catch (error) {
       console.error('Error:', error);
       toast.error('Error al actualizar el estado de afiliación');
+      // Revertir cambios locales en caso de error
+      setUsers(prevUsers => 
+        prevUsers.map(user => 
+          user.id === userId 
+            ? { ...user, is_affiliate: currentStatus }
+            : user
+        )
+      );
+    } finally {
+      setUpdatingUsers(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(userId);
+        return newSet;
+      });
     }
   }
 
@@ -180,10 +208,11 @@ export default function AdminAfiliados() {
                             type="checkbox"
                             checked={!!user.is_affiliate}
                             onChange={() => toggleAffiliate(user.id, user.is_affiliate)}
-                            className="h-5 w-5 text-red-600 focus:ring-red-500 border-gray-300 rounded cursor-pointer"
+                            disabled={updatingUsers.has(user.id)}
+                            className="h-5 w-5 text-red-600 focus:ring-red-500 border-gray-300 rounded cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                           />
-                          <span className="ml-2 text-sm text-gray-700">
-                            {user.is_affiliate ? 'Sí' : 'No'}
+                          <span className={`ml-2 text-sm ${updatingUsers.has(user.id) ? 'text-gray-400' : 'text-gray-700'}`}>
+                            {updatingUsers.has(user.id) ? 'Actualizando...' : (user.is_affiliate ? 'Sí' : 'No')}
                           </span>
                         </label>
                       </td>
