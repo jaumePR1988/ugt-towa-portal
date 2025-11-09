@@ -3,22 +3,8 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Mejorar editor de newsletter con gestión por bloques",
-        "details": "Permitir añadir, quitar y reorganizar bloques de contenido de manera visual. Mejorar la experiencia de edición.",
-        "status": "completed",
-        "priority": "high"
-      },
-      "2": {
-        "id": "2",
-        "content": "Arreglar PDF en blanco en newsletter",
-        "details": "El PDF se genera en blanco. Revisar y corregir la función handleGeneratePDF.",
-        "status": "completed",
-        "priority": "high"
-      },
-      "3": {
-        "id": "3",
-        "content": "Corregir checkbox de afiliados para que persista cambios",
-        "details": "El checkbox se actualiza visualmente pero no persiste en la base de datos. Verificar la función toggleAffiliate y el estado real del usuario.",
+        "content": "Análisis completo del sistema de notificaciones de citas",
+        "details": "Revisar estado actual: funcionalidad, limitaciones, oportunidades de mejora",
         "status": "completed",
         "priority": "high"
       }
