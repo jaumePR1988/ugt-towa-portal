@@ -92,7 +92,8 @@ export default function AdminNewsletter() {
   const [editingNewsletter, setEditingNewsletter] = useState<NewsletterSent | null>(null);
   const [editedContent, setEditedContent] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
-  
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [previewContent, setPreviewContent] = useState('');
 
 
   // Subscribers
@@ -374,7 +375,17 @@ export default function AdminNewsletter() {
 
   const handleEditNewsletter = (newsletter: NewsletterSent) => {
     setEditingNewsletter(newsletter);
-    setEditedContent(newsletter.content || '');
+    const content = newsletter.content || '';
+    setEditedContent(content);
+    
+    // Esperar un momento para que el DOM se actualice, luego establecer el contenido
+    setTimeout(() => {
+      const editor = document.getElementById('newsletter-editor') as HTMLElement;
+      if (editor && content) {
+        editor.innerHTML = content;
+      }
+    }, 100);
+    
     setShowEditModal(true);
   };
 
@@ -406,6 +417,57 @@ export default function AdminNewsletter() {
     }
   };
 
+  // Editor visual functions
+  const formatText = (command: string, value?: string) => {
+    document.execCommand(command, false, value);
+    setEditedContent(getCurrentContent());
+  };
+
+  const getCurrentContent = () => {
+    const editor = document.getElementById('newsletter-editor') as HTMLElement;
+    return editor ? editor.innerHTML : editedContent;
+  };
+
+  const setContent = (content: string) => {
+    const editor = document.getElementById('newsletter-editor') as HTMLElement;
+    if (editor) {
+      editor.innerHTML = content;
+    }
+    setEditedContent(content);
+  };
+
+  const addParagraph = () => {
+    const editor = document.getElementById('newsletter-editor') as HTMLElement;
+    if (editor) {
+      editor.focus();
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const p = document.createElement('p');
+        p.innerHTML = '<br>';
+        range.insertNode(p);
+        range.setStart(p, 0);
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    }
+    setEditedContent(getCurrentContent());
+  };
+
+  const insertLink = () => {
+    const url = prompt('Ingrese la URL del enlace:');
+    if (url) {
+      formatText('createLink', url);
+    }
+  };
+
+  const showVisualPreview = () => {
+    const content = getCurrentContent();
+    setPreviewContent(content);
+    setShowPreviewModal(true);
+  };
+
   const handleGeneratePDF = async (newsletter: NewsletterSent) => {
     if (!confirm(`¿Generar PDF del newsletter "${newsletter.subject}"?`)) return;
 
@@ -434,16 +496,27 @@ export default function AdminNewsletter() {
       // Crear elemento temporal con el HTML del newsletter
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = htmlContent;
-      tempDiv.style.width = '190mm';
       tempDiv.style.position = 'absolute';
       tempDiv.style.left = '-9999px';
       tempDiv.style.top = '0';
+      tempDiv.style.width = '800px'; // Ancho fijo
+      tempDiv.style.maxWidth = '800px';
       tempDiv.style.background = 'white';
-      tempDiv.style.padding = '20px';
+      tempDiv.style.padding = '30px';
+      tempDiv.style.boxSizing = 'border-box';
       tempDiv.style.fontFamily = 'Arial, sans-serif';
-      tempDiv.style.fontSize = '12px';
-      tempDiv.style.lineHeight = '1.5';
+      tempDiv.style.fontSize = '14px'; // Tamaño de fuente más grande
+      tempDiv.style.lineHeight = '1.6'; // Mayor espaciado entre líneas
       tempDiv.style.color = '#000';
+      tempDiv.style.textAlign = 'left';
+      tempDiv.style.margin = '0 auto';
+      
+      // Estilos adicionales para mejorar el renderizado
+      tempDiv.style.overflow = 'visible';
+      tempDiv.style.wordWrap = 'break-word';
+      tempDiv.style.whiteSpace = 'normal';
+      tempDiv.style.display = 'block';
+      
       document.body.appendChild(tempDiv);
 
       // Verificar que hay contenido visible
@@ -459,20 +532,24 @@ export default function AdminNewsletter() {
 
       // Convertir a canvas con configuraciones mejoradas
       const canvas = await html2canvas(tempDiv, {
-        scale: 1.5,
+        scale: 2, // Escala más alta para mejor calidad
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
         allowTaint: true,
-        foreignObjectRendering: false, // Desactivar para mejor compatibilidad
-        imageTimeout: 10000,
+        foreignObjectRendering: false,
+        imageTimeout: 0,
         removeContainer: false,
-        width: 800, // Ancho fijo para mejor renderizado
-        height: undefined, // Altura automática
+        width: 800,
+        height: undefined,
         scrollX: 0,
         scrollY: 0,
         windowWidth: 800,
-        windowHeight: 1000
+        windowHeight: 1200,
+        ignoreElements: (element) => {
+          // Ignorar elementos que puedan causar problemas
+          return element.tagName === 'SCRIPT' || element.tagName === 'STYLE';
+        }
       });
 
       console.log('Canvas generado:', { width: canvas.width, height: canvas.height });
@@ -491,7 +568,7 @@ export default function AdminNewsletter() {
       const imgData = canvas.toDataURL('image/png', 1.0);
       const pageWidth = 210; // A4 width in mm
       const pageHeight = 297; // A4 height in mm
-      const margin = 10;
+      const margin = 15; // Margen más amplio
       const availableWidth = pageWidth - (2 * margin);
       
       // Calcular dimensiones manteniendo proporción
@@ -502,7 +579,7 @@ export default function AdminNewsletter() {
       if (imgHeight <= (pageHeight - 2 * margin)) {
         pdf.addImage(imgData, 'PNG', margin, margin, availableWidth, imgHeight);
       } else {
-        // Múltiples páginas
+        // Múltiples páginas - mejorar el manejo
         let yPosition = margin;
         let remainingHeight = imgHeight;
         let page = 1;
@@ -515,11 +592,7 @@ export default function AdminNewsletter() {
           const currentPageHeight = pageHeight - 2 * margin;
           const currentImgHeight = Math.min(remainingHeight, currentPageHeight);
           
-          // Calcular recorte del canvas
-          const sourceHeight = (currentImgHeight / imgHeight) * canvas.height;
-          const sourceY = ((imgHeight - remainingHeight) / imgHeight) * canvas.height;
-          
-          // Para simplificar, agregar imagen completa en cada página
+          // Para contenido que se divide en páginas, usar la imagen completa
           pdf.addImage(imgData, 'PNG', margin, yPosition, availableWidth, currentImgHeight);
           
           remainingHeight -= currentPageHeight;
@@ -1182,10 +1255,10 @@ export default function AdminNewsletter() {
           </div>
         )}
 
-        {/* Edit Content Modal with Simple Editor */}
+        {/* Edit Content Modal with Visual Editor */}
         {showEditModal && editingNewsletter && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
               <div className="p-4 border-b flex items-center justify-between">
                 <h3 className="text-lg font-semibold">Editar Newsletter: {editingNewsletter.subject}</h3>
                 <button
@@ -1203,23 +1276,141 @@ export default function AdminNewsletter() {
                 </button>
               </div>
               
-              <div className="flex-1 overflow-auto p-6">
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Contenido del Newsletter
-                    </label>
-                    <textarea
-                      value={editedContent}
-                      onChange={(e) => setEditedContent(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 h-96 resize-none"
-                      placeholder="Escriba aquí el contenido del newsletter. Puede usar HTML básico como &lt;h2&gt;, &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;ul&gt;, &lt;li&gt;, etc."
-                    />
-                    <p className="text-xs text-gray-500 mt-2">
-                      <strong>Tip:</strong> Puede usar etiquetas HTML como &lt;h2&gt; para títulos, &lt;p&gt; para párrafos, 
-                      &lt;strong&gt; para texto en negrita, &lt;em&gt; para cursiva, y &lt;br&gt; para saltos de línea.
-                    </p>
+              <div className="flex-1 overflow-auto">
+                {/* Editor Toolbar */}
+                <div className="border-b bg-gray-50 p-3">
+                  <div className="flex flex-wrap gap-2">
+                    {/* Format buttons */}
+                    <div className="flex gap-1 border-r pr-3">
+                      <button
+                        type="button"
+                        onClick={() => formatText('bold')}
+                        className="px-3 py-1 bg-white border border-gray-300 rounded text-sm hover:bg-gray-100"
+                        title="Negrita"
+                      >
+                        <strong>B</strong>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => formatText('italic')}
+                        className="px-3 py-1 bg-white border border-gray-300 rounded text-sm hover:bg-gray-100"
+                        title="Cursiva"
+                      >
+                        <em>I</em>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => formatText('underline')}
+                        className="px-3 py-1 bg-white border border-gray-300 rounded text-sm hover:bg-gray-100"
+                        title="Subrayado"
+                      >
+                        <u>U</u>
+                      </button>
+                    </div>
+
+                    {/* List buttons */}
+                    <div className="flex gap-1 border-r pr-3">
+                      <button
+                        type="button"
+                        onClick={() => formatText('insertUnorderedList')}
+                        className="px-3 py-1 bg-white border border-gray-300 rounded text-sm hover:bg-gray-100"
+                        title="Lista con viñetas"
+                      >
+                        • Lista
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => formatText('insertOrderedList')}
+                        className="px-3 py-1 bg-white border border-gray-300 rounded text-sm hover:bg-gray-100"
+                        title="Lista numerada"
+                      >
+                        1. Lista
+                      </button>
+                    </div>
+
+                    {/* Alignment buttons */}
+                    <div className="flex gap-1 border-r pr-3">
+                      <button
+                        type="button"
+                        onClick={() => formatText('justifyLeft')}
+                        className="px-3 py-1 bg-white border border-gray-300 rounded text-sm hover:bg-gray-100"
+                        title="Alinear izquierda"
+                      >
+                        ←
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => formatText('justifyCenter')}
+                        className="px-3 py-1 bg-white border border-gray-300 rounded text-sm hover:bg-gray-100"
+                        title="Centrar"
+                      >
+                        ↔
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => formatText('justifyRight')}
+                        className="px-3 py-1 bg-white border border-gray-300 rounded text-sm hover:bg-gray-100"
+                        title="Alinear derecha"
+                      >
+                        →
+                      </button>
+                    </div>
+
+                    {/* Content buttons */}
+                    <div className="flex gap-1 border-r pr-3">
+                      <button
+                        type="button"
+                        onClick={addParagraph}
+                        className="px-3 py-1 bg-white border border-gray-300 rounded text-sm hover:bg-gray-100"
+                        title="Nuevo párrafo"
+                      >
+                        + Párrafo
+                      </button>
+                      <button
+                        type="button"
+                        onClick={insertLink}
+                        className="px-3 py-1 bg-white border border-gray-300 rounded text-sm hover:bg-gray-100"
+                        title="Insertar enlace"
+                      >
+                        🔗 Enlace
+                      </button>
+                    </div>
+
+                    {/* Preview button */}
+                    <div className="flex gap-1">
+                      <button
+                        type="button"
+                        onClick={showVisualPreview}
+                        className="px-4 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 flex items-center gap-1"
+                      >
+                        <Eye className="w-4 h-4" />
+                        Vista Previa
+                      </button>
+                    </div>
                   </div>
+                </div>
+
+                {/* Editor Area */}
+                <div className="p-6">
+                  <div className="border border-gray-300 rounded-lg min-h-96 bg-white">
+                    <div
+                      id="newsletter-editor"
+                      contentEditable
+                      className="p-4 outline-none min-h-96"
+                      style={{
+                        fontFamily: 'Arial, sans-serif',
+                        fontSize: '14px',
+                        lineHeight: '1.6',
+                        color: '#333'
+                      }}
+                      onInput={(e) => setEditedContent((e.target as HTMLElement).innerHTML)}
+                      dangerouslySetInnerHTML={{ __html: editedContent }}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    <strong>Consejos:</strong> Use los botones de arriba para dar formato al texto, o escriba directamente. 
+                    El contenido se guardará con formato automático.
+                  </p>
                 </div>
               </div>
               
@@ -1240,6 +1431,47 @@ export default function AdminNewsletter() {
                   className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 flex items-center gap-2"
                 >
                   {loading ? 'Guardando...' : 'Guardar Cambios'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Visual Preview Modal */}
+        {showPreviewModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+              <div className="p-4 border-b flex items-center justify-between">
+                <h3 className="text-lg font-semibold">Vista Previa del Newsletter</h3>
+                <button
+                  onClick={() => setShowPreviewModal(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <span className="sr-only">Cerrar</span>
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="flex-1 overflow-auto p-6">
+                <div 
+                  className="bg-white border rounded-lg p-6"
+                  style={{
+                    fontFamily: 'Arial, sans-serif',
+                    fontSize: '14px',
+                    lineHeight: '1.6',
+                    color: '#000',
+                    minHeight: '400px'
+                  }}
+                  dangerouslySetInnerHTML={{ __html: previewContent }}
+                />
+              </div>
+              <div className="p-4 border-t bg-gray-50 flex justify-end">
+                <button
+                  onClick={() => setShowPreviewModal(false)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  Cerrar
                 </button>
               </div>
             </div>
