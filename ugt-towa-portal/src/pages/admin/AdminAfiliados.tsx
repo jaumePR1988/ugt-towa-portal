@@ -199,7 +199,7 @@ export default function AdminAfiliados() {
         <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
           <p className="text-sm text-blue-800">
             <strong>Nota:</strong> Los usuarios marcados como afiliados tendrán acceso a la sección exclusiva 
-            que incluye Biblioteca de Documentos, Votaciones Internas y Beneficios.
+            que incluye Biblioteca de Documentos y Beneficios.
           </p>
         </div>
       </div>

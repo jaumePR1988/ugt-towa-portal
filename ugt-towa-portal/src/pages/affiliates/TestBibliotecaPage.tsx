@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase, SyndicalDocument } from '@/lib/supabase';
-import { Search, Download, FileText, Filter, User, BookOpen, Vote, Gift } from 'lucide-react';
+import { Search, Download, FileText, Filter, User, BookOpen, Gift } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -75,7 +75,6 @@ export default function TestBibliotecaPage() {
   const menuItems = [
     { icon: User, label: 'Dashboard', path: '/afiliados/dashboard' },
     { icon: BookOpen, label: 'Biblioteca', path: '/afiliados/biblioteca' },
-    { icon: Vote, label: 'Votaciones', path: '/afiliados/votaciones' },
     { icon: Gift, label: 'Beneficios', path: '/afiliados/beneficios' },
   ];
 

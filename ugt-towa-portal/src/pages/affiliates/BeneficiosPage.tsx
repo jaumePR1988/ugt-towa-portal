@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase, AffiliateBenefit } from '@/lib/supabase';
-import { Gift, User, BookOpen, Vote, Copy, Check, Tag, Filter } from 'lucide-react';
+import { Gift, User, BookOpen, Copy, Check, Tag, Filter } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function BeneficiosPage() {
@@ -75,7 +75,6 @@ export default function BeneficiosPage() {
   const menuItems = [
     { icon: User, label: 'Dashboard', path: '/afiliados/dashboard' },
     { icon: BookOpen, label: 'Biblioteca', path: '/afiliados/biblioteca' },
-    { icon: Vote, label: 'Votaciones', path: '/afiliados/votaciones' },
     { icon: Gift, label: 'Beneficios', path: '/afiliados/beneficios' },
   ];
 

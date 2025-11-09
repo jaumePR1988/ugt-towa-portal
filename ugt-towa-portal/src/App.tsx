@@ -35,7 +35,7 @@ import AdminQR from './pages/admin/AdminQR';
 import AdminGaleria from './pages/admin/AdminGaleria';
 import AdminAfiliados from './pages/admin/AdminAfiliados';
 import AdminDocumentosSindicales from './pages/admin/AdminDocumentosSindicales';
-import AdminVotacionesInternas from './pages/admin/AdminVotacionesInternas';
+
 import AdminBeneficiosUGT from './pages/admin/AdminBeneficiosUGT';
 
 // Affiliate Pages
@@ -43,7 +43,7 @@ import AffiliateDashboard from './pages/affiliates/AffiliateDashboard';
 import TestAffiliateDashboard from './pages/affiliates/TestAffiliateDashboard';
 import BibliotecaPage from './pages/affiliates/BibliotecaPage';
 import TestBibliotecaPage from './pages/affiliates/TestBibliotecaPage';
-import VotacionesPage from './pages/affiliates/VotacionesPage';
+
 import BeneficiosPage from './pages/affiliates/BeneficiosPage';
 
 // Components
@@ -107,14 +107,7 @@ function App() {
               </TestAffiliateRoute>
             }
           />
-          <Route
-            path="/afiliados/votaciones"
-            element={
-              <TestAffiliateRoute>
-                <VotacionesPage />
-              </TestAffiliateRoute>
-            }
-          />
+
           <Route
             path="/afiliados/beneficios"
             element={
@@ -261,14 +254,7 @@ function App() {
               </AdminRoute>
             }
           />
-          <Route
-            path="/admin/votaciones-internas"
-            element={
-              <AdminRoute>
-                <AdminVotacionesInternas />
-              </AdminRoute>
-            }
-          />
+
           <Route
             path="/admin/beneficios-ugt"
             element={

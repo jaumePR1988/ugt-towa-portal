@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
-import { User, Calendar, FileText, Award, BookOpen, Vote, Gift } from 'lucide-react';
+import { User, Calendar, FileText, Award, BookOpen, Gift } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -13,7 +13,6 @@ export default function AffiliateDashboard() {
   const navigate = useNavigate();
   const [stats, setStats] = useState({
     documentsDownloaded: 0,
-    pollsParticipated: 0,
     benefitsAvailable: 0,
   });
   const [loading, setLoading] = useState(true);
@@ -28,12 +27,6 @@ export default function AffiliateDashboard() {
 
   async function loadStats() {
     try {
-      // Obtener número de votaciones en las que participó
-      const { count: pollsCount } = await supabase
-        .from('poll_votes')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user?.id);
-
       // Obtener número de beneficios disponibles
       const { count: benefitsCount } = await supabase
         .from('affiliate_benefits')
@@ -42,7 +35,6 @@ export default function AffiliateDashboard() {
 
       setStats({
         documentsDownloaded: 0, // No rastreamos descargas actualmente
-        pollsParticipated: pollsCount || 0,
         benefitsAvailable: benefitsCount || 0,
       });
     } finally {
@@ -53,7 +45,6 @@ export default function AffiliateDashboard() {
   const menuItems = [
     { icon: User, label: 'Dashboard', path: '/afiliados/dashboard' },
     { icon: BookOpen, label: 'Biblioteca', path: '/afiliados/biblioteca' },
-    { icon: Vote, label: 'Votaciones', path: '/afiliados/votaciones' },
     { icon: Gift, label: 'Beneficios', path: '/afiliados/beneficios' },
   ];
 
@@ -123,17 +114,7 @@ export default function AffiliateDashboard() {
             </div>
 
             {/* Estadísticas */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Votaciones Participadas</p>
-                    <p className="text-3xl font-bold text-red-600 mt-2">{stats.pollsParticipated}</p>
-                  </div>
-                  <Vote className="h-12 w-12 text-red-200" />
-                </div>
-              </div>
-
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-white rounded-lg shadow-md p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -158,7 +139,7 @@ export default function AffiliateDashboard() {
             {/* Accesos Rápidos */}
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Accesos Rápidos</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Link
                   to="/afiliados/biblioteca"
                   className="flex items-center space-x-3 p-4 border-2 border-gray-200 rounded-lg hover:border-red-600 hover:bg-red-50 transition"
@@ -167,17 +148,6 @@ export default function AffiliateDashboard() {
                   <div>
                     <p className="font-semibold text-gray-900">Biblioteca</p>
                     <p className="text-sm text-gray-600">Documentos sindicales</p>
-                  </div>
-                </Link>
-
-                <Link
-                  to="/afiliados/votaciones"
-                  className="flex items-center space-x-3 p-4 border-2 border-gray-200 rounded-lg hover:border-red-600 hover:bg-red-50 transition"
-                >
-                  <Vote className="h-8 w-8 text-red-600" />
-                  <div>
-                    <p className="font-semibold text-gray-900">Votaciones</p>
-                    <p className="text-sm text-gray-600">Participa en decisiones</p>
                   </div>
                 </Link>
 

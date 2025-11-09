@@ -56,7 +56,6 @@ export default function AdminDashboard() {
     { to: '/admin/newsletter', icon: Mail, title: 'Newsletter Mensual', desc: 'Gestionar newsletter sindical mensual' },
     { to: '/admin/afiliados', icon: UserCheck, title: 'Gestión de Afiliados', desc: 'Marcar usuarios como afiliados UGT' },
     { to: '/admin/documentos-sindicales', icon: BookOpen, title: 'Documentos Sindicales', desc: 'Gestionar documentos exclusivos para afiliados' },
-    { to: '/admin/votaciones-internas', icon: Vote, title: 'Votaciones Internas', desc: 'Crear votaciones para afiliados' },
     { to: '/admin/beneficios-ugt', icon: Gift, title: 'Beneficios UGT', desc: 'Gestionar descuentos para afiliados' }
   ];
 
