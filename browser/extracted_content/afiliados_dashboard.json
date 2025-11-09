@@ -1,0 +1,53 @@
+📄 Extracted from page: 
+URL: http://localhost:5173/afiliados/dashboard
+
+Extracted content:
+```json
+{
+  "title": "",
+  "url": "http://localhost:5173/afiliados/dashboard",
+  "summary": "This page is the personal dashboard for an UGT Towa affiliate. It provides a personalized greeting, displays the affiliate's personal information (name, email, company, registration date), and key statistics related to their activity (participated votes, available benefits, available documents). The dashboard also features a dedicated affiliate menu with links to Dashboard, Library, Votations, and Benefits, alongside quick access cards for these sections. General navigation links, contact information for UGT Towa, and an 'About UGT' section are also present.",
+  "key_points": [
+    "Affiliate Welcome: Bienvenido/a, yrvfvmcp",
+    "Affiliation: Afiliado/a UGT Towa",
+    "Personal Information:",
+    "  - Nombre Completo: yrvfvmcp",
+    "  - Email: yrvfvmcp@minimax.com",
+    "  - Empresa: Towa Pharmaceutical Europe",
+    "  - Fecha de Registro: 9 de noviembre de 2025",
+    "Affiliate Statistics:",
+    "  - Votaciones Participadas: 0",
+    "  - Beneficios Disponibles: 0",
+    "  - Documentos Disponibles: +10",
+    "Affiliate Sidebar Menu:",
+    "  - Dashboard",
+    "  - Biblioteca",
+    "  - Votaciones",
+    "  - Beneficios",
+    "Quick Access Cards:",
+    "  - Biblioteca: Documentos sindicales",
+    "  - Votaciones: Participa en decisiones",
+    "  - Beneficios: Descuentos exclusivos",
+    "Contact Information:",
+    "  - Email: ugt@towapharmaceutical.com",
+    "  - Teléfono: +34 XXX XXX XXX",
+    "  - Organización: Towa Pharmaceutical Europe",
+    "About UGT Towa: Sección Sindical de UGT en Towa Pharmaceutical Europe. Comprometidos con la defensa de los derechos laborales y el bienestar de todos los trabajadores.",
+    "Copyright: 2025 UGT Towa Pharmaceutical Europe. Todos los derechos reservados."
+  ],
+  "relevant_links": [
+    "/",
+    "/quienes-somos",
+    "/comunicados",
+    "/citas",
+    "/documentos",
+    "/encuestas",
+    "/afiliados/dashboard",
+    "/newsletter",
+    "/afiliados/biblioteca",
+    "/afiliados/votaciones",
+    "/afiliados/beneficios"
+  ],
+  "file_name": "afiliados_dashboard.json"
+}
+```

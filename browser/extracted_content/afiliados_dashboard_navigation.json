@@ -1,0 +1,24 @@
+📄 Extracted from page: 
+URL: http://localhost:5173/afiliados/dashboard
+
+Extracted content:
+```json
+{
+    "title": "Dashboard de Afiliado - UGT Towa",
+    "url": "http://localhost:5173/afiliados/dashboard",
+    "summary": "La página es el dashboard principal para usuarios afiliados de UGT Towa. Proporciona una bienvenida personalizada, información personal del afiliado (nombre, email, empresa, fecha de registro, participación en votaciones, beneficios y documentos disponibles), y secciones de navegación clave. El objetivo principal de la extracción se centra en los enlaces de navegación disponibles en el menú lateral y accesos rápidos.",
+    "key_points": [
+        "La página incluye un 'Menú de Afiliado' para la navegación interna del usuario.",
+        "Los enlaces del menú lateral son: 'Dashboard' (enlace a /afiliados/dashboard), 'Biblioteca' (enlace a /afiliados/biblioteca), 'Votaciones' (enlace a /afiliados/votaciones), y 'Beneficios' (enlace a /afiliados/beneficios).",
+        "También se presentan 'Accesos Rápidos' a 'Biblioteca', 'Votaciones' y 'Beneficios', duplicando la funcionalidad de los enlaces del menú lateral.",
+        "No se menciona ninguna información sobre posibles problemas de navegación en el contenido proporcionado."
+    ],
+    "relevant_links": [
+        "/afiliados/dashboard",
+        "/afiliados/biblioteca",
+        "/afiliados/votaciones",
+        "/afiliados/beneficios"
+    ],
+    "file_name": "afiliados_dashboard_navigation.json"
+}
+```

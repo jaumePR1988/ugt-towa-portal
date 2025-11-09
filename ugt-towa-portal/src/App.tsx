@@ -40,7 +40,9 @@ import AdminBeneficiosUGT from './pages/admin/AdminBeneficiosUGT';
 
 // Affiliate Pages
 import AffiliateDashboard from './pages/affiliates/AffiliateDashboard';
+import TestAffiliateDashboard from './pages/affiliates/TestAffiliateDashboard';
 import BibliotecaPage from './pages/affiliates/BibliotecaPage';
+import TestBibliotecaPage from './pages/affiliates/TestBibliotecaPage';
 import VotacionesPage from './pages/affiliates/VotacionesPage';
 import BeneficiosPage from './pages/affiliates/BeneficiosPage';
 
@@ -48,6 +50,7 @@ import BeneficiosPage from './pages/affiliates/BeneficiosPage';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 import AffiliateRoute from './components/AffiliateRoute';
+import TestAffiliateRoute from './components/TestAffiliateRoute';
 
 import './index.css';
 
@@ -91,33 +94,33 @@ function App() {
           <Route
             path="/afiliados/dashboard"
             element={
-              <AffiliateRoute>
-                <AffiliateDashboard />
-              </AffiliateRoute>
+              <TestAffiliateRoute>
+                <TestAffiliateDashboard />
+              </TestAffiliateRoute>
             }
           />
           <Route
             path="/afiliados/biblioteca"
             element={
-              <AffiliateRoute>
-                <BibliotecaPage />
-              </AffiliateRoute>
+              <TestAffiliateRoute>
+                <TestBibliotecaPage />
+              </TestAffiliateRoute>
             }
           />
           <Route
             path="/afiliados/votaciones"
             element={
-              <AffiliateRoute>
+              <TestAffiliateRoute>
                 <VotacionesPage />
-              </AffiliateRoute>
+              </TestAffiliateRoute>
             }
           />
           <Route
             path="/afiliados/beneficios"
             element={
-              <AffiliateRoute>
+              <TestAffiliateRoute>
                 <BeneficiosPage />
-              </AffiliateRoute>
+              </TestAffiliateRoute>
             }
           />
           

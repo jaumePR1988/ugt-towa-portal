@@ -5,14 +5,14 @@
         "id": "1",
         "content": "Corregir Dashboard de Afiliado",
         "details": "1. Verificar por qué no aparece la página /afiliados/dashboard\n2. Comprobar rutas y componentes\n3. Asegurar que el dashboard cargue correctamente",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
         "content": "Rediseñar Votaciones Internas con formato de Encuestas",
         "details": "1. Las votaciones internas deben seguir EXACTAMENTE el mismo formato y diseño que las encuestas públicas\n2. Solo mostrar votaciones internas a usuarios afiliados\n3. Usar el mismo layout, componentes y estructura que encuestas\n4. Eliminar cualquier error y asegurar funcionamiento",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       }
     }

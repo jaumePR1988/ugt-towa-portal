@@ -55,7 +55,7 @@ export default function Navbar() {
             <Link to="/encuestas" className="text-gray-700 hover:text-red-600 transition">
               Encuestas
             </Link>
-            {isAffiliate && (
+            {user && (
               <Link 
                 to="/afiliados/dashboard" 
                 className={`${

@@ -1,0 +1,27 @@
+📄 Extracted from page: 
+URL: http://localhost:5173/
+
+Extracted content:
+```json
+{
+  "title": "UGT Towa",
+  "url": "http://localhost:5173/",
+  "summary": "La página de inicio del Portal Sindical UGT Towa muestra una bienvenida al usuario, sugiriendo un estado de autenticación exitoso, ya que no se observan mensajes de error, problemas de acceso o solicitudes de inicio de sesión. Además, se presenta una opción de 'Salir', lo que refuerza la idea de que el usuario ha accedido correctamente al portal.",
+  "key_points": [
+    "El usuario parece estar autenticado, evidenciado por la bienvenida ('Bienvenido al Portal Sindical UGT Towa') y la presencia de un enlace 'Salir'.",
+    "No se muestran mensajes de error, advertencias de acceso denegado o indicaciones de problemas relacionados con la autenticación.",
+    "Existe un enlace directo al 'Dashboard de Afiliados' bajo la sección de navegación principal."
+  ],
+  "relevant_links": [
+    "/afiliados/dashboard",
+    "/",
+    "/quienes-somos",
+    "/comunicados",
+    "/citas",
+    "/documentos",
+    "/encuestas",
+    "/newsletter"
+  ],
+  "file_name": "ugt_towa_access_status.json"
+}
+```

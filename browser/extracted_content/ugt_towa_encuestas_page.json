@@ -1,0 +1,103 @@
+📄 Extracted from page: 
+URL: http://localhost:5174/encuestas
+
+Extracted content:
+```json
+{
+  "title": "UGT Towa Encuestas",
+  "url": "http://localhost:5174/encuestas",
+  "summary": "This page, titled 'Encuestas' (Surveys) from UGT Towa, presents two active surveys for user participation. Each survey includes a question, a set of possible response options, and a current total vote count. The page also features a comprehensive navigation bar, contact information, quick links, an 'About UGT' section, and copyright details in its footer. The layout suggests a standard webpage structure with distinct header, main content, and footer areas.",
+  "key_points": [
+    {
+      "section": "Header",
+      "elements": [
+        {"type": "logo_placeholder", "description": "Empty image tag, likely for a logo."},
+        {"type": "brand_name", "text": "UGT Towa"},
+        {"type": "brand_subtitle", "text": "Sección Sindical"}
+      ],
+      "navigation": [
+        {"text": "Inicio", "link": "/"},
+        {"text": "Quiénes Somos", "link": "/quienes-somos"},
+        {"text": "Comunicados", "link": "/comunicados"},
+        {"text": "Citas", "link": "/citas"},
+        {"text": "Encuestas", "link": "/encuestas", "status": "active_page"},
+        {"text": "Newsletter", "link": "/newsletter"},
+        {"text": "Entrar", "link": "/login"},
+        {"text": "Registrarse", "link": "/register"}
+      ]
+    },
+    {
+      "section": "Main Content - Encuestas",
+      "elements": [
+        {"type": "page_title", "level": "h1", "text": "Encuestas"},
+        {
+          "type": "survey",
+          "id": 1,
+          "question": "¿Crees que es importante llevar al TLC los grupos profesionales de fábrica?",
+          "question_level": "h2",
+          "options": ["Si", "No, no es el momento"],
+          "total_votes": "2"
+        },
+        {
+          "type": "survey",
+          "id": 2,
+          "question": "¿Qué tema te gustaría que priorizáramos en las próximas negociaciones?",
+          "question_level": "h2",
+          "options": [
+            "Incremento salarial",
+            "Más flexibilidad horaria",
+            "Mejora del plan de formación",
+            "Beneficios sociales adicionales"
+          ],
+          "total_votes": "2"
+        }
+      ]
+    },
+    {
+      "section": "Footer",
+      "elements": [
+        {
+          "type": "contact_info",
+          "title": "Contacto",
+          "title_level": "h3",
+          "email": "ugt@towapharmaceutical.com",
+          "phone": "+34 XXX XXX XXX",
+          "company_address": "Towa Pharmaceutical Europe"
+        },
+        {
+          "type": "links_section",
+          "title": "Enlaces",
+          "title_level": "h3",
+          "links": [
+            {"text": "Quiénes Somos", "link": "/quienes-somos"},
+            {"text": "Comunicados", "link": "/comunicados"},
+            {"text": "Solicitar Cita", "link": "/citas"},
+            {"text": "Encuestas", "link": "/encuestas"}
+          ]
+        },
+        {
+          "type": "about_section",
+          "title": "Sobre UGT",
+          "title_level": "h3",
+          "content": "Sección Sindical de UGT en Towa Pharmaceutical Europe. Comprometidos con la defensa de los derechos laborales y el bienestar de todos los trabajadores."
+        },
+        {
+          "type": "copyright",
+          "text": "2025 UGT Towa Pharmaceutical Europe. Todos los derechos reservados."
+        }
+      ]
+    }
+  ],
+  "relevant_links": [
+    "/",
+    "/quienes-somos",
+    "/comunicados",
+    "/citas",
+    "/encuestas",
+    "/newsletter",
+    "/login",
+    "/register"
+  ],
+  "file_name": "ugt_towa_encuestas_page.json"
+}
+```
