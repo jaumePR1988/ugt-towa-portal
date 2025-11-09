@@ -93,12 +93,7 @@ export default function AdminNewsletter() {
   const [editedContent, setEditedContent] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   
-  // Estados para el editor visual
-  const [showVisualEditor, setShowVisualEditor] = useState(true);
-  
-  // Estados para gestión de bloques
-  const [showBlockManager, setShowBlockManager] = useState(false);
-  const [blockElements, setBlockElements] = useState<Array<{id: string, type: string, content: string}>>([]);
+
 
   // Subscribers
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
@@ -381,122 +376,9 @@ export default function AdminNewsletter() {
     setEditingNewsletter(newsletter);
     setEditedContent(newsletter.content || '');
     setShowEditModal(true);
-    setShowVisualEditor(true);
   };
 
-  // Funciones para el editor visual
-  const executeCommand = (command: string, value?: string) => {
-    document.execCommand(command, false, value);
-    // Actualizar el contenido después del comando
-    const contentEditable = document.querySelector('.visual-editor') as HTMLElement;
-    if (contentEditable) {
-      setEditedContent(contentEditable.innerHTML);
-    }
-  };
 
-  const handleEditorInput = () => {
-    const contentEditable = document.querySelector('.visual-editor') as HTMLElement;
-    if (contentEditable) {
-      setEditedContent(contentEditable.innerHTML);
-    }
-  };
-
-  const formatText = (command: string, value?: string) => {
-    if (value) {
-      executeCommand(command, value);
-    } else {
-      executeCommand(command);
-    }
-  };
-
-  const addLink = () => {
-    const url = prompt('Ingresa la URL del enlace:');
-    if (url) {
-      executeCommand('createLink', url);
-    }
-  };
-
-  const addImage = () => {
-    const url = prompt('Ingresa la URL de la imagen:');
-    if (url) {
-      executeCommand('insertImage', url);
-    }
-  };
-
-  const toggleSource = () => {
-    setShowVisualEditor(!showVisualEditor);
-  };
-
-  // Funciones para gestión de bloques
-  const parseHtmlToBlocks = (html: string) => {
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = html;
-    const elements = Array.from(tempDiv.children);
-    return elements.map((el, index) => ({
-      id: `block-${index}`,
-      type: el.tagName.toLowerCase(),
-      content: el.outerHTML
-    }));
-  };
-
-  const blocksToHtml = (blocks: Array<{id: string, type: string, content: string}>) => {
-    return blocks.map(block => block.content).join('\n');
-  };
-
-  const openBlockManager = () => {
-    const blocks = parseHtmlToBlocks(editedContent || '');
-    setBlockElements(blocks);
-    setShowBlockManager(true);
-  };
-
-  const addNewBlock = (type: string) => {
-    const templates = {
-      heading: '<h2>Nuevo Encabezado</h2>',
-      paragraph: '<p>Nuevo párrafo de texto...</p>',
-      image: '<img src="https://via.placeholder.com/400x200" alt="Imagen" style="max-width: 100%; height: auto;">',
-      list: '<ul><li>Elemento de lista 1</li><li>Elemento de lista 2</li><li>Elemento de lista 3</li></ul>',
-      table: '<table style="width: 100%; border-collapse: collapse;"><tr><th style="border: 1px solid #ddd; padding: 8px;">Columna 1</th><th style="border: 1px solid #ddd; padding: 8px;">Columna 2</th></tr><tr><td style="border: 1px solid #ddd; padding: 8px;">Dato 1</td><td style="border: 1px solid #ddd; padding: 8px;">Dato 2</td></tr></table>'
-    };
-    
-    const newBlock = {
-      id: `block-${Date.now()}`,
-      type,
-      content: templates[type as keyof typeof templates] || templates.paragraph
-    };
-    
-    setBlockElements(prev => [...prev, newBlock]);
-  };
-
-  const removeBlock = (id: string) => {
-    setBlockElements(prev => prev.filter(block => block.id !== id));
-  };
-
-  const moveBlock = (id: string, direction: 'up' | 'down') => {
-    setBlockElements(prev => {
-      const index = prev.findIndex(block => block.id === id);
-      if (index === -1) return prev;
-      
-      const newBlocks = [...prev];
-      const targetIndex = direction === 'up' ? index - 1 : index + 1;
-      
-      if (targetIndex < 0 || targetIndex >= newBlocks.length) return prev;
-      
-      [newBlocks[index], newBlocks[targetIndex]] = [newBlocks[targetIndex], newBlocks[index]];
-      return newBlocks;
-    });
-  };
-
-  const saveBlocks = () => {
-    const newHtml = blocksToHtml(blockElements);
-    setEditedContent(newHtml);
-    setShowBlockManager(false);
-    
-    // Actualizar el editor visual
-    const contentEditable = document.querySelector('.visual-editor') as HTMLElement;
-    if (contentEditable) {
-      contentEditable.innerHTML = newHtml;
-    }
-  };
 
   const handleSaveEditedContent = async () => {
     if (!editingNewsletter) return;
@@ -514,7 +396,7 @@ export default function AdminNewsletter() {
       setShowEditModal(false);
       setEditingNewsletter(null);
       setEditedContent('');
-      setShowVisualEditor(true);
+
       loadNewsletters();
     } catch (error) {
       console.error('Error updating newsletter:', error);
@@ -552,14 +434,16 @@ export default function AdminNewsletter() {
       // Crear elemento temporal con el HTML del newsletter
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = htmlContent;
-      tempDiv.style.width = '190mm'; // Reducido para mejor ajuste
+      tempDiv.style.width = '190mm';
       tempDiv.style.position = 'absolute';
       tempDiv.style.left = '-9999px';
+      tempDiv.style.top = '0';
       tempDiv.style.background = 'white';
       tempDiv.style.padding = '20px';
       tempDiv.style.fontFamily = 'Arial, sans-serif';
-      tempDiv.style.fontSize = '14px';
-      tempDiv.style.lineHeight = '1.6';
+      tempDiv.style.fontSize = '12px';
+      tempDiv.style.lineHeight = '1.5';
+      tempDiv.style.color = '#000';
       document.body.appendChild(tempDiv);
 
       // Verificar que hay contenido visible
@@ -570,40 +454,25 @@ export default function AdminNewsletter() {
 
       console.log('Contenido de texto encontrado:', textContent.substring(0, 100) + '...');
 
-      // Asegurar que las imágenes del QR se carguen antes de capturar
-      const qrImages = tempDiv.querySelectorAll('img');
-      await Promise.all(Array.from(qrImages).map(img => {
-        return new Promise((resolve) => {
-          if (img.complete) {
-            resolve(true);
-          } else {
-            img.onload = () => resolve(true);
-            img.onerror = () => {
-              console.warn('Error cargando imagen:', img.src);
-              resolve(true); // Continuar aunque falle
-            };
-            // Timeout después de 5 segundos
-            setTimeout(() => {
-              console.warn('Timeout cargando imagen:', img.src);
-              resolve(true);
-            }, 5000);
-          }
-        });
-      }));
+      // Espera para asegurar que todo se renderice
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // Esperar un poco más para asegurar carga de imágenes
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Convertir a canvas
+      // Convertir a canvas con configuraciones mejoradas
       const canvas = await html2canvas(tempDiv, {
-        scale: 1.2, // Reducido para evitar problemas de tamaño
+        scale: 1.5,
         useCORS: true,
-        logging: true, // Habilitar logs para debug
+        logging: false,
         backgroundColor: '#ffffff',
         allowTaint: true,
-        foreignObjectRendering: true,
-        imageTimeout: 5000,
-        removeContainer: false
+        foreignObjectRendering: false, // Desactivar para mejor compatibilidad
+        imageTimeout: 10000,
+        removeContainer: false,
+        width: 800, // Ancho fijo para mejor renderizado
+        height: undefined, // Altura automática
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: 800,
+        windowHeight: 1000
       });
 
       console.log('Canvas generado:', { width: canvas.width, height: canvas.height });
@@ -612,36 +481,51 @@ export default function AdminNewsletter() {
         throw new Error('El canvas se generó con tamaño cero');
       }
 
-      // Crear PDF
+      // Crear PDF con mejor configuración
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
         format: 'a4'
       });
 
-      const imgData = canvas.toDataURL('image/png', 0.8); // Reducir calidad para evitar problemas
-      const imgWidth = 190; // A4 width minus margins
-      const pageWidth = 210;
-      const pageHeight = 297;
+      const imgData = canvas.toDataURL('image/png', 1.0);
+      const pageWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
       const margin = 10;
       const availableWidth = pageWidth - (2 * margin);
-      const imgHeight = (canvas.height * availableWidth) / canvas.width;
       
-      let heightLeft = imgHeight;
-      let position = 0;
-      let page = 1;
-
-      // Agregar primera página
-      pdf.addImage(imgData, 'PNG', margin, margin + position, availableWidth, imgHeight);
-      heightLeft -= (pageHeight - 2 * margin);
-
-      // Agregar páginas adicionales si es necesario
-      while (heightLeft > 0) {
-        page++;
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', margin, margin + position, availableWidth, imgHeight);
-        heightLeft -= (pageHeight - 2 * margin);
+      // Calcular dimensiones manteniendo proporción
+      const imgAspectRatio = canvas.width / canvas.height;
+      const imgHeight = availableWidth / imgAspectRatio;
+      
+      // Si el contenido cabe en una página
+      if (imgHeight <= (pageHeight - 2 * margin)) {
+        pdf.addImage(imgData, 'PNG', margin, margin, availableWidth, imgHeight);
+      } else {
+        // Múltiples páginas
+        let yPosition = margin;
+        let remainingHeight = imgHeight;
+        let page = 1;
+        
+        while (remainingHeight > 0) {
+          if (page > 1) {
+            pdf.addPage();
+          }
+          
+          const currentPageHeight = pageHeight - 2 * margin;
+          const currentImgHeight = Math.min(remainingHeight, currentPageHeight);
+          
+          // Calcular recorte del canvas
+          const sourceHeight = (currentImgHeight / imgHeight) * canvas.height;
+          const sourceY = ((imgHeight - remainingHeight) / imgHeight) * canvas.height;
+          
+          // Para simplificar, agregar imagen completa en cada página
+          pdf.addImage(imgData, 'PNG', margin, yPosition, availableWidth, currentImgHeight);
+          
+          remainingHeight -= currentPageHeight;
+          yPosition = margin;
+          page++;
+        }
       }
 
       // Descargar PDF
@@ -1298,10 +1182,10 @@ export default function AdminNewsletter() {
           </div>
         )}
 
-        {/* Edit Content Modal with Visual Editor */}
+        {/* Edit Content Modal with Simple Editor */}
         {showEditModal && editingNewsletter && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
               <div className="p-4 border-b flex items-center justify-between">
                 <h3 className="text-lg font-semibold">Editar Newsletter: {editingNewsletter.subject}</h3>
                 <button
@@ -1309,7 +1193,6 @@ export default function AdminNewsletter() {
                     setShowEditModal(false);
                     setEditingNewsletter(null);
                     setEditedContent('');
-                    setShowVisualEditor(true);
                   }}
                   className="text-gray-500 hover:text-gray-700"
                 >
@@ -1320,146 +1203,24 @@ export default function AdminNewsletter() {
                 </button>
               </div>
               
-              {/* Toolbar del Editor */}
-              <div className="p-4 border-b bg-gray-50">
-                <div className="flex flex-wrap gap-2 items-center">
-                  <div className="flex gap-1 border-r pr-2 mr-2">
-                    <button
-                      onClick={() => formatText('bold')}
-                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100 font-bold"
-                      title="Negrita"
-                    >
-                      B
-                    </button>
-                    <button
-                      onClick={() => formatText('italic')}
-                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100 italic"
-                      title="Cursiva"
-                    >
-                      I
-                    </button>
-                    <button
-                      onClick={() => formatText('underline')}
-                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100 underline"
-                      title="Subrayado"
-                    >
-                      U
-                    </button>
-                  </div>
-                  
-                  <div className="flex gap-1 border-r pr-2 mr-2">
-                    <button
-                      onClick={() => formatText('insertUnorderedList')}
-                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100"
-                      title="Lista con viñetas"
-                    >
-                      •
-                    </button>
-                    <button
-                      onClick={() => formatText('insertOrderedList')}
-                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100"
-                      title="Lista numerada"
-                    >
-                      1.
-                    </button>
-                  </div>
-                  
-                  <div className="flex gap-1 border-r pr-2 mr-2">
-                    <button
-                      onClick={() => {
-                        const header = prompt('Nivel de encabezado (h1, h2, h3, h4, h5, h6):', 'h2');
-                        if (header && ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(header || '')) {
-                          formatText('formatBlock', header);
-                        }
-                      }}
-                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100"
-                      title="Encabezado"
-                    >
-                      H
-                    </button>
-                    <button
-                      onClick={() => formatText('formatBlock', 'p')}
-                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100"
-                      title="Párrafo"
-                    >
-                      P
-                    </button>
-                  </div>
-                  
-                  <div className="flex gap-1 border-r pr-2 mr-2">
-                    <button
-                      onClick={addLink}
-                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100"
-                      title="Agregar enlace"
-                    >
-                      Link
-                    </button>
-                    <button
-                      onClick={addImage}
-                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100"
-                      title="Agregar imagen"
-                    >
-                      IMG
-                    </button>
-                  </div>
-                  
-                  <div className="flex gap-1">
-                    <button
-                      onClick={toggleSource}
-                      className="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-sm"
-                      title={showVisualEditor ? 'Ver código HTML' : 'Editor visual'}
-                    >
-                      {showVisualEditor ? 'HTML' : 'Visual'}
-                    </button>
-                    <button
-                      onClick={openBlockManager}
-                      className="px-3 py-1 bg-blue-500 text-white border rounded hover:bg-blue-600 text-sm"
-                      title="Gestionar bloques de contenido"
-                    >
-                      Bloques
-                    </button>
-                  </div>
-                </div>
-                
-                <p className="text-xs text-gray-500 mt-2">
-                  <strong>Editor Visual:</strong> Use los botones para formatear el texto sin necesidad de HTML. 
-                  {showVisualEditor ? ' Cambie a HTML para ver el código.' : ' Está editando directamente el código HTML.'}
-                </p>
-                <p className="text-xs text-blue-600 mt-1">
-                  <strong>Tip:</strong> Use el botón "Bloques" para añadir, quitar y reorganizar secciones completas de contenido.
-                </p>
-              </div>
-              
-              <div className="flex-1 overflow-auto p-4">
-                {showVisualEditor ? (
-                  <div className="border border-gray-300 rounded-lg">
-                    <div
-                      className="visual-editor p-4 min-h-96 outline-none"
-                      contentEditable
-                      suppressContentEditableWarning
-                      dangerouslySetInnerHTML={{ __html: editedContent }}
-                      onInput={handleEditorInput}
-                      style={{
-                        fontFamily: 'Arial, sans-serif',
-                        fontSize: '14px',
-                        lineHeight: '1.6'
-                      }}
-                    />
-                  </div>
-                ) : (
+              <div className="flex-1 overflow-auto p-6">
+                <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Código HTML
+                      Contenido del Newsletter
                     </label>
                     <textarea
                       value={editedContent}
                       onChange={(e) => setEditedContent(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-2 font-mono text-sm"
-                      rows={20}
-                      placeholder="Edite el contenido HTML del newsletter aquí..."
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 h-96 resize-none"
+                      placeholder="Escriba aquí el contenido del newsletter. Puede usar HTML básico como &lt;h2&gt;, &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;ul&gt;, &lt;li&gt;, etc."
                     />
+                    <p className="text-xs text-gray-500 mt-2">
+                      <strong>Tip:</strong> Puede usar etiquetas HTML como &lt;h2&gt; para títulos, &lt;p&gt; para párrafos, 
+                      &lt;strong&gt; para texto en negrita, &lt;em&gt; para cursiva, y &lt;br&gt; para saltos de línea.
+                    </p>
                   </div>
-                )}
+                </div>
               </div>
               
               <div className="p-4 border-t bg-gray-50 flex justify-end gap-3">
@@ -1468,7 +1229,6 @@ export default function AdminNewsletter() {
                     setShowEditModal(false);
                     setEditingNewsletter(null);
                     setEditedContent('');
-                    setShowVisualEditor(true);
                   }}
                   className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
                 >
@@ -1479,142 +1239,13 @@ export default function AdminNewsletter() {
                   disabled={loading}
                   className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 flex items-center gap-2"
                 >
-                  <Edit className="w-4 h-4" />
                   {loading ? 'Guardando...' : 'Guardar Cambios'}
                 </button>
               </div>
             </div>
           </div>
         )}
-        
-        {/* Block Manager Modal */}
-        {showBlockManager && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60] p-4">
-            <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-              <div className="p-4 border-b flex items-center justify-between">
-                <h3 className="text-lg font-semibold">Gestor de Bloques de Contenido</h3>
-                <button
-                  onClick={() => setShowBlockManager(false)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  <span className="sr-only">Cerrar</span>
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              
-              {/* Toolbar para añadir bloques */}
-              <div className="p-4 border-b bg-gray-50">
-                <div className="flex flex-wrap gap-2 items-center">
-                  <span className="text-sm font-medium text-gray-700 mr-2">Añadir bloque:</span>
-                  <button
-                    onClick={() => addNewBlock('heading')}
-                    className="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-sm"
-                  >
-                    Encabezado
-                  </button>
-                  <button
-                    onClick={() => addNewBlock('paragraph')}
-                    className="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-sm"
-                  >
-                    Párrafo
-                  </button>
-                  <button
-                    onClick={() => addNewBlock('image')}
-                    className="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-sm"
-                  >
-                    Imagen
-                  </button>
-                  <button
-                    onClick={() => addNewBlock('list')}
-                    className="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-sm"
-                  >
-                    Lista
-                  </button>
-                  <button
-                    onClick={() => addNewBlock('table')}
-                    className="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-sm"
-                  >
-                    Tabla
-                  </button>
-                </div>
-              </div>
-              
-              {/* Lista de bloques */}
-              <div className="flex-1 overflow-auto p-4">
-                <div className="space-y-4">
-                  {blockElements.length === 0 ? (
-                    <div className="text-center py-12 text-gray-500">
-                      <p>No hay bloques de contenido.</p>
-                      <p className="text-sm mt-1">Usa los botones de arriba para añadir bloques.</p>
-                    </div>
-                  ) : (
-                    blockElements.map((block, index) => (
-                      <div key={block.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center gap-2">
-                            <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">
-                              {block.type.toUpperCase()}
-                            </span>
-                            <span className="text-sm text-gray-500">Bloque {index + 1}</span>
-                          </div>
-                          <div className="flex gap-1">
-                            <button
-                              onClick={() => moveBlock(block.id, 'up')}
-                              disabled={index === 0}
-                              className="p-1 text-gray-600 hover:text-gray-800 disabled:text-gray-400"
-                              title="Mover hacia arriba"
-                            >
-                              ↑
-                            </button>
-                            <button
-                              onClick={() => moveBlock(block.id, 'down')}
-                              disabled={index === blockElements.length - 1}
-                              className="p-1 text-gray-600 hover:text-gray-800 disabled:text-gray-400"
-                              title="Mover hacia abajo"
-                            >
-                              ↓
-                            </button>
-                            <button
-                              onClick={() => removeBlock(block.id)}
-                              className="p-1 text-red-600 hover:text-red-800"
-                              title="Eliminar bloque"
-                            >
-                              ×
-                            </button>
-                          </div>
-                        </div>
-                        <div className="bg-white p-3 rounded border text-sm">
-                          <div dangerouslySetInnerHTML={{ __html: block.content }} />
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-              
-              {/* Footer con botones */}
-              <div className="p-4 border-t bg-gray-50 flex justify-end gap-3">
-                <button
-                  onClick={() => setShowBlockManager(false)}
-                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={saveBlocks}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Aplicar Cambios
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+
       </div>
     </div>
   );

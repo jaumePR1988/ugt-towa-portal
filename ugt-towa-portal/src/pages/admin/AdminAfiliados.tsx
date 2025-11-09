@@ -31,24 +31,19 @@ export default function AdminAfiliados() {
     }
   }
 
-  async function toggleAffiliate(userId: string, currentStatus: boolean | null) {
+  async function toggleAffiliate(userId: string, newStatus: boolean | null) {
+    if (newStatus === null) return;
+    
     // Actualizar estado local inmediatamente para feedback visual
     setUpdatingUsers(prev => new Set(prev).add(userId));
     
-    const newStatus = !currentStatus;
-    
-    // Actualizar la lista local inmediatamente
-    setUsers(prevUsers => 
-      prevUsers.map(user => 
-        user.id === userId 
-          ? { ...user, is_affiliate: newStatus }
-          : user
-      )
-    );
+    const currentUser = users.find(u => u.id === userId);
+    const currentStatus = currentUser?.is_affiliate || false;
     
     console.log(`Actualizando usuario ${userId} de ${currentStatus} a ${newStatus}`);
     
     try {
+      // Actualizar en la base de datos
       const { data, error } = await supabase
         .from('profiles')
         .update({ is_affiliate: newStatus })
@@ -70,25 +65,21 @@ export default function AdminAfiliados() {
         }
       }
       
-      toast.success(newStatus ? 'Usuario marcado como afiliado' : 'Afiliación removida');
+      // Actualizar la lista local con el resultado confirmado
+      setUsers(prevUsers => 
+        prevUsers.map(user => 
+          user.id === userId 
+            ? { ...user, is_affiliate: newStatus }
+            : user
+        )
+      );
       
-      // Recargar la lista para asegurar consistencia con la BD
-      setTimeout(() => {
-        loadUsers();
-      }, 500); // Pequeño delay para asegurar que la BD se actualizó
+      toast.success(newStatus ? 'Usuario marcado como afiliado' : 'Afiliación removida');
       
     } catch (error) {
       console.error('Error:', error);
       toast.error('Error al actualizar el estado de afiliación: ' + (error instanceof Error ? error.message : 'Error desconocido'));
-      
-      // Revertir cambios locales en caso de error
-      setUsers(prevUsers => 
-        prevUsers.map(user => 
-          user.id === userId 
-            ? { ...user, is_affiliate: currentStatus }
-            : user
-        )
-      );
+      // No revertimos aquí porque el estado local ya se actualizó correctamente
     } finally {
       setUpdatingUsers(prev => {
         const newSet = new Set(prev);
@@ -199,7 +190,7 @@ export default function AdminAfiliados() {
                       Fecha de Registro
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Afiliado
+                      Estado Afiliado
                     </th>
                   </tr>
                 </thead>
@@ -225,18 +216,18 @@ export default function AdminAfiliados() {
                         {user.created_at && format(new Date(user.created_at), "d MMM yyyy", { locale: es })}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <label className="flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={!!user.is_affiliate}
-                            onChange={() => toggleAffiliate(user.id, user.is_affiliate)}
-                            disabled={updatingUsers.has(user.id)}
-                            className="h-5 w-5 text-red-600 focus:ring-red-500 border-gray-300 rounded cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                          />
-                          <span className={`ml-2 text-sm ${updatingUsers.has(user.id) ? 'text-gray-400' : 'text-gray-700'}`}>
-                            {updatingUsers.has(user.id) ? 'Actualizando...' : (user.is_affiliate ? 'Sí' : 'No')}
-                          </span>
-                        </label>
+                        <select
+                          value={user.is_affiliate ? 'si' : 'no'}
+                          onChange={(e) => toggleAffiliate(user.id, e.target.value === 'si')}
+                          disabled={updatingUsers.has(user.id)}
+                          className="w-24 px-3 py-1 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <option value="no">No</option>
+                          <option value="si">Sí</option>
+                        </select>
+                        {updatingUsers.has(user.id) && (
+                          <span className="ml-2 text-xs text-gray-400">Actualizando...</span>
+                        )}
                       </td>
                     </tr>
                   ))}
