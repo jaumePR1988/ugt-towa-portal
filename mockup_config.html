@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mockup - Configuración Personalizada AdminCitas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #007bff;
+            border-bottom-color: #007bff;
+            background: white;
+        }
+
+        .tab:hover {
+            background: #e9ecef;
+        }
+
+        .config-content {
+            padding: 30px;
+            min-height: 600px;
+        }
+
+        .config-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .config-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .icon-blue { background: linear-gradient(135deg, #007bff, #0056b3); }
+        .icon-green { background: linear-gradient(135deg, #28a745, #1e7e34); }
+        .icon-purple { background: linear-gradient(135deg, #6f42c1, #5a2d91); }
+        .icon-orange { background: linear-gradient(135deg, #fd7e14, #e8650e); }
+        .icon-red { background: linear-gradient(135deg, #dc3545, #c82333); }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .config-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .config-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .toggle-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .toggle-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .toggle-item:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-label {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .toggle-description {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 26px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #007bff;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Time Selectors */
+        .time-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .time-input {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 1rem;
+            width: 120px;
+        }
+
+        .time-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        /* Day Checkboxes */
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .day-checkbox {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .day-checkbox input[type="checkbox"] {
+            display: none;
+        }
+
+        .day-label {
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-align: center;
+            width: 100%;
+        }
+
+        .day-checkbox input:checked + .day-label {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .day-label:hover {
+            border-color: #007bff;
+        }
+
+        /* Admin Users */
+        .admin-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .admin-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-avatar {
+            width: 35px;
+            height: 35px;
+            background: #007bff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+        }
+
+        .add-admin-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .email-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        /* Template Editor */
+        .template-group {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .template-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .template-body {
+            padding: 20px;
+        }
+
+        .template-field {
+            margin-bottom: 15px;
+        }
+
+        .template-field label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .template-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .template-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .variables-help {
+            background: #e7f3ff;
+            border: 1px solid #b3d7ff;
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #004085;
+        }
+
+        /* Preview Section */
+        .preview-section {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .preview-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .preview-content {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .preview-email {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .preview-email-header {
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .preview-email-body {
+            padding: 20px;
+            min-height: 150px;
+        }
+
+        /* Save Button */
+        .save-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+            text-align: center;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .status-message {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 8px;
+            }
+
+            .config-content {
+                padding: 20px;
+            }
+
+            .config-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .days-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .tab {
+                font-size: 0.9rem;
+                padding: 12px 15px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Configuración Personalizada</h1>
+            <p>Panel de Control AdminCitas - UGT TOWA</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showSection('reminders')">
+                ⏰ Recordatorios
+            </button>
+            <button class="tab" onclick="showSection('schedule')">
+                📅 Horarios
+            </button>
+            <button class="tab" onclick="showSection('admins')">
+                👥 Administradores
+            </button>
+            <button class="tab" onclick="showSection('templates')">
+                📝 Plantillas
+            </button>
+            <button class="tab" onclick="showSection('alerts')">
+                🔔 Alertas
+            </button>
+            <button class="tab" onclick="showSection('preview')">
+                👁️ Vista Previa
+            </button>
+        </div>
+
+        <div class="config-content">
+            <!-- Recordatorios -->
+            <div id="reminders" class="config-section active">
+                <div class="section-title">
+                    <div class="section-icon icon-blue">⏰</div>
+                    Configuración de Recordatorios
+                </div>
+                
+                <div class="config-grid">
+                    <div class="config-card">
+                        <div class="card-title">Recordatorios Automáticos</div>
+                        <div class="toggle-group">
+                            <div class="toggle-item">
+                                <div>
+                                    <div class="toggle-label">Recordatorio 24 horas</div>
+                                    <div class="toggle-description">Envía un recordatorio un día antes de la cita</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-item">
+                                <div>
+                                    <div class="toggle-label">Recordatorio 2 horas</div>
+                                    <div class="toggle-description">Envía un recordatorio dos horas antes de la cita</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-item">
+                                <div>
+                                    <div class="toggle-label">Recordatorio personalizado</div>
+                                    <div class="toggle-description">Configurar tiempo de recordatorio personalizado</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Horarios -->
+            <div id="schedule" class="config-section">
+                <div class="section-title">
+                    <div class="section-icon icon-green">📅</div>
+                    Configuración de Horarios Preferidos
+                </div>
+                
+                <div class="config-grid">
+                    <div class="config-card">
+                        <div class="card-title">Horarios de Atención</div>
+                        <div class="time-selector">
+                            <label>Hora de inicio:</label>
+                            <input type="time" class="time-input" value="09:00">
+                        </div>
+                        <div class="time-selector" style="margin-top: 15px;">
+                            <label>Hora de fin:</label>
+                            <input type="time" class="time-input" value="18:00">
+                        </div>
+                    </div>
+                    
+                    <div class="config-card">
+                        <div class="card-title">Días de la Semana</div>
+                        <div class="days-grid">
+                            <div class="day-checkbox">
+                                <input type="checkbox" id="lunes" checked>
+                                <label for="lunes" class="day-label">Lun</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" id="martes" checked>
+                                <label for="martes" class="day-label">Mar</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" id="miercoles" checked>
+                                <label for="miercoles" class="day-label">Mié</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" id="jueves" checked>
+                                <label for="jueves" class="day-label">Jue</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" id="viernes" checked>
+                                <label for="viernes" class="day-label">Vie</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" id="sabado">
+                                <label for="sabado" class="day-label">Sáb</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" id="domingo">
+                                <label for="domingo" class="day-label">Dom</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Administradores -->
+            <div id="admins" class="config-section">
+                <div class="section-title">
+                    <div class="section-icon icon-purple">👥</div>
+                    Gestión de Usuarios Administradores
+                </div>
+                
+                <div class="config-card">
+                    <div class="card-title">Administradores Actuales</div>
+                    <div class="admin-list">
+                        <div class="admin-item">
+                            <div class="admin-info">
+                                <div class="admin-avatar">AD</div>
+                                <div>
+                                    <strong>admin@ugttowa.org</strong>
+                                    <div style="font-size: 0.9rem; color: #6c757d;">Administrador Principal</div>
+                                </div>
+                            </div>
+                            <button class="remove-btn">Eliminar</button>
+                        </div>
+                        <div class="admin-item">
+                            <div class="admin-info">
+                                <div class="admin-avatar">MR</div>
+                                <div>
+                                    <strong>mar.reyes@ugttowa.org</strong>
+                                    <div style="font-size: 0.9rem; color: #6c757d;">Administrador</div>
+                                </div>
+                            </div>
+                            <button class="remove-btn">Eliminar</button>
+                        </div>
+                    </div>
+                    
+                    <div class="add-admin-form">
+                        <input type="email" class="email-input" placeholder="Email del nuevo administrador">
+                        <button class="btn btn-primary">Añadir Admin</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plantillas -->
+            <div id="templates" class="config-section">
+                <div class="section-title">
+                    <div class="section-icon icon-orange">📝</div>
+                    Personalización de Textos de Notificación
+                </div>
+                
+                <div class="template-group">
+                    <div class="template-header">
+                        <strong>Confirmación de Cita</strong>
+                        <button class="btn btn-secondary">Editar</button>
+                    </div>
+                    <div class="template-body">
+                        <div class="template-field">
+                            <label>Asunto:</label>
+                            <input type="text" class="template-input" value="Confirmación de Cita - UGT TOWA">
+                        </div>
+                        <div class="template-field">
+                            <label>Mensaje:</label>
+                            <textarea class="template-input template-textarea">Su cita ha sido confirmada para el {{fecha}} a las {{hora}}.</textarea>
+                        </div>
+                        <div class="variables-help">
+                            <strong>Variables disponibles:</strong> {{fecha}}, {{hora}}, {{usuario}}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-group">
+                    <div class="template-header">
+                        <strong>Cancelación de Cita</strong>
+                        <button class="btn btn-secondary">Editar</button>
+                    </div>
+                    <div class="template-body">
+                        <div class="template-field">
+                            <label>Asunto:</label>
+                            <input type="text" class="template-input" value="Cancelación de Cita - UGT TOWA">
+                        </div>
+                        <div class="template-field">
+                            <label>Mensaje:</label>
+                            <textarea class="template-input template-textarea">Su cita programada para el {{fecha}} a las {{hora}} ha sido cancelada.</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-group">
+                    <div class="template-header">
+                        <strong>Recordatorio de Cita</strong>
+                        <button class="btn btn-secondary">Editar</button>
+                    </div>
+                    <div class="template-body">
+                        <div class="template-field">
+                            <label>Asunto:</label>
+                            <input type="text" class="template-input" value="Recordatorio de Cita - UGT TOWA">
+                        </div>
+                        <div class="template-field">
+                            <label>Mensaje:</label>
+                            <textarea class="template-input template-textarea">Le recordamos que tiene una cita programada para el {{fecha}} a las {{hora}}.</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alertas -->
+            <div id="alerts" class="config-section">
+                <div class="section-title">
+                    <div class="section-icon icon-red">🔔</div>
+                    Configuración de Alertas Específicas
+                </div>
+                
+                <div class="config-grid">
+                    <div class="config-card">
+                        <div class="card-title">Tipos de Notificación</div>
+                        <div class="toggle-group">
+                            <div class="toggle-item">
+                                <div>
+                                    <div class="toggle-label">Notificaciones por email</div>
+                                    <div class="toggle-description">Envío automático de emails</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-item">
+                                <div>
+                                    <div class="toggle-label">Notificaciones en navegador</div>
+                                    <div class="toggle-description">Alertas emergentes en el navegador</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-item">
+                                <div>
+                                    <div class="toggle-label">Recordatorios de citas</div>
+                                    <div class="toggle-description">Notificaciones de recordatorio</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-item">
+                                <div>
+                                    <div class="toggle-label">Cambios de estado</div>
+                                    <div class="toggle-description">Alertas de cambios de estado</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vista Previa -->
+            <div id="preview" class="config-section">
+                <div class="section-title">
+                    <div class="section-icon" style="background: linear-gradient(135deg, #17a2b8, #138496);">👁️</div>
+                    Vista Previa de Cambios
+                </div>
+                
+                <div class="preview-section">
+                    <div class="preview-title">Preview de Email de Confirmación</div>
+                    <div class="preview-content">
+                        <div class="preview-email">
+                            <div class="preview-email-header">
+                                <strong>Para:</strong> usuario@ejemplo.com<br>
+                                <strong>Asunto:</strong> Confirmación de Cita - UGT TOWA
+                            </div>
+                            <div class="preview-email-body">
+                                <p>Estimado/a usuario,</p>
+                                <p>Su cita ha sido confirmada para el <strong>15 de Noviembre de 2025</strong> a las <strong>10:30</strong>.</p>
+                                <p>Le esperamos en nuestras oficinas.</p>
+                                <br>
+                                <p>Saludos cordiales,<br>Equipo UGT TOWA</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-section" style="margin-top: 20px;">
+                    <div class="preview-title">Configuración Actual</div>
+                    <div class="preview-content">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                            <div>
+                                <strong>Recordatorios activos:</strong><br>
+                                ✓ 24 horas antes<br>
+                                ✓ 2 horas antes
+                            </div>
+                            <div>
+                                <strong>Horario de atención:</strong><br>
+                                09:00 - 18:00<br>
+                                Lunes a Viernes
+                            </div>
+                            <div>
+                                <strong>Notificaciones:</strong><br>
+                                ✓ Email<br>
+                                ✓ Navegador
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guardar -->
+            <div class="save-section">
+                <button class="btn-save" onclick="saveConfiguration()">
+                    💾 Guardar Configuración
+                </button>
+                <div id="saveStatus" class="status-message" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.config-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function saveConfiguration() {
+            const status = document.getElementById('saveStatus');
+            status.textContent = '✅ Configuración guardada exitosamente';
+            status.className = 'status-message status-success';
+            status.style.display = 'block';
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
+
+        // Interactive day checkboxes
+        document.querySelectorAll('.day-checkbox input').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const label = this.nextElementSibling;
+                if (this.checked) {
+                    label.style.background = '#007bff';
+                    label.style.color = 'white';
+                    label.style.borderColor = '#007bff';
+                } else {
+                    label.style.background = '';
+                    label.style.color = '';
+                    label.style.borderColor = '#e9ecef';
+                }
+            });
+        });
+
+        // Toggle switches (visual feedback)
+        document.querySelectorAll('.toggle-switch input').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                // Additional visual feedback can be added here
+            });
+        });
+    </script>
+</body>
+</html>

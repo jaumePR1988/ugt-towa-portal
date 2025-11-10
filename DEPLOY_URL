@@ -1,0 +1,64 @@
+# Portal Sindical UGT Towa - URLs de Producción
+
+## URL ACTUAL (Fase 1 Completa)
+**https://h50185qwg2s0.space.minimax.io**
+- Fecha de despliegue: 2025-11-10 22:24:16
+- Estado: ✅ PRODUCCIÓN ACTIVA
+- Versión: FASE 1 COMPLETA con 4 mejoras implementadas
+
+## URL BACKUP (Versión Anterior)
+**https://e98j3z8sojw0.space.minimax.io**
+- Fecha: 2025-11-10 (anterior a mejoras)
+- Estado: ✅ BACKUP ACTIVA (para rollback si necesario)
+- Versión: Sistema básico con notificaciones
+
+## Funcionalidades Implementadas en FASE 1
+
+### ✅ Mejora 1: Búsqueda y Filtros Avanzados
+- Filtro por nombre de usuario con autocompletado
+- Filtro por rango de fechas con date picker
+- Filtro por horario (mañana/tarde/todo el día)
+- Búsqueda por palabras clave en títulos/mensajes
+- Combinación de múltiples filtros simultáneamente
+- Botón "Limpiar filtros"
+
+### ✅ Mejora 2: Estadísticas y Reportes Mejorados
+- Gráfico de líneas: citas por día (últimos 30 días)
+- Porcentaje de asistencia (completadas vs total)
+- Tasa de confirmación (confirmadas vs pendientes)
+- Horarios pico (gráfico de barras por horas)
+- Top 5 usuarios más activos (tabla con estadísticas)
+
+### ✅ Mejora 3: Configuración Personalizada
+- Activar/desactivar tipos de recordatorios (24h, 2h, personalizado)
+- Configurar horarios preferidos por usuario
+- Gestión de usuarios admin (añadir/quitar)
+- Personalizar textos de notificación con plantillas
+- Activar/desactivar alertas específicas
+
+### ✅ Mejora 4: Exportar Datos y Reportes
+- Exportar notificaciones filtradas a Excel/CSV
+- Generar PDF con estadísticas y gráficos
+- Historial completo de notificaciones con filtros por período
+- Reportes de asistencia por usuario/período
+
+### ✅ Mockup Visual: Configuración Personalizada
+- Mockup estático creado para referencia futura
+- Ubicación: `/workspace/mockup_config.html`
+
+## Copia de Seguridad
+- **Backup completa**: `backup_version_2025_11_10/` (105MB)
+- **Restauración**: `bash restore.sh` (disponible en backup)
+- **Fecha creación**: 2025-11-10 22:24:16
+
+## Credenciales de Acceso
+- **Email**: jpedragosa@towapharmaceutical.com
+- **Password**: towa2022
+- **Supabase URL**: https://zaxdscclkeytakcowgww.supabase.co
+
+## Estado del Proyecto
+- ✅ **Sistema funcionando**: Todas las mejoras operativas
+- ✅ **Testing completado**: Sin errores de compilación
+- ✅ **Backup disponible**: Para rollback seguro
+- ✅ **Documentación completa**: Informes detallados creados
+- ✅ **Próximos pasos**: Mockup de configuración disponible para Fase 2

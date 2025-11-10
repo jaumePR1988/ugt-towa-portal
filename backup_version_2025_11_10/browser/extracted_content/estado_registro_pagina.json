@@ -1,0 +1,28 @@
+📄 Extracted from page: 
+URL: http://localhost:5174/register
+
+Extracted content:
+```json
+{
+    "title": "UGT Towa - Registrarse",
+    "url": "http://localhost:5174/register",
+    "summary": "La página mostrada es el formulario de registro para crear una cuenta en UGT Towa, específicamente para empleados de Towa Pharmaceutical Europe. No se ha completado ningún registro exitosamente, ni se muestra ningún mensaje de confirmación o error en la página actual. La página actual es la de 'Crear Cuenta', donde se solicita al usuario que ingrese su nombre completo, email corporativo (con el dominio @towapharmaceutical.com), contraseña y confirmación de contraseña.",
+    "key_points": [
+        "La página actual es el formulario de registro ('Crear Cuenta').",
+        "No hay mensajes de confirmación de registro exitoso.",
+        "No se muestran mensajes de error de registro en esta vista.",
+        "Se solicita Nombre Completo, Email Corporativo, Contraseña y Confirmar Contraseña.",
+        "El email corporativo debe tener el dominio '@towapharmaceutical.com'.",
+        "Existe un enlace para 'Iniciar sesión' si el usuario ya tiene una cuenta."
+    ],
+    "relevant_links": [
+        "/login",
+        "/quienes-somos",
+        "/comunicados",
+        "/citas",
+        "/encuestas",
+        "/newsletter"
+    ],
+    "file_name": "estado_registro_pagina.json"
+}
+```

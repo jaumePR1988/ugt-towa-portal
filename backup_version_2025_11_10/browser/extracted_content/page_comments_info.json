@@ -1,0 +1,50 @@
+📄 Extracted from page: Portal Sindical UGT Towa - Final
+URL: https://i0250pxul5gh.space.minimax.io/comunicados/18051306-3625-4d00-8634-fd89a1e3bc94
+
+Extracted content:
+```json
+{
+  "title": "Portal Sindical UGT Towa - Final",
+  "url": "https://i0250pxul5gh.space.minimax.io/comunicados/18051306-3625-4d00-8634-fd89a1e3bc94",
+  "summary": "La página contiene una sección de comentarios con cuatro entradas visibles, todas fechadas el 1 de noviembre de 2025. Los comentarios incluyen el contenido del mensaje y el nombre del autor. Tres de los comentarios son de 'Usuario Prueba' y uno es de 'JAUME PEDRAGOSA REYES'. Todos muestran un contador de reacciones '00', indicando que no hay reacciones registradas o visibles en el momento de la publicación.",
+  "key_points": [
+    {
+      "comment_number": 1,
+      "author": "Usuario Prueba",
+      "date": "1 de noviembre, 2025 a las 23:59",
+      "content": "Prueba de comentario con nombre de autor y reacciones",
+      "reactions": "00"
+    },
+    {
+      "comment_number": 2,
+      "author": "Usuario Prueba",
+      "date": "1 de noviembre, 2025 a las 23:54",
+      "content": "Prueba de comentario con autor",
+      "reactions": "00"
+    },
+    {
+      "comment_number": 3,
+      "author": "Usuario Prueba",
+      "date": "1 de noviembre, 2025 a las 23:53",
+      "content": "Prueba de comentario con autor",
+      "reactions": "00"
+    },
+    {
+      "comment_number": 4,
+      "author": "JAUME PEDRAGOSA REYES",
+      "date": "1 de noviembre, 2025 a las 23:12",
+      "content": "mola",
+      "reactions": "00"
+    }
+  ],
+  "relevant_links": [
+    "/",
+    "/quienes-somos",
+    "/comunicados",
+    "/citas",
+    "/encuestas",
+    "/newsletter"
+  ],
+  "file_name": "page_comments_info.json"
+}
+```
