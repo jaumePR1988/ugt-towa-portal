@@ -5,49 +5,49 @@
         "id": "1",
         "content": "Crear tabla de notificaciones en Supabase",
         "details": "Crear tabla 'notifications' con campos: id, appointment_id, type (reminder/cancellation/confirmation), title, message, created_at, read, user_email, delegate_type",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
         "content": "Modificar edge function de notificaciones",
         "details": "Actualizar send-notifications/index.ts para: 1) Guardar notificaciones en DB en lugar de solo log 2) Crear recordatorios automáticos para citas próximas 3) Notificaciones para delegados",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "3": {
         "id": "3",
         "content": "Crear sistema de recordatorios automáticos",
         "details": "Implementar lógica que detecte citas próximas (24h, 2h antes) y genere notificaciones automáticas en la base de datos",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "4": {
         "id": "4",
         "content": "Mejorar panel de administración de citas",
         "details": "Actualizar AdminCitas.tsx para mostrar: 1) Lista de notificaciones con contadores 2) Marcar como leídas 3) Filtros por tipo y estado 4) Dashboard con estadísticas básicas",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       },
       "5": {
         "id": "5",
         "content": "Implementar notificaciones para delegados",
         "details": "Crear lógica que notifique a delegados cuando se reserven citas de su tipo (sindical/prevencion)",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       },
       "6": {
         "id": "6",
         "content": "Crear cron job para recordatorios automáticos",
         "details": "Configurar tarea programada que ejecute cada hora para generar recordatorios automáticos para las próximas 24h",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "7": {
         "id": "7",
         "content": "Probar y validar funcionamiento completo",
         "details": "Verificar que: 1) Los recordatorios se generan automáticamente 2) Las notificaciones aparecen en el panel 3) Se pueden marcar como leídas 4) Los delegados reciben notificaciones",
-        "status": "pending",
+        "status": "completed",
         "priority": "low"
       }
     }

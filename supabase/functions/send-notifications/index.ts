@@ -18,12 +18,15 @@ Deno.serve(async (req) => {
             throw new Error('Configuración de Supabase faltante');
         }
 
-        // Obtener citas confirmadas para las próximas 24 horas
-        const now = new Date();
-        const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+        const { appointment_id, type, user_email, delegate_type } = await req.json();
 
-        const appointmentsResponse = await fetch(
-            `${supabaseUrl}/rest/v1/appointments?status=eq.confirmed&start_time=gte.${now.toISOString()}&start_time=lte.${tomorrow.toISOString()}&select=*`,
+        if (!appointment_id || !type) {
+            throw new Error('appointment_id y type son requeridos');
+        }
+
+        // Obtener información de la cita
+        const appointmentResponse = await fetch(
+            `${supabaseUrl}/rest/v1/appointments?id=eq.${appointment_id}&select=*`,
             {
                 headers: {
                     'Authorization': `Bearer ${serviceRoleKey}`,
@@ -33,68 +36,76 @@ Deno.serve(async (req) => {
             }
         );
 
-        if (!appointmentsResponse.ok) {
-            throw new Error('Error al obtener citas');
+        if (!appointmentResponse.ok) {
+            throw new Error('Error al obtener información de la cita');
         }
 
-        const appointments = await appointmentsResponse.json();
+        const appointments = await appointmentResponse.json();
+        const appointment = appointments[0];
 
-        // Obtener información de usuarios para enviar recordatorios
-        const userIds = [...new Set(appointments.map((apt: any) => apt.user_id))];
-        
-        if (userIds.length > 0) {
-            const profilesResponse = await fetch(
-                `${supabaseUrl}/rest/v1/profiles?id=in.(${userIds.join(',')})&select=*`,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${serviceRoleKey}`,
-                        'apikey': serviceRoleKey
-                    }
-                }
-            );
-
-            if (profilesResponse.ok) {
-                const profiles = await profilesResponse.json();
-                
-                // Aquí se enviarían emails/notificaciones
-                // Por ahora solo registramos las notificaciones que se enviarían
-                const notifications = appointments.map((apt: any) => {
-                    const profile = profiles.find((p: any) => p.id === apt.user_id);
-                    return {
-                        email: profile?.email,
-                        subject: 'Recordatorio de cita UGT Towa',
-                        message: `Tienes una cita confirmada para ${new Date(apt.start_time).toLocaleString('es-ES')} con ${apt.delegate_type}`,
-                        appointment_id: apt.id
-                    };
-                });
-
-                console.log('Notificaciones a enviar:', notifications);
-            }
+        if (!appointment) {
+            throw new Error('Cita no encontrada');
         }
 
-        // Obtener suscriptores del newsletter
-        const subscribersResponse = await fetch(
-            `${supabaseUrl}/rest/v1/newsletter_subscribers?select=*`,
+        // Crear mensaje según el tipo de notificación
+        let title = '';
+        let message = '';
+
+        switch (type) {
+            case 'confirmation':
+                title = 'Cita Confirmada';
+                message = `Tu cita con ${appointment.delegate_type} ha sido confirmada para el ${new Date(appointment.start_time).toLocaleString('es-ES')}`;
+                break;
+            case 'cancellation':
+                title = 'Cita Cancelada';
+                message = `Tu cita con ${appointment.delegate_type} del ${new Date(appointment.start_time).toLocaleString('es-ES')} ha sido cancelada`;
+                break;
+            case 'reminder':
+                title = 'Recordatorio de Cita';
+                message = `Recordatorio: Tienes una cita con ${appointment.delegate_type} el ${new Date(appointment.start_time).toLocaleString('es-ES')}`;
+                break;
+            case 'delegate_notification':
+                title = 'Nueva Cita Reservada';
+                message = `Se ha reservado una nueva cita de tipo ${appointment.delegate_type} para el ${new Date(appointment.start_time).toLocaleString('es-ES')}`;
+                break;
+            default:
+                throw new Error('Tipo de notificación no válido');
+        }
+
+        // Guardar notificación en la base de datos
+        const insertResponse = await fetch(
+            `${supabaseUrl}/rest/v1/notifications`,
             {
+                method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${serviceRoleKey}`,
-                    'apikey': serviceRoleKey
-                }
+                    'apikey': serviceRoleKey,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=representation'
+                },
+                body: JSON.stringify({
+                    appointment_id,
+                    type,
+                    title,
+                    message,
+                    user_email: user_email || null,
+                    delegate_type: delegate_type || appointment.delegate_type,
+                    appointment_time: appointment.start_time
+                })
             }
         );
 
-        let newsletterCount = 0;
-        if (subscribersResponse.ok) {
-            const subscribers = await subscribersResponse.json();
-            newsletterCount = subscribers.length;
-            console.log(`Newsletter: ${newsletterCount} suscriptores activos`);
+        if (!insertResponse.ok) {
+            const errorText = await insertResponse.text();
+            throw new Error(`Error al guardar notificación: ${errorText}`);
         }
+
+        const notification = await insertResponse.json();
 
         return new Response(JSON.stringify({
             success: true,
             data: {
-                appointment_reminders_sent: appointments.length,
-                newsletter_subscribers: newsletterCount,
+                notification: notification[0],
                 timestamp: new Date().toISOString()
             }
         }), {
