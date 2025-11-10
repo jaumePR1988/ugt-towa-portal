@@ -1,0 +1,77 @@
+{
+  "name": "sistema-precios-facturacion",
+  "version": "1.0.0",
+  "description": "Sistema completo de precios, suscripciones y facturación para software empresarial",
+  "main": "sistema-principal.js",
+  "scripts": {
+    "start": "node sistema-principal.js",
+    "dev": "nodemon sistema-principal.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "ejemplo": "node ejemplo-uso.js",
+    "build": "webpack --mode=production",
+    "migrate": "node scripts/migrate.js",
+    "seed": "node scripts/seed.js",
+    "cron": "node scripts/cron-jobs.js"
+  },
+  "keywords": [
+    "pricing",
+    "subscription",
+    "billing",
+    "invoicing",
+    "contracts",
+    "saas",
+    "business"
+  ],
+  "author": "Empresa de Software S.L.",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "morgan": "^1.10.0",
+    "pg": "^8.11.3",
+    "redis": "^4.6.7",
+    "stripe": "^12.18.0",
+    "nodemailer": "^6.9.4",
+    "handlebars": "^4.7.7",
+    "moment": "^2.29.4",
+    "joi": "^17.9.2",
+    "bcrypt": "^5.1.0",
+    "jsonwebtoken": "^9.0.1",
+    "winston": "^3.10.0",
+    "dotenv": "^16.3.1",
+    "node-cron": "^3.0.2",
+    "puppeteer": "^21.1.1",
+    "pdf-lib": "^1.17.1",
+    "csv-parse": "^5.5.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "jest": "^29.6.2",
+    "supertest": "^6.3.3",
+    "nodemon": "^3.0.1",
+    "eslint": "^8.46.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.28.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/empresa/sistema-precios-facturacion.git"
+  },
+  "bugs": {
+    "url": "https://github.com/empresa/sistema-precios-facturacion/issues"
+  },
+  "homepage": "https://github.com/empresa/sistema-precios-facturacion#readme"
+}

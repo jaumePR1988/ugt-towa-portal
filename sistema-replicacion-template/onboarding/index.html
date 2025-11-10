@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Onboarding - Replicación UGT TOWA</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo-section">
+                <img src="assets/images/ugt-logo.png" alt="UGT Logo" class="logo">
+                <h1>Sistema de Onboarding</h1>
+                <p class="subtitle">Proceso de implementación del sistema de replicación</p>
+            </div>
+        </header>
+
+        <div class="progress-bar">
+            <div class="progress-steps">
+                <div class="step active" data-step="1">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Datos Básicos</span>
+                </div>
+                <div class="step" data-step="2">
+                    <i class="fas fa-building"></i>
+                    <span>Información Empresa</span>
+                </div>
+                <div class="step" data-step="3">
+                    <i class="fas fa-cog"></i>
+                    <span>Configuración</span>
+                </div>
+                <div class="step" data-step="4">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Revisión</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <!-- Paso 1: Datos Básicos -->
+            <div class="form-step active" id="step-1">
+                <h2><i class="fas fa-user"></i> Información Básica del Cliente</h2>
+                
+                <div class="form-group">
+                    <label for="empresa_nombre">Nombre de la Empresa *</label>
+                    <input type="text" id="empresa_nombre" name="empresa_nombre" required>
+                    <div class="error-message" id="error-empresa_nombre"></div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cif_nif">CIF/NIF *</label>
+                        <input type="text" id="cif_nif" name="cif_nif" required maxlength="9">
+                        <div class="error-message" id="error-cif_nif"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="sector_actividad">Sector de Actividad *</label>
+                        <select id="sector_actividad" name="sector_actividad" required>
+                            <option value="">Seleccionar sector</option>
+                            <option value="manufactura">Manufactura</option>
+                            <option value="servicios">Servicios</option>
+                            <option value="comercio">Comercio</option>
+                            <option value="tecnologia">Tecnología</option>
+                            <option value="sanidad">Sanidad</option>
+                            <option value="educacion">Educación</option>
+                            <option value="construccion">Construcción</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                        <div class="error-message" id="error-sector_actividad"></div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="num_empleados">Número de Empleados *</label>
+                        <select id="num_empleados" name="num_empleados" required>
+                            <option value="">Seleccionar rango</option>
+                            <option value="1-10">1-10 empleados</option>
+                            <option value="11-50">11-50 empleados</option>
+                            <option value="51-100">51-100 empleados</option>
+                            <option value="101-500">101-500 empleados</option>
+                            <option value="500+">Más de 500 empleados</option>
+                        </select>
+                        <div class="error-message" id="error-num_empleados"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ubicacion_geografica">Ubicación Geográfica *</label>
+                        <select id="ubicacion_geografica" name="ubicacion_geografica" required>
+                            <option value="">Seleccionar ubicación</option>
+                            <option value="madrid">Madrid</option>
+                            <option value="barcelona">Barcelona</option>
+                            <option value="valencia">Valencia</option>
+                            <option value="sevilla">Sevilla</option>
+                            <option value="bilbao">Bilbao</option>
+                            <option value="otra">Otra</option>
+                        </select>
+                        <div class="error-message" id="error-ubicacion_geografica"></div>
+                    </div>
+                </div>
+
+                <h3><i class="fas fa-user-tie"></i> Persona de Contacto Principal</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contacto_nombre">Nombre Completo *</label>
+                        <input type="text" id="contacto_nombre" name="contacto_nombre" required>
+                        <div class="error-message" id="error-contacto_nombre"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contacto_cargo">Cargo *</label>
+                        <input type="text" id="contacto_cargo" name="contacto_cargo" required>
+                        <div class="error-message" id="error-contacto_cargo"></div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contacto_email">Email *</label>
+                        <input type="email" id="contacto_email" name="contacto_email" required>
+                        <div class="error-message" id="error-contacto_email"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contacto_telefono">Teléfono *</label>
+                        <input type="tel" id="contacto_telefono" name="contacto_telefono" required>
+                        <div class="error-message" id="error-contacto_telefono"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fecha_prevista_implementacion">Fecha Prevista de Implementación *</label>
+                    <input type="date" id="fecha_prevista_implementacion" name="fecha_prevista_implementacion" required>
+                    <div class="error-message" id="error-fecha_prevista_implementacion"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Paso 2: Información de Empresa -->
+            <div class="form-step" id="step-2">
+                <h2><i class="fas fa-building"></i> Información Detallada de la Empresa</h2>
+
+                <h3><i class="fas fa-sitemap"></i> Estructura Organizacional</h3>
+                
+                <div class="form-group">
+                    <label for="estructura_sindical">¿Existe representación sindical en la empresa?</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="estructura_sindical" value="si">
+                            <span class="radio-custom"></span>
+                            Sí
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="estructura_sindical" value="no">
+                            <span class="radio-custom"></span>
+                            No
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="estructura_sindical" value="en_proceso">
+                            <span class="radio-custom"></span>
+                            En proceso
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row" id="sindicatos-section" style="display: none;">
+                    <div class="form-group">
+                        <label for="num_sindicatos">Número de sindicatos representados</label>
+                        <input type="number" id="num_sindicatos" name="num_sindicatos" min="1" max="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="afiliados_estimados">Afiliados estimados</label>
+                        <select id="afiliados_estimados" name="afiliados_estimados">
+                            <option value="">Seleccionar</option>
+                            <option value="1-25">1-25</option>
+                            <option value="26-50">26-50</option>
+                            <option value="51-100">51-100</option>
+                            <option value="101-200">101-200</option>
+                            <option value="200+">Más de 200</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h3><i class="fas fa-tools"></i> Sistemas Actuales</h3>
+
+                <div class="form-group">
+                    <label for="sistema_actual">¿Qué sistema de gestión sindical utilizan actualmente?</label>
+                    <select id="sistema_actual" name="sistema_actual">
+                        <option value="">Seleccionar sistema</option>
+                        <option value="manual">Gestión manual/Excel</option>
+                        <option value="basico">Sistema básico personalizado</option>
+                        <option value="erp_sindical">ERP sindical específico</option>
+                        <option value="erp_general">ERP general adaptado</option>
+                        <option value="ninguno">No utilizan sistema</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="deficiencias_identificadas">Principales deficiencias identificadas en el sistema actual</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="deficiencias" value="gestion_afiliados">
+                            <span class="checkbox-custom"></span>
+                            Gestión deficiente de afiliados
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="deficiencias" value="comunicacion">
+                            <span class="checkbox-custom"></span>
+                            Problemas de comunicación
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="deficiencias" value="notificaciones">
+                            <span class="checkbox-custom"></span>
+                            Falta de notificaciones automáticas
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="deficiencias" value="estadisticas">
+                            <span class="checkbox-custom"></span>
+                            Ausencia de estadísticas
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="deficiencias" value="citas">
+                            <span class="checkbox-custom"></span>
+                            Gestión manual de citas
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="deficiencias" value="documentacion">
+                            <span class="checkbox-custom"></span>
+                            Control deficiente de documentación
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Paso 3: Configuración -->
+            <div class="form-step" id="step-3">
+                <h2><i class="fas fa-cog"></i> Configuración del Sistema</h2>
+
+                <h3><i class="fas fa-palette"></i> Personalización Visual</h3>
+
+                <div class="form-group">
+                    <label for="colores_principales">Colores principales de la organización</label>
+                    <div class="color-picker-group">
+                        <div class="color-input">
+                            <label>Color primario</label>
+                            <input type="color" id="color_primario" name="color_primario" value="#1e40af">
+                        </div>
+                        <div class="color-input">
+                            <label>Color secundario</label>
+                            <input type="color" id="color_secundario" name="color_secundario" value="#64748b">
+                        </div>
+                        <div class="color-input">
+                            <label>Color de acento</label>
+                            <input type="color" id="color_acento" name="color_acento" value="#ef4444">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="logo_empresa">Logo de la empresa</label>
+                        <div class="file-upload">
+                            <input type="file" id="logo_empresa" name="logo_empresa" accept="image/*">
+                            <label for="logo_empresa" class="file-upload-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Seleccionar archivo</span>
+                            </label>
+                            <div class="file-name" id="logo-empresa-name"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="idioma_sistema">Idioma principal del sistema</label>
+                        <select id="idioma_sistema" name="idioma_sistema">
+                            <option value="es">Español</option>
+                            <option value="ca">Catalán</option>
+                            <option value="eu">Euskera</option>
+                            <option value="gl">Gallego</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h3><i class="fas fa-user-shield"></i> Módulos Requeridos</h3>
+
+                <div class="modules-grid">
+                    <div class="module-card">
+                        <div class="module-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h4>Gestión de Afiliados</h4>
+                        <p>Registro, edición y gestión completa de afiliados</p>
+                        <label class="toggle-switch">
+                            <input type="checkbox" name="modulos" value="afiliados" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="module-card">
+                        <div class="module-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h4>Sistema de Citas</h4>
+                        <p>Programación y gestión de citas online</p>
+                        <label class="toggle-switch">
+                            <input type="checkbox" name="modulos" value="citas" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="module-card">
+                        <div class="module-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h4>Comunicados</h4>
+                        <p>Gestión de comunicados y comentarios</p>
+                        <label class="toggle-switch">
+                            <input type="checkbox" name="modulos" value="comunicados" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="module-card">
+                        <div class="module-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h4>Encuestas</h4>
+                        <p>Creación y análisis de encuestas</p>
+                        <label class="toggle-switch">
+                            <input type="checkbox" name="modulos" value="encuestas" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="module-card">
+                        <div class="module-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h4>Newsletter</h4>
+                        <p>Envío automatizado de newsletters</p>
+                        <label class="toggle-switch">
+                            <input type="checkbox" name="modulos" value="newsletter" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="module-card">
+                        <div class="module-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h4>Documentos</h4>
+                        <p>Gestión de documentos y recursos</p>
+                        <label class="toggle-switch">
+                            <input type="checkbox" name="modulos" value="documentos" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <h3><i class="fas fa-user-cog"></i> Configuración de Roles</h3>
+
+                <div class="form-group">
+                    <label for="usuarios_esperados">Número esperado de usuarios del sistema</label>
+                    <select id="usuarios_esperados" name="usuarios_esperados">
+                        <option value="">Seleccionar rango</option>
+                        <option value="1-5">1-5 usuarios</option>
+                        <option value="6-10">6-10 usuarios</option>
+                        <option value="11-25">11-25 usuarios</option>
+                        <option value="25+">Más de 25 usuarios</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="necesidades_especiales">Necesidades especiales o requerimientos adicionales</label>
+                    <textarea id="necesidades_especiales" name="necesidades_especiales" rows="4" placeholder="Describa cualquier requerimiento especial, integración con sistemas existentes, funcionalidades adicionales, etc."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Paso 4: Revisión -->
+            <div class="form-step" id="step-4">
+                <h2><i class="fas fa-check-circle"></i> Revisión Final</h2>
+                
+                <div class="summary-container">
+                    <h3>Resumen de la Solicitud</h3>
+                    <div id="summary-content" class="summary-content">
+                        <!-- El contenido se genera dinámicamente con JavaScript -->
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="acepto_terminos" name="acepto_terminos" required>
+                        <span class="checkbox-custom"></span>
+                        Acepto los términos y condiciones del servicio y la política de privacidad
+                    </label>
+                    <div class="error-message" id="error-acepto_terminos"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="autorizo_contacto" name="autorizo_contacto" checked>
+                        <span class="checkbox-custom"></span>
+                        Autorizo el contacto para seguimiento del proceso de implementación
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="submitForm()">
+                        <i class="fas fa-paper-plane"></i> Enviar Solicitud
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de confirmación -->
+        <div id="confirmation-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-check-circle"></i> Solicitud Enviada</h3>
+                </div>
+                <div class="modal-body">
+                    <p>Su solicitud de implementación ha sido enviada exitosamente.</p>
+                    <p>Recibirá un email de confirmación en breve con los siguientes pasos.</p>
+                    <div class="timeline-preview">
+                        <h4>Próximos pasos:</h4>
+                        <ul>
+                            <li>Análisis de requerimientos (24-48h)</li>
+                            <li>Propuesta técnica personalizada (3-5 días)</li>
+                            <li>Reunión de planificación (5-7 días)</li>
+                            <li>Inicio de implementación (7-10 días)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="closeModal()">
+                        <i class="fas fa-check"></i> Entendido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/validation.js"></script>
+    <script src="assets/js/form-handler.js"></script>
+    <script src="assets/js/timeline.js"></script>
+</body>
+</html>

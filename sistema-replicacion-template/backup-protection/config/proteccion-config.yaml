@@ -1,0 +1,317 @@
+# Configuración del Sistema de Protección de Datos
+# Sistema de replicación UGT-TOWA
+# Fecha: 2024-11-11
+
+proteccion:
+  # Algoritmo de encriptación
+  algoritmo: 'aes-256-gcm'
+  
+  # Longitud de clave en bytes
+  longitudClave: 32
+  
+  # Longitud del vector de inicialización
+  longitudIV: 16
+  
+  # Iteraciones para PBKDF2
+  iteracionesPBKDF2: 100000
+  
+  # Directorio para claves de encriptación
+  directorioClaves: './storage/claves'
+  
+  # Directorio para credenciales encriptadas
+  directorioCredenciales: './storage/credenciales'
+  
+  # Directorio para auditoría y logs
+  directorioAuditoria: './storage/auditoria'
+  
+  # Tiempo de expiración del cache de credenciales (minutos)
+  tiempoExpiracionCache: 30
+  
+  # Maximum de intentos fallidos antes de bloquear
+  maxIntentosFallidos: 5
+  
+  # Tiempo de bloqueo después de intentos fallidos (minutos)
+  tiempoBloqueo: 60
+
+credenciales:
+  # Credenciales de base de datos
+  baseDatos:
+    postgres:
+      host: '${DB_HOST}'
+      port: '${DB_PORT}'
+      database: '${DB_NAME}'
+      user: '${DB_USER}'
+      password: '${DB_PASSWORD}'
+      ssl: true
+      pool: 20
+    mongodb:
+      host: '${MONGO_HOST}'
+      port: '${MONGO_PORT}'
+      database: '${MONGO_NAME}'
+      user: '${MONGO_USER}'
+      password: '${MONGO_PASSWORD}'
+      ssl: true
+      replicaSet: 'ugtReplicaSet'
+  
+  # Credenciales de servicios externos
+  servicios:
+    email:
+      provider: 'resend'
+      apiKey: '${EMAIL_API_KEY}'
+      smtp:
+        host: '${SMTP_HOST}'
+        puerto: '${SMTP_PORT}'
+        usuario: '${SMTP_USER}'
+        password: '${SMTP_PASSWORD}'
+        tls: true
+    storage:
+      provider: 'aws'
+      accessKey: '${AWS_ACCESS_KEY}'
+      secretKey: '${AWS_SECRET_KEY}'
+      region: '${AWS_REGION}'
+      bucket: '${STORAGE_BUCKET}'
+    apis:
+      resend: '${RESEND_API_KEY}'
+      stripe: '${STRIPE_SECRET_KEY}'
+      cloudinary: '${CLOUDINARY_API_KEY}'
+      google: '${GOOGLE_API_KEY}'
+      sendgrid: '${SENDGRID_API_KEY}'
+  
+  # Credenciales del sistema
+  sistema:
+    jwtSecret: '${JWT_SECRET}'
+    encryptionKey: '${ENCRYPTION_KEY}'
+    sessionSecret: '${SESSION_SECRET}'
+    apiSecret: '${API_SECRET}'
+    webhookSecret: '${WEBHOOK_SECRET}'
+
+rotacion:
+  # Habilitar rotación automática de claves
+  habilitada: true
+  
+  # Frecuencia de rotación en días
+  frecuenciaDias: 30
+  
+  # Claves que deben rotarse
+  clavesRotar:
+    - 'jwtSecret'
+    - 'encryptionKey'
+    - 'sessionSecret'
+    - 'apiSecret'
+  
+  # Días antes del vencimiento para notificar
+  notificarAntesDias: 7
+  
+  # Claves que no deben rotarse automáticamente
+  clavesExcluir:
+    - 'dbPassword' # Las contraseñas de BD se rotan manualmente
+  
+  # Generar nuevos valores seguros
+  generarValoresSeguros: true
+  
+  # Validar nuevos valores
+  validarNuevosValores: true
+
+auditoria:
+  # Habilitar sistema de auditoría
+  habilitada: true
+  
+  # Log de accesos exitosos
+  logAccesos: true
+  
+  # Log de accesos fallidos
+  logFallos: true
+  
+  # Log de modificaciones
+  logModificaciones: true
+  
+  # Generar reporte diario
+  reporteDiario: true
+  
+  # Email del administrador para alertas
+  emailAdministrador: '${ADMIN_EMAIL}'
+  
+  # Webhook para alertas de seguridad
+  webhookSeguridad: '${SECURITY_WEBHOOK}'
+  
+  # Nivel de detalle en logs
+  nivelDetalle: 'detallado' # basico, detallado, completo
+  
+  # Retener logs por días
+  diasRetenerLogs: 365
+  
+  # Comprimir logs antiguos
+  comprimirLogsAntiguos: true
+  
+  # Eventos críticos a monitorear
+  eventosCriticos:
+    - 'acceso_no_autorizado'
+    - 'multiple_fallo_acceso'
+    - 'modificacion_credenciales_criticas'
+    - 'acceso_fuera_horario'
+    - 'rotacion_claves'
+    - 'intento_acceso_inexistente'
+
+validacion:
+  # Validar credenciales al almacenarlas
+  validarCredenciales: true
+  
+  # Patrones para detectar credenciales débiles
+  patronesDebiles:
+    - '^(admin|root|test|default|123|password)$'
+    - '^[a-z0-9]{1,8}$'
+    - '^[0-9]+$'
+    - '^(password|pass|clave).*[0-9]+$'
+    - '^[a-zA-Z]+[0-9]+$'
+  
+  # Longitud mínima para credenciales
+  longitudMinima: 8
+  
+  # Requerir caracteres especiales
+  requerirCaracteresEspeciales: true
+  
+  # Requerir números
+  requerirNumeros: true
+  
+  # Requerir mayúsculas y minúsculas
+  requerirMayusculasMinusculas: true
+  
+  # Lista de palabras prohibidas
+  palabrasProhibidas:
+    - 'ugt'
+    - 'towa'
+    - 'sindical'
+    - 'empresa'
+    - 'admin'
+    - 'test'
+    - 'desarrollo'
+
+backupCredenciales:
+  # Crear backup de credenciales
+  crearBackup: true
+  
+  # Directorio para backup de credenciales
+  directorioBackup: './storage/backup-credenciales'
+  
+  # Frecuencia de backup en días
+  frecuenciaBackup: 7
+  
+  # Mantener backups por días
+  mantenerBackups: 90
+  
+  # Encriptar backups adicionales
+  encriptarBackups: true
+  
+  # Ubicaciones adicionales para backup
+  ubicacionesAdicionales:
+    - './storage/cloud-backup'
+    - '${REMOTE_BACKUP_PATH}'
+
+monitoreo:
+  # Monitorear accesos sospechosos
+  detectarAccesosSospechosos: true
+  
+  # Umbral de accesos por minuto
+  umbralAccesosPorMinuto: 10
+  
+  # Umbral de fallos por minuto
+  umbralFallosPorMinuto: 3
+  
+  # Detectar patrones anómalos
+  detectarAnomalias: true
+  
+  # ML para detección de anomalías
+  machineLearning: false
+  
+  # Métricas a收集ar
+  metricas:
+    - 'accesos_totales'
+    - 'accesos_fallidos'
+    - 'claves_rotadas'
+    - 'tiempo_respuesta'
+    - 'uso_memoria'
+
+notificacionesSeguridad:
+  # Notificar accesos fallidos múltiples
+  multiplesFallos: true
+  umbralFallos: 5
+  
+  # Notificar acceso fuera de horario
+  accesoFueraHorario: true
+  horarioLaboral:
+    inicio: '08:00'
+    fin: '18:00'
+    dias: [1,2,3,4,5] # Lunes a viernes
+  
+  # Notificar modificaciones críticas
+  modificacionesCriticas: true
+  
+  # Notificar intentos de acceso a credenciales inexistentes
+  accesoInexistente: true
+
+# Variables de entorno con referencias seguras
+variables:
+  # Credenciales de base de datos
+  DB_HOST: localhost
+  DB_PORT: 5432
+  DB_NAME: ugt_towa_production
+  DB_USER: ugt_admin
+  DB_PASSWORD: '${SECURE_DB_PASSWORD}'
+  
+  MONGO_HOST: localhost
+  MONGO_PORT: 27017
+  MONGO_NAME: ugt_towa_logs
+  MONGO_USER: mongo_admin
+  MONGO_PASSWORD: '${SECURE_MONGO_PASSWORD}'
+  
+  # Credenciales de servicios
+  EMAIL_API_KEY: '${SECURE_EMAIL_API_KEY}'
+  SMTP_HOST: smtp.gmail.com
+  SMTP_PORT: 587
+  SMTP_USER: '${SECURE_SMTP_USER}'
+  SMTP_PASSWORD: '${SECURE_SMTP_PASSWORD}'
+  
+  AWS_ACCESS_KEY: '${SECURE_AWS_ACCESS_KEY}'
+  AWS_SECRET_KEY: '${SECURE_AWS_SECRET_KEY}'
+  AWS_REGION: us-east-1
+  STORAGE_BUCKET: ugt-towa-backup
+  
+  RESEND_API_KEY: '${SECURE_RESEND_API_KEY}'
+  STRIPE_SECRET_KEY: '${SECURE_STRIPE_KEY}'
+  CLOUDINARY_API_KEY: '${SECURE_CLOUDINARY_KEY}'
+  GOOGLE_API_KEY: '${SECURE_GOOGLE_KEY}'
+  SENDGRID_API_KEY: '${SECURE_SENDGRID_KEY}'
+  
+  # Claves del sistema
+  JWT_SECRET: '${SECURE_JWT_SECRET}'
+  ENCRYPTION_KEY: '${SECURE_ENCRYPTION_KEY}'
+  SESSION_SECRET: '${SECURE_SESSION_SECRET}'
+  API_SECRET: '${SECURE_API_SECRET}'
+  WEBHOOK_SECRET: '${SECURE_WEBHOOK_SECRET}'
+  
+  # Administración
+  ADMIN_EMAIL: admin@ugt-towa.org
+  SECURITY_WEBHOOK: '${SECURE_SECURITY_WEBHOOK}'
+  
+  # Backups remotos
+  REMOTE_BACKUP_PATH: '/secure/remote/ugt-towa-backups'
+  
+  # Referencias a variables seguras (se resuelven en tiempo de ejecución)
+  SECURE_DB_PASSWORD: '${UGT_TOWA_DB_PASSWORD}'
+  SECURE_MONGO_PASSWORD: '${UGT_TOWA_MONGO_PASSWORD}'
+  SECURE_EMAIL_API_KEY: '${UGT_TOWA_EMAIL_KEY}'
+  SECURE_SMTP_USER: '${UGT_TOWA_SMTP_USER}'
+  SECURE_SMTP_PASSWORD: '${UGT_TOWA_SMTP_PASSWORD}'
+  SECURE_AWS_ACCESS_KEY: '${UGT_TOWA_AWS_ACCESS}'
+  SECURE_AWS_SECRET_KEY: '${UGT_TOWA_AWS_SECRET}'
+  SECURE_RESEND_API_KEY: '${UGT_TOWA_RESEND_KEY}'
+  SECURE_STRIPE_KEY: '${UGT_TOWA_STRIPE_SECRET}'
+  SECURE_CLOUDINARY_KEY: '${UGT_TOWA_CLOUDINARY_KEY}'
+  SECURE_GOOGLE_KEY: '${UGT_TOWA_GOOGLE_KEY}'
+  SECURE_SENDGRID_KEY: '${UGT_TOWA_SENDGRID_KEY}'
+  SECURE_JWT_SECRET: '${UGT_TOWA_JWT_SECRET}'
+  SECURE_ENCRYPTION_KEY: '${UGT_TOWA_ENCRYPTION_KEY}'
+  SECURE_SESSION_SECRET: '${UGT_TOWA_SESSION_SECRET}'
+  SECURE_API_SECRET: '${UGT_TOWA_API_SECRET}'
+  SECURE_WEBHOOK_SECRET: '${UGT_TOWA_WEBHOOK_SECRET}'
+  SECURE_SECURITY_WEBHOOK: '${UGT_TOWA_SECURITY_WEBHOOK}'

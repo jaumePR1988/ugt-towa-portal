@@ -1,0 +1,234 @@
+{
+  "name": "ugt-towa-backup-protection",
+  "version": "1.0.0",
+  "description": "Sistema completo de backup y protección para el sistema de replicación UGT-TOWA",
+  "main": "scripts/coordinador-backup.js",
+  "scripts": {
+    "start": "node scripts/coordinador-backup.js completo",
+    "backup": "node scripts/backup-automatico.js",
+    "proteccion": "node scripts/sistema-proteccion.js",
+    "almacenamiento": "node scripts/sistema-almacenamiento.js",
+    "recuperacion": "node scripts/coordinador-backup.js recuperacion",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "jest test/unit/*.test.js",
+    "test:integration": "jest test/integration/*.test.js",
+    "test:backup": "jest test/backup/*.test.js",
+    "test:proteccion": "jest test/proteccion/*.test.js",
+    "test:almacenamiento": "jest test/almacenamiento/*.test.js",
+    "lint": "eslint scripts/ config/",
+    "lint:fix": "eslint scripts/ config/ --fix",
+    "format": "prettier --write '**/*.{js,yaml,md,json}'",
+    "docs": "jsdoc -c jsdoc.conf.json",
+    "build": "npm run build:docs",
+    "build:docs": "jsdoc -c jsdoc.conf.json -d docs/api",
+    "setup": "npm install && node scripts/setup-inicial.js",
+    "validate": "node scripts/validar-configuracion.js",
+    "monitor": "node scripts/monitor-tiempo-real.js",
+    "report": "node scripts/generar-reporte-completo.js",
+    "clean": "node scripts/limpiar-sistema.js",
+    "install:global": "npm install -g pm2 yarn",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:stop": "pm2 stop ecosystem.config.js",
+    "pm2:restart": "pm2 restart ecosystem.config.js",
+    "pm2:logs": "pm2 logs",
+    "security:audit": "npm audit",
+    "security:scan": "npm run security:check",
+    "security:check": "node scripts/verificar-seguridad.js",
+    "rotar-claves": "node scripts/sistema-proteccion.js rotar-claves",
+    "verificar-integridad": "node scripts/sistema-proteccion.js verificar-integridad",
+    "reporte-seguridad": "node scripts/sistema-proteccion.js reporte-seguridad"
+  },
+  "keywords": [
+    "backup",
+    "proteccion",
+    "encriptacion",
+    "seguridad",
+    "recuperacion",
+    "emergencia",
+    "ugt",
+    "towa",
+    "sindical",
+    "versionado",
+    "git",
+    "cloud-storage",
+    "aws-s3",
+    "auditoria"
+  ],
+  "author": {
+    "name": "Equipo de Desarrollo UGT-TOWA",
+    "email": "dev@ugt-towa.org",
+    "url": "https://ugt-towa.org"
+  },
+  "contributors": [
+    {
+      "name": "Arquitecto Principal",
+      "email": "arquitecto@ugt-towa.org"
+    },
+    {
+      "name": "Especialista en Seguridad",
+      "email": "security@ugt-towa.org"
+    },
+    {
+      "name": "DevOps Engineer",
+      "email": "devops@ugt-towa.org"
+    }
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/ugt-towa/backup-protection#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ugt-towa/backup-protection.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ugt-towa/backup-protection/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "os": [
+    "linux",
+    "darwin",
+    "win32"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
+  "dependencies": {
+    "aws-sdk": "^2.1580.0",
+    "bcrypt": "^5.1.1",
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "cron": "^3.1.6",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "fs-extra": "^11.2.0",
+    "glob": "^10.3.10",
+    "joi": "^17.11.0",
+    "js-yaml": "^4.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "morgan": "^1.10.0",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.7",
+    "pino": "^8.17.0",
+    "pino-pretty": "^10.3.0",
+    "progress": "^2.0.3",
+    "shelljs": "^0.8.5",
+    "winston": "^3.11.0",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.8",
+    "@types/node": "^20.9.0",
+    "eslint": "^8.54.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "jest": "^29.7.0",
+    "jsdoc": "^4.0.2",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.1.0",
+    "supertest": "^6.3.3"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html"
+    ],
+    "testMatch": [
+      "**/test/**/*.test.js"
+    ],
+    "testTimeout": 30000,
+    "setupFilesAfterEnv": [
+      "<rootDir>/test/setup.js"
+    ]
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "es2022": true,
+      "jest": true
+    },
+    "extends": [
+      "standard"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2022,
+      "sourceType": "module"
+    },
+    "rules": {
+      "no-console": "off",
+      "comma-dangle": [
+        "error",
+        "always-multiline"
+      ],
+      "space-before-function-paren": [
+        "error",
+        {
+          "anonymous": "always",
+          "named": "never",
+          "asyncArrow": "always"
+        }
+      ]
+    }
+  },
+  "prettier": {
+    "semi": true,
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "printWidth": 80,
+    "tabWidth": 2
+  },
+  "jsdoc": {
+    "source": {
+      "include": [
+        "scripts"
+      ],
+      "includePattern": ".js$",
+      "excludePattern": "(^|\\/|\\\\)\\."
+    },
+    "plugins": [
+      "plugins/markdown"
+    ],
+    "opts": {
+      "destination": "docs/api",
+      "recurse": true,
+      "template": "templates/default"
+    },
+    "templates": {
+      "cleverLinks": true,
+      "monospaceLinks": true
+    }
+  },
+  "files": [
+    "scripts/",
+    "config/",
+    "docs/",
+    "README.md",
+    "LICENSE"
+  ],
+  "bin": {
+    "ugt-backup": "./scripts/coordinador-backup.js",
+    "ugt-proteccion": "./scripts/sistema-proteccion.js",
+    "ugt-almacenamiento": "./scripts/sistema-almacenamiento.js"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://ugt-towa.org/donate"
+  },
+  "peerDependencies": {
+    "node": ">=18.0.0"
+  },
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/ugt-towa"
+  }
+}

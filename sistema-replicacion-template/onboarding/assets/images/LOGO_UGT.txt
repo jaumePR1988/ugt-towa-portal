@@ -1,0 +1,25 @@
+# Logo UGT - Simulación ASCII
+
+```
+███████╗███████╗███████╗███████╗███████╗███████╗███████╗███████╗███████╗
+██╔════╝██╔════╝██╔════╝██╔════╝██╔════╝██╔════╝██╔════╝██╔════╝██╔════╝
+█████╗  ███████╗█████╗  █████╗  █████╗  ███████╗███████╗█████╗  ███████╗
+██╔══╝  ╚════██║██╔══╝  ██╔══╝  ██╔══╝  ╚════██║╚════██║██╔══╝  ╚════██║
+███████╗███████║███████╗███████╗███████╗███████║███████║███████╗███████║
+╚══════╝╚══════╝╚══════╝╚══════╝╚══════╝╚══════╝╚══════╝╚══════╝╚══════╝
+```
+
+## Descripción
+Este logo representa visualmente las siglas "UGT" con un diseño de bloques que simula los píxeles de una pantalla, reflejando la naturaleza tecnológica del sistema.
+
+## Uso
+- Se puede usar en headers de páginas web
+- Como favicon de la aplicación
+- En documentos oficiales
+- Como marca de agua
+
+## Archivos
+- Formato: PNG recomendado
+- Tamaño: 200x200 px para web
+- Fondo: Transparente o blanco
+- Colores: Negro sobre fondo claro o blanco sobre fondo oscuro

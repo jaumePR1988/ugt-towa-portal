@@ -1,0 +1,226 @@
+# Configuración del Sistema de Backup Automático
+# Sistema de replicación UGT-TOWA
+# Fecha: 2024-11-11
+
+backup:
+  # Directorio base para backups locales
+  rutaLocal: './storage/local'
+  
+  # Rutas a incluir en el backup
+  rutasIncluir:
+    - './template-base'
+    - './herramientas'
+    - './plantillas'
+    - './documentacion'
+    - './backup-protection'
+  
+  # Rutas y patrones a excluir
+  rutasExcluir:
+    - 'node_modules'
+    - '.git'
+    - 'dist'
+    - 'build'
+    - '*.log'
+    - '.env*'
+    - 'backup-*'
+    - '*.tmp'
+    - 'temp/*'
+    - '.DS_Store'
+    - 'Thumbs.db'
+  
+  # Número de backups a mantener
+  mantenerBackups: 30
+  
+  # Comprimir backups
+  comprimir: true
+  
+  # Encriptar backups
+  encriptar: true
+  
+  # Nivel de compresión (1-9)
+  nivelCompresion: 6
+
+versionado:
+  # Usar sistema Git para versionado
+  sistemaGit: true
+  
+  # Crear tags en Git
+  tags: true
+  
+  # Crear ramas específicas
+  ramas: true
+  
+  # Ramas a mantener
+  mantenerRamas:
+    - 'main'
+    - 'develop'
+    - 'hotfix'
+    - 'backup'
+  
+  # Mensaje de commit personalizado
+  mensajeCommit: "Backup automático v{version} - {fecha}"
+  
+  # Push automático después del backup
+  pushAutomatico: true
+
+baseDatos:
+  # Incluir backup de base de datos
+  incluir: true
+  
+  # Tipos de base de datos a respaldar
+  tipos:
+    - 'postgres'
+    - 'mongodb'
+  
+  # Formato de backup
+  formato: 'sql'
+  
+  # Configuración PostgreSQL
+  postgres:
+    host: '${DB_HOST}'
+    port: '${DB_PORT}'
+    database: '${DB_NAME}'
+    user: '${DB_USER}'
+    password: '${DB_PASSWORD}'
+    incluirEsquema: true
+    incluirDatos: true
+    incluirIndices: true
+  
+  # Configuración MongoDB
+  mongodb:
+    host: '${MONGO_HOST}'
+    port: '${MONGO_PORT}'
+    database: '${MONGO_NAME}'
+    user: '${MONGO_USER}'
+    password: '${MONGO_PASSWORD}'
+    incluirColecciones: true
+    incluirIndices: true
+
+notificacion:
+  # Habilitar notificaciones por email
+  email: true
+  
+  # Dirección de email del administrador
+  emailAdministrador: '${ADMIN_EMAIL}'
+  
+  # Servidor SMTP
+  smtp:
+    host: '${SMTP_HOST}'
+    puerto: '${SMTP_PORT}'
+    usuario: '${SMTP_USER}'
+    password: '${SMTP_PASSWORD}'
+    usarTLS: true
+  
+  # Webhooks para notificaciones
+  webhooks:
+    - '${WEBHOOK_SLACK}'
+    - '${WEBHOOK_DISCORD}'
+  
+  # Notificaciones adicionales
+  discord: false
+  slack: false
+  
+  # Eventos que generan notificaciones
+  eventosNotificacion:
+    - 'backup_iniciado'
+    - 'backup_completado'
+    - 'backup_error'
+    - 'rotacion_claves'
+    - 'espacio_bajo'
+
+programacion:
+  # Frecuencia de backup automático
+  frecuencia: 'diario' # diario, semanal, mensual
+  
+  # Hora del día para ejecutar backup (formato 24h)
+  hora: '02:00'
+  
+  # Días de la semana para backup (1=lunes, 7=domingo)
+  diasSemana: [1,2,3,4,5,6,7]
+  
+  # Backup adicional en días específicos
+  backupAdicional:
+    enabled: true
+    dia: 0 # 0=domingo
+    hora: '03:00'
+
+limpieza:
+  # Limpiar archivos temporales después del backup
+  limpiarTemp: true
+  
+  # Limpiar logs antiguos
+  limpiarLogs: true
+  
+  # Días antes de eliminar logs
+  diasLogs: 90
+  
+  # Verificar espacio en disco antes de backup
+  verificarEspacio: true
+  
+  # Espacio mínimo libre (en GB)
+  espacioMinimoLibre: 5
+
+seguridad:
+  # Hash de integridad
+  generarHash: true
+  
+  # Algoritmo de hash
+  algoritmoHash: 'sha256'
+  
+  # Verificar integridad después de backup
+  verificarIntegridad: true
+  
+  # Firmar backups digitalmente
+  firmarDigitalmente: false
+  
+  # Certificado para firma digital
+  certificadoFirma: '${CERT_PATH}'
+
+monitoreo:
+  # Métricas de performance
+  habilitarMetricas: true
+  
+  # Archivo de métricas
+  archivoMetricas: './storage/metricas/backups.json'
+  
+  # Retener métricas por días
+  diasRetenerMetricas: 365
+  
+  # Alertas de performance
+  alertaPerformance:
+    tiempoMaximo: 3600 # segundos
+    tamañoMaximo: '10GB'
+    archivosMaximo: 10000
+
+# Variables de entorno personalizadas
+variables:
+  DB_HOST: localhost
+  DB_PORT: 5432
+  DB_NAME: ugt_towa_production
+  DB_USER: ugt_admin
+  DB_PASSWORD: '${ENV_DB_PASSWORD}'
+  
+  MONGO_HOST: localhost
+  MONGO_PORT: 27017
+  MONGO_NAME: ugt_towa_logs
+  MONGO_USER: mongo_admin
+  MONGO_PASSWORD: '${ENV_MONGO_PASSWORD}'
+  
+  ADMIN_EMAIL: admin@ugt-towa.org
+  SMTP_HOST: smtp.gmail.com
+  SMTP_PORT: 587
+  SMTP_USER: '${ENV_SMTP_USER}'
+  SMTP_PASSWORD: '${ENV_SMTP_PASSWORD}'
+  
+  WEBHOOK_SLACK: '${ENV_WEBHOOK_SLACK}'
+  WEBHOOK_DISCORD: '${ENV_WEBHOOK_DISCORD}'
+  
+  CERT_PATH: './certs/backup-signature.p12'
+  
+  # Contraseñas con referencia a variables de entorno seguras
+  ENV_DB_PASSWORD: '${SECURE_DB_PASSWORD}'
+  ENV_MONGO_PASSWORD: '${SECURE_MONGO_PASSWORD}'
+  ENV_SMTP_USER: '${SECURE_SMTP_USER}'
+  ENV_SMTP_PASSWORD: '${SECURE_SMTP_PASSWORD}'
+  ENV_WEBHOOK_SLACK: '${SECURE_WEBHOOK_SLACK}'
+  ENV_WEBHOOK_DISCORD: '${SECURE_WEBHOOK_DISCORD}'

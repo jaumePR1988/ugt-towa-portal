@@ -1,0 +1,347 @@
+# Configuración del Sistema de Almacenamiento Seguro
+# Sistema de replicación UGT-TOWA
+# Fecha: 2024-11-11
+
+ubicaciones:
+  # Almacenamiento local
+  local:
+    habilitada: true
+    rutaBase: './storage/local'
+    subdirectorios:
+      - 'principal'
+      - 'respaldo'
+      - 'temporal'
+    rotacion: 30 # días
+    espacioMinimo: '1GB'
+    comprimir: true
+    checksum: true
+    
+  # Repositorio Git
+  git:
+    habilitada: true
+    repositorio: 'origin'
+    rama: 'main'
+    ramaBackup: 'backup'
+    incluirLargeFiles: false
+    lfs: false
+    tags: true
+    branches: true
+    commits: true
+    comprimido: true
+    excluirArchivosGrandes: true
+    tamañoMaximoArchivo: '100MB'
+    
+    # Configuración de commits
+    commit:
+      autor: 'UGT-TOWA Backup System'
+      email: 'backup@ugt-towa.org'
+      mensaje: "Backup automático - {timestamp}"
+    
+    # Configuración de limpieza
+    limpieza:
+      mantenerCommits: 50
+      eliminarRamasViejas: true
+      comprimirRepo: true
+      
+  # Cloud Storage
+  cloud:
+    habilitada: true
+    proveedor: 'aws' # aws, gcp, azure, digitalocean
+    regiones:
+      primaria: 'us-east-1'
+      secundaria: 'eu-west-1'
+    buckets:
+      principal: 'ugt-towa-backup-principal'
+      respaldo: 'ugt-towa-backup-respaldo'
+      archivo: 'ugt-towa-backup-archive'
+    encriptacion: 'AES256'
+    versionado: true
+    
+    # Configuración de lifecycle
+    lifecycle:
+      transicionStandard: 30 # días
+      transicionGlacier: 90 # días
+      eliminacion: 365 # días
+    
+    # Configuración de acceso
+    access:
+      publicRead: false
+      serverSideEncryption: 'AES256'
+      bucketPolicy: 'private'
+    
+    # Configuración de transferencia
+    transferencia:
+      multiPart: true
+      chunkSize: '8MB'
+      concurrentUploads: 4
+      maxRetries: 3
+      timeout: 300000 # 5 minutos
+      
+  # FTP/FTPS
+  ftp:
+    habilitada: false
+    servidores:
+      - host: '${FTP_HOST}'
+        usuario: '${FTP_USER}'
+        password: '${FTP_PASSWORD}'
+        ruta: '/backups/ugt-towa'
+        puerto: 21
+        ssl: true
+        passive: true
+        timeout: 30000
+        
+    # Configuración de conexión
+    conexion:
+      maxConexiones: 3
+      keepAlive: true
+      verifyServer: true
+      
+  # SSH/SFTP
+  ssh:
+    habilitada: false
+    servidores:
+      - host: '${SSH_HOST}'
+        usuario: '${SSH_USER}'
+        clavePrivada: '${SSH_PRIVATE_KEY}'
+        ruta: '/backups/ugt-towa'
+        puerto: 22
+        timeout: 30000
+        
+    # Configuración SSH
+    ssh:
+      algoritmo: 'rsa'
+      bits: 2048
+      comprimir: true
+      keepAlive: true
+      
+  # Google Drive
+  googleDrive:
+    habilitada: false
+    credenciales: '${GOOGLE_CREDENTIALS_PATH}'
+    carpetaId: '${GOOGLE_FOLDER_ID}'
+    tamañoMaximoArchivo: '750MB' # Límite de Google Drive
+    
+  # Dropbox
+  dropbox:
+    habilitada: false
+    token: '${DROPBOX_TOKEN}'
+    ruta: '/backups/ugt-towa'
+    tamañoMaximoArchivo: '150MB' # Límite de chunk upload
+    
+  # OneDrive
+  onedrive:
+    habilitada: false
+    clientId: '${ONEDRIVE_CLIENT_ID}'
+    clientSecret: '${ONEDRIVE_CLIENT_SECRET}'
+    tenantId: '${ONEDRIVE_TENANT_ID}'
+    ruta: '/backups/ugt-towa'
+    
+sincronizacion:
+  # Estrategia de sincronización
+  estrategia: 'paralela' # paralela, secuencial, hibrida
+  
+  # Configuración de conexiones
+  maxConexiones: 5
+  timeout: 30000
+  reintentos: 3
+  delayEntreReintentos: 5000 # ms
+  
+  # Verificaciones de integridad
+  verificaciones:
+    hash: true
+    tamaño: true
+    fechaModificacion: true
+    permisos: false
+    
+  # Configuración de performance
+  performance:
+    bufferSize: '1MB'
+    chunkSize: '64KB'
+    parallelChunks: 4
+    compressionLevel: 6
+    
+  # Configuración de conflictos
+  conflictos:
+    estrategia: 'timestamp' # timestamp, version, manual
+    resolverAutomaticamente: true
+    notificarConflictos: true
+    mantenerVersiones: 5
+    
+balanceo:
+  # Estrategia de balanceo
+  estrategia: 'round-robin' # round-robin, menor-uso, menor-latencia, peso
+  
+  # Pesos para cada ubicación
+  pesos:
+    local: 0.3
+    git: 0.2
+    cloud: 0.4
+    ftp: 0.05
+    ssh: 0.05
+    
+  # Métricas para balanceo
+  metricas:
+    usoEspacio: true
+    latencia: true
+    velocidad: true
+    disponibilidad: true
+    
+  # Configuración de fallback
+  fallback:
+    habilitado: true
+    ubicacionesRespaldo:
+      - 'local'
+      - 'git'
+    umbralFallback: 0.8 # 80% de ubicaciones deben fallar para activar
+
+monitoreo:
+  # Métricas de sincronización
+  metricasSincronizacion: true
+  
+  # Archivo de métricas
+  archivoMetricas: './storage/metricas/sincronizacion.json'
+  
+  # Retener métricas por días
+  diasRetenerMetricas: 90
+  
+  # Alertas
+  alertas:
+    velocidadMinima: '1MB/s'
+    tiempoMaximo: 3600 # segundos
+    porcentajeFallosMaximo: 0.1 # 10%
+    
+  # Health checks
+  healthCheck:
+    habilitada: true
+    frecuencia: 300 # segundos
+    timeout: 10000 # ms
+    reintentos: 3
+    
+notificaciones:
+  # Notificar estado de sincronización
+  notificarEstado: true
+  
+  # Notificar errores críticos
+  notificarErrores: true
+  
+  # Notificar completación
+  notificarCompletacion: true
+  
+  # Canales de notificación
+  canales:
+    email:
+      habilitado: true
+      destinatarios:
+        - '${ADMIN_EMAIL}'
+      eventos:
+        - 'sincronizacion_completada'
+        - 'sincronizacion_error'
+        - 'ubicacion_no_disponible'
+        
+    webhook:
+      habilitado: true
+      url: '${WEBHOOK_SLACK}'
+      eventos:
+        - 'sincronizacion_iniciada'
+        - 'sincronizacion_completada'
+        - 'error_critico'
+        
+    slack:
+      habilitado: true
+      canal: '#backups'
+      webhook: '${SLACK_WEBHOOK}'
+      
+    discord:
+      habilitado: false
+      webhook: '${DISCORD_WEBHOOK}'
+
+configuracionAvanzada:
+  # Configuración de red
+  red:
+    userAgent: 'UGT-TOWA-Backup/1.0'
+    maxRedirects: 5
+    disableCookies: true
+    keepAlive: true
+    
+  # Configuración de DNS
+  dns:
+    servidores:
+      - '8.8.8.8'
+      - '8.8.4.4'
+    timeout: 5000
+    
+  # Configuración de proxy
+  proxy:
+    habilitado: false
+    http: '${HTTP_PROXY}'
+    https: '${HTTPS_PROXY}'
+    
+  # Configuración SSL/TLS
+  ssl:
+    verificarCertificados: true
+    cipherSuites: 'HIGH:!aNULL:!MD5'
+    minVersion: 'TLSv1.2'
+    
+  # Configuración de logs
+  logs:
+    nivel: 'info' # debug, info, warn, error
+    formato: 'json'
+    rotación:
+      tamaño: '10MB'
+      archivos: 5
+      compresión: true
+
+# Variables de entorno
+variables:
+  # FTP
+  FTP_HOST: '${SECURE_FTP_HOST}'
+  FTP_USER: '${SECURE_FTP_USER}'
+  FTP_PASSWORD: '${SECURE_FTP_PASSWORD}'
+  
+  # SSH
+  SSH_HOST: '${SECURE_SSH_HOST}'
+  SSH_USER: '${SECURE_SSH_USER}'
+  SSH_PRIVATE_KEY: '${SECURE_SSH_KEY}'
+  
+  # Google Drive
+  GOOGLE_CREDENTIALS_PATH: './config/google-credentials.json'
+  GOOGLE_FOLDER_ID: '${SECURE_GOOGLE_FOLDER_ID}'
+  
+  # Dropbox
+  DROPBOX_TOKEN: '${SECURE_DROPBOX_TOKEN}'
+  
+  # OneDrive
+  ONEDRIVE_CLIENT_ID: '${SECURE_ONEDRIVE_CLIENT_ID}'
+  ONEDRIVE_CLIENT_SECRET: '${SECURE_ONEDRIVE_SECRET}'
+  ONEDRIVE_TENANT_ID: '${SECURE_ONEDRIVE_TENANT_ID}'
+  
+  # Notificaciones
+  ADMIN_EMAIL: admin@ugt-towa.org
+  WEBHOOK_SLACK: '${SECURE_WEBHOOK_SLACK}'
+  SLACK_WEBHOOK: '${SECURE_SLACK_WEBHOOK}'
+  DISCORD_WEBHOOK: '${SECURE_DISCORD_WEBHOOK}'
+  
+  # Proxy
+  HTTP_PROXY: '${HTTP_PROXY}'
+  HTTPS_PROXY: '${HTTPS_PROXY}'
+  
+  # Referencias a variables seguras
+  SECURE_FTP_HOST: '${UGT_TOWA_FTP_HOST}'
+  SECURE_FTP_USER: '${UGT_TOWA_FTP_USER}'
+  SECURE_FTP_PASSWORD: '${UGT_TOWA_FTP_PASSWORD}'
+  
+  SECURE_SSH_HOST: '${UGT_TOWA_SSH_HOST}'
+  SECURE_SSH_USER: '${UGT_TOWA_SSH_USER}'
+  SECURE_SSH_KEY: '${UGT_TOWA_SSH_KEY}'
+  
+  SECURE_GOOGLE_FOLDER_ID: '${UGT_TOWA_GOOGLE_FOLDER_ID}'
+  
+  SECURE_DROPBOX_TOKEN: '${UGT_TOWA_DROPBOX_TOKEN}'
+  
+  SECURE_ONEDRIVE_CLIENT_ID: '${UGT_TOWA_ONEDRIVE_CLIENT_ID}'
+  SECURE_ONEDRIVE_CLIENT_SECRET: '${UGT_TOWA_ONEDRIVE_SECRET}'
+  SECURE_ONEDRIVE_TENANT_ID: '${UGT_TOWA_ONEDRIVE_TENANT_ID}'
+  
+  SECURE_WEBHOOK_SLACK: '${UGT_TOWA_WEBHOOK_SLACK}'
+  SECURE_SLACK_WEBHOOK: '${UGT_TOWA_SLACK_WEBHOOK}'
+  SECURE_DISCORD_WEBHOOK: '${UGT_TOWA_DISCORD_WEBHOOK}'
