@@ -5,35 +5,35 @@
         "id": "1",
         "content": "Analizar componentes reutilizables del Portal UGT Towa",
         "details": "1. Identificar funcionalidades comunes para empresas 2. Analizar elementos específicos de UGT TOWA 3. Documentar componentes modulares 4. Identificar configuraciones variables 5. Evaluar complejidad de personalización",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Diseñar arquitectura de replicación multi-empresa",
+        "content": "Diseñar arquitectura de replicación multi-empresa - OPCION A TEMPLATE GENERIC",
         "details": "1. Crear template base genérico 2. Diseñar sistema de configuración por empresa 3. Definir variables de personalización 4. Crear estructura de multi-tenancy 5. Planificar gestión de bases de datos por empresa",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "3": {
         "id": "3",
         "content": "Crear guía de replicación paso a paso",
         "details": "1. Documentar proceso de setup inicial 2. Crear checklist de personalización 3. Definir variables de configuración 4. Establecer flujo de datos y empresas 5. Crear herramientas de automatización",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "4": {
         "id": "4",
         "content": "Desarrollar herramientas de automatización",
         "details": "1. Script de inicialización por empresa 2. Generador de configuraciones 3. Copiador de base de datos 4. Configurador de dominios 5. Sistema de backup por empresa",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       },
       "5": {
         "id": "5",
         "content": "Crear documentación de personalización",
         "details": "1. Manual de usuario para replication 2. Guía de branding y personalización 3. Documentación técnica 4. Casos de uso por tipo de empresa 5. Mejores prácticas",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       }
     }
