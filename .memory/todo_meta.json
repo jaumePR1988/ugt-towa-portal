@@ -3,59 +3,45 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Crear tabla de notificaciones en Supabase",
-        "details": "Crear tabla 'notifications' con campos: id, appointment_id, type (reminder/cancellation/confirmation), title, message, created_at, read, user_email, delegate_type",
-        "status": "completed",
+        "content": "Hacer copia de seguridad de la versión actual",
+        "details": "1. Documentar URL actual (https://e98j3z8sojw0.space.minimax.io) 2. Crear backup de código actual 3. Documentar estado de base de datos 4. Crear instrucciones de rollback",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Modificar edge function de notificaciones",
-        "details": "Actualizar send-notifications/index.ts para: 1) Guardar notificaciones en DB en lugar de solo log 2) Crear recordatorios automáticos para citas próximas 3) Notificaciones para delegados",
-        "status": "completed",
+        "content": "FASE 1: Implementar búsqueda y filtros avanzados",
+        "details": "1. Búsqueda por nombre de usuario en notificaciones 2. Filtro por rango de fechas (desde/hasta) 3. Filtro por horario (mañana/tarde) 4. Búsqueda por palabras clave en mensajes 5. Filtros combinados",
+        "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Crear sistema de recordatorios automáticos",
-        "details": "Implementar lógica que detecte citas próximas (24h, 2h antes) y genere notificaciones automáticas en la base de datos",
-        "status": "completed",
+        "content": "FASE 1: Implementar estadísticas y reportes mejorados",
+        "details": "1. Gráfico de citas por día (últimos 30 días) 2. Porcentaje de asistencia por tipo de cita 3. Tasa de confirmación vs cancelaciones 4. Horarios más demandados 5. Top 5 usuarios que más citan",
+        "status": "pending",
         "priority": "high"
       },
       "4": {
         "id": "4",
-        "content": "Mejorar panel de administración de citas",
-        "details": "Actualizar AdminCitas.tsx para mostrar: 1) Lista de notificaciones con contadores 2) Marcar como leídas 3) Filtros por tipo y estado 4) Dashboard con estadísticas básicas",
-        "status": "completed",
-        "priority": "medium"
+        "content": "FASE 1: Implementar configuración personalizada",
+        "details": "1. Seleccionar tipos de recordatorios (24h, 2h, ambas) 2. Elegir horarios preferidos para notificaciones 3. Configurar usuario administrador 4. Personalizar textos de notificación 5. Activar/desactivar tipos de avisos",
+        "status": "pending",
+        "priority": "high"
       },
       "5": {
         "id": "5",
-        "content": "Implementar notificaciones para delegados",
-        "details": "Crear lógica que notifique a delegados cuando se reserven citas de su tipo (sindical/prevencion)",
-        "status": "completed",
-        "priority": "medium"
+        "content": "FASE 1: Implementar exportar datos y reportes",
+        "details": "1. Exportar citas a Excel/CSV 2. Reporte PDF de estadísticas mensuales 3. Histórico de notificaciones exportable 4. Citas por período con filtros 5. Reporte de asistencia para directivos",
+        "status": "pending",
+        "priority": "high"
       },
       "6": {
         "id": "6",
-        "content": "Crear cron job para recordatorios automáticos",
-        "details": "Configurar tarea programada que ejecute cada hora para generar recordatorios automáticos para las próximas 24h",
-        "status": "completed",
-        "priority": "high"
-      },
-      "7": {
-        "id": "7",
-        "content": "Probar y validar funcionamiento completo",
-        "details": "Verificar que: 1) Los recordatorios se generan automáticamente 2) Las notificaciones aparecen en el panel 3) Se pueden marcar como leídas 4) Los delegados reciben notificaciones",
-        "status": "completed",
-        "priority": "low"
-      },
-      "8": {
-        "id": "8",
-        "content": "Agregar nombre y email del creador en notificaciones",
-        "details": "Modificar edge functions y frontend para mostrar: Nombre completo + Email del usuario que creó la cita en todas las notificaciones",
-        "status": "completed",
-        "priority": "high"
+        "content": "FASE 2: Crear mockup de configuración personalizada",
+        "details": "1. Diseñar interfaz de configuración 2. Crear wireframes de la sección 3. Mostrar opciones de personalización 4. Documentar flujos de usuario 5. Crear mockup visual",
+        "status": "pending",
+        "priority": "medium"
       }
     }
   }
