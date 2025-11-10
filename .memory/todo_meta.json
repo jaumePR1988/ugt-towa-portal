@@ -49,6 +49,13 @@
         "details": "Verificar que: 1) Los recordatorios se generan automáticamente 2) Las notificaciones aparecen en el panel 3) Se pueden marcar como leídas 4) Los delegados reciben notificaciones",
         "status": "completed",
         "priority": "low"
+      },
+      "8": {
+        "id": "8",
+        "content": "Agregar nombre y email del creador en notificaciones",
+        "details": "Modificar edge functions y frontend para mostrar: Nombre completo + Email del usuario que creó la cita en todas las notificaciones",
+        "status": "completed",
+        "priority": "high"
       }
     }
   }

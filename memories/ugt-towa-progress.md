@@ -14,13 +14,55 @@ Portal web completo para Sección Sindical UGT en Towa Pharmaceutical Europe
 - Keys: Disponibles via get_all_secrets
 
 ## Fase Actual
-SISTEMA DE NOTIFICACIONES MEJORADO - 10-Nov-2025 14:01
+MEJORA NOTIFICACIONES: NOMBRE Y EMAIL DEL CREADOR - 10-Nov-2025 21:17
 
 ### Tarea Completada:
-Implementar Fase 1 del Sistema de Notificaciones Mejorado para reducir ausencias y mejorar gestión administrativa.
+Agregar nombre completo y email del creador de citas en las notificaciones para mejor trazabilidad.
 
 **Estado**: ✅ COMPLETADO Y DESPLEGADO
 
+**URL de Producción**: https://e98j3z8sojw0.space.minimax.io
+
+**Implementaciones Completadas:**
+- [x] Campo user_full_name agregado a tabla notifications
+- [x] Foreign key appointments.user_id -> profiles.id creada
+- [x] Edge function send-notifications v5 desplegada con JOIN a profiles
+- [x] Edge function generate-reminders v3 desplegada con JOIN a profiles
+- [x] AdminCitas.tsx actualizado para mostrar nombre y email del creador
+- [x] Mensajes de notificación actualizados con formato mejorado
+- [x] Testing comprehensivo completado: EXITOSO
+
+**Formato de Mensajes Mejorado:**
+- Confirmación: "Cita de [NOMBRE] ([EMAIL]) confirmada para [FECHA/HORA] - [TIPO]"
+- Cancelación: "Cita de [NOMBRE] ([EMAIL]) cancelada del [FECHA/HORA] - [TIPO]"
+- Recordatorio 24h: "Recordatorio: Cita de [NOMBRE] ([EMAIL]) para mañana [HORA] - [TIPO]"
+- Recordatorio 2h: "Recordatorio: Cita de [NOMBRE] ([EMAIL]) hoy a las [HORA] - [TIPO]"
+- Nueva cita delegado: "Nueva cita de [NOMBRE] ([EMAIL]) - [HORA] el [FECHA] - [TIPO]"
+
+**Visualización en AdminCitas.tsx:**
+- Sección "Creador:" con nombre completo y email entre paréntesis
+- Ubicada entre el título y el mensaje de la notificación
+- Formato: "Creador: Jaume Pedragosa (jpedragosa@towapharmaceutical.com)"
+
+**Archivos Modificados:**
+- /workspace/supabase/functions/send-notifications/index.ts (v5)
+- /workspace/supabase/functions/generate-reminders/index.ts (v3)
+- /workspace/ugt-towa-portal/src/pages/admin/AdminCitas.tsx
+- Base de datos: notifications tabla con nuevo campo user_full_name
+
+**Testing Realizado:**
+- ✅ Edge function send-notifications testeada: Notificación creada con nombre y email
+- ✅ Verificación en BD: Campo user_full_name almacenado correctamente
+- ✅ Frontend AdminCitas: Muestra nombre completo y email del creador
+- ✅ Formato de mensajes verificado: Incluye nombre y email
+- ✅ Sin errores en consola
+- ✅ Captura de pantalla: notificaciones_citas_admin.png
+
+**Estado Final**: LISTO PARA PRODUCCIÓN ✅
+
+### Tarea Anterior:
+SISTEMA DE NOTIFICACIONES MEJORADO - 10-Nov-2025 14:01
+**Estado**: ✅ COMPLETADO Y DESPLEGADO
 **URL de Producción**: https://ex2xh3gx1cnp.space.minimax.io
 
 **Objetivos Completados:**

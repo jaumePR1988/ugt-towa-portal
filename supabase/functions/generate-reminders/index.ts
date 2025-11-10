@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
 
         // 1. Obtener citas confirmadas para las próximas 24 horas (recordatorio 24h)
         const appointments24hResponse = await fetch(
-            `${supabaseUrl}/rest/v1/appointments?status=eq.confirmed&start_time=gte.${in24Hours.toISOString()}&start_time=lte.${in24Hours.toISOString()}&select=*`,
+            `${supabaseUrl}/rest/v1/appointments?status=eq.confirmed&start_time=gte.${in24Hours.toISOString()}&start_time=lte.${in24Hours.toISOString()}&select=*,profiles(full_name,email)`,
             {
                 headers: {
                     'Authorization': `Bearer ${serviceRoleKey}`,
@@ -56,9 +56,13 @@ Deno.serve(async (req) => {
                 const existing = await existingResponse.json();
                 
                 if (existing.length === 0) {
+                    // Extraer datos del usuario
+                    const userFullName = appointment.profiles?.full_name || 'Usuario';
+                    const userEmail = appointment.profiles?.email || '';
+                    
                     // Crear recordatorio de 24 horas
                     const title = 'Recordatorio: Cita en 24 horas';
-                    const message = `Tienes una cita con ${appointment.delegate_type} mañana a las ${new Date(appointment.start_time).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}. Fecha: ${new Date(appointment.start_time).toLocaleDateString('es-ES')}`;
+                    const message = `Recordatorio: Cita de ${userFullName} (${userEmail}) para mañana ${new Date(appointment.start_time).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })} - ${appointment.delegate_type}`;
 
                     const insertResponse = await fetch(
                         `${supabaseUrl}/rest/v1/notifications`,
@@ -74,6 +78,8 @@ Deno.serve(async (req) => {
                                 type: 'reminder',
                                 title,
                                 message,
+                                user_email: userEmail,
+                                user_full_name: userFullName,
                                 delegate_type: appointment.delegate_type,
                                 appointment_time: appointment.start_time
                             })
@@ -89,7 +95,7 @@ Deno.serve(async (req) => {
 
         // 2. Obtener citas confirmadas para las próximas 2-3 horas (recordatorio 2h)
         const appointments2hResponse = await fetch(
-            `${supabaseUrl}/rest/v1/appointments?status=eq.confirmed&start_time=gte.${in2Hours.toISOString()}&start_time=lte.${in3Hours.toISOString()}&select=*`,
+            `${supabaseUrl}/rest/v1/appointments?status=eq.confirmed&start_time=gte.${in2Hours.toISOString()}&start_time=lte.${in3Hours.toISOString()}&select=*,profiles(full_name,email)`,
             {
                 headers: {
                     'Authorization': `Bearer ${serviceRoleKey}`,
@@ -117,9 +123,13 @@ Deno.serve(async (req) => {
                 const existing = await existingResponse.json();
                 
                 if (existing.length === 0) {
+                    // Extraer datos del usuario
+                    const userFullName = appointment.profiles?.full_name || 'Usuario';
+                    const userEmail = appointment.profiles?.email || '';
+                    
                     // Crear recordatorio de 2 horas
                     const title = 'Recordatorio Urgente: Cita en 2 horas';
-                    const message = `Recordatorio: Tu cita con ${appointment.delegate_type} es hoy a las ${new Date(appointment.start_time).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}. No olvides asistir.`;
+                    const message = `Recordatorio: Cita de ${userFullName} (${userEmail}) hoy a las ${new Date(appointment.start_time).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })} - ${appointment.delegate_type}`;
 
                     const insertResponse = await fetch(
                         `${supabaseUrl}/rest/v1/notifications`,
@@ -135,6 +145,8 @@ Deno.serve(async (req) => {
                                 type: 'reminder',
                                 title,
                                 message,
+                                user_email: userEmail,
+                                user_full_name: userFullName,
                                 delegate_type: appointment.delegate_type,
                                 appointment_time: appointment.start_time
                             })
@@ -151,7 +163,7 @@ Deno.serve(async (req) => {
         // 3. Notificar a delegados sobre nuevas citas confirmadas en las últimas 2 horas
         const twoHoursAgo = new Date(now.getTime() - 2 * 60 * 60 * 1000);
         const newAppointmentsResponse = await fetch(
-            `${supabaseUrl}/rest/v1/appointments?status=eq.confirmed&created_at=gte.${twoHoursAgo.toISOString()}&select=*`,
+            `${supabaseUrl}/rest/v1/appointments?status=eq.confirmed&created_at=gte.${twoHoursAgo.toISOString()}&select=*,profiles(full_name,email)`,
             {
                 headers: {
                     'Authorization': `Bearer ${serviceRoleKey}`,
@@ -179,9 +191,15 @@ Deno.serve(async (req) => {
                 const existing = await existingResponse.json();
                 
                 if (existing.length === 0) {
+                    // Extraer datos del usuario
+                    const userFullName = appointment.profiles?.full_name || 'Usuario';
+                    const userEmail = appointment.profiles?.email || '';
+                    
                     // Crear notificación para delegados
+                    const formattedTime = new Date(appointment.start_time).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+                    const formattedDate = new Date(appointment.start_time).toLocaleDateString('es-ES');
                     const title = `Nueva Cita: ${appointment.delegate_type}`;
-                    const message = `Se ha reservado una nueva cita de tipo ${appointment.delegate_type} para el ${new Date(appointment.start_time).toLocaleString('es-ES')}`;
+                    const message = `Nueva cita de ${userFullName} (${userEmail}) - ${formattedTime} el ${formattedDate} - ${appointment.delegate_type}`;
 
                     const insertResponse = await fetch(
                         `${supabaseUrl}/rest/v1/notifications`,
@@ -197,6 +215,8 @@ Deno.serve(async (req) => {
                                 type: 'delegate_notification',
                                 title,
                                 message,
+                                user_email: userEmail,
+                                user_full_name: userFullName,
                                 delegate_type: appointment.delegate_type,
                                 appointment_time: appointment.start_time
                             })

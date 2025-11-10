@@ -14,6 +14,7 @@ interface Notification {
   created_at: string;
   read: boolean;
   user_email: string | null;
+  user_full_name: string | null;
   delegate_type: string | null;
   appointment_time: string | null;
 }
@@ -383,6 +384,15 @@ export default function AdminCitas() {
                         )}
                       </div>
                       <h3 className="font-semibold text-gray-900 mb-1">{notification.title}</h3>
+                      {notification.user_full_name && (
+                        <div className="flex items-center gap-2 mb-2 text-sm text-gray-700">
+                          <span className="font-medium">Creador:</span>
+                          <span>{notification.user_full_name}</span>
+                          {notification.user_email && (
+                            <span className="text-gray-500">({notification.user_email})</span>
+                          )}
+                        </div>
+                      )}
                       <p className="text-sm text-gray-600 mb-2">{notification.message}</p>
                       <div className="flex items-center gap-4 text-xs text-gray-500">
                         <span>{new Date(notification.created_at).toLocaleString('es-ES')}</span>

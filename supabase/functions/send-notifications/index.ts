@@ -24,9 +24,9 @@ Deno.serve(async (req) => {
             throw new Error('appointment_id y type son requeridos');
         }
 
-        // Obtener información de la cita
+        // Obtener información de la cita con datos del usuario
         const appointmentResponse = await fetch(
-            `${supabaseUrl}/rest/v1/appointments?id=eq.${appointment_id}&select=*`,
+            `${supabaseUrl}/rest/v1/appointments?id=eq.${appointment_id}&select=*,profiles(full_name,email)`,
             {
                 headers: {
                     'Authorization': `Bearer ${serviceRoleKey}`,
@@ -47,26 +47,33 @@ Deno.serve(async (req) => {
             throw new Error('Cita no encontrada');
         }
 
+        // Extraer datos del usuario
+        const userFullName = appointment.profiles?.full_name || 'Usuario';
+        const userEmail = appointment.profiles?.email || '';
+
         // Crear mensaje según el tipo de notificación
         let title = '';
         let message = '';
+        const formattedDateTime = new Date(appointment.start_time).toLocaleString('es-ES');
+        const formattedDate = new Date(appointment.start_time).toLocaleDateString('es-ES');
+        const formattedTime = new Date(appointment.start_time).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
         switch (type) {
             case 'confirmation':
                 title = 'Cita Confirmada';
-                message = `Tu cita con ${appointment.delegate_type} ha sido confirmada para el ${new Date(appointment.start_time).toLocaleString('es-ES')}`;
+                message = `Cita de ${userFullName} (${userEmail}) confirmada para el ${formattedDateTime} - ${appointment.delegate_type}`;
                 break;
             case 'cancellation':
                 title = 'Cita Cancelada';
-                message = `Tu cita con ${appointment.delegate_type} del ${new Date(appointment.start_time).toLocaleString('es-ES')} ha sido cancelada`;
+                message = `Cita de ${userFullName} (${userEmail}) cancelada del ${formattedDateTime} - ${appointment.delegate_type}`;
                 break;
             case 'reminder':
                 title = 'Recordatorio de Cita';
-                message = `Recordatorio: Tienes una cita con ${appointment.delegate_type} el ${new Date(appointment.start_time).toLocaleString('es-ES')}`;
+                message = `Recordatorio: Cita de ${userFullName} (${userEmail}) para ${formattedDate} a las ${formattedTime} - ${appointment.delegate_type}`;
                 break;
             case 'delegate_notification':
                 title = 'Nueva Cita Reservada';
-                message = `Se ha reservado una nueva cita de tipo ${appointment.delegate_type} para el ${new Date(appointment.start_time).toLocaleString('es-ES')}`;
+                message = `Nueva cita de ${userFullName} (${userEmail}) - ${formattedTime} el ${formattedDate} - ${appointment.delegate_type}`;
                 break;
             default:
                 throw new Error('Tipo de notificación no válido');
@@ -88,7 +95,8 @@ Deno.serve(async (req) => {
                     type,
                     title,
                     message,
-                    user_email: user_email || null,
+                    user_email: userEmail,
+                    user_full_name: userFullName,
                     delegate_type: delegate_type || appointment.delegate_type,
                     appointment_time: appointment.start_time
                 })
