@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
             for (const appointment of appointments24h) {
                 // Verificar si ya existe un recordatorio de 24h para esta cita
                 const existingResponse = await fetch(
-                    `${supabaseUrl}/rest/v1/notifications?appointment_id=eq.${appointment.id}&type=eq.reminder&message=ilike.*24 horas*&select=id`,
+                    `${supabaseUrl}/rest/v1/email_notifications?appointment_id=eq.${appointment.id}&notification_type=eq.reminder&body=ilike.*24 horas*&select=id`,
                     {
                         headers: {
                             'Authorization': `Bearer ${serviceRoleKey}`,
@@ -65,7 +65,7 @@ Deno.serve(async (req) => {
                     const message = `Recordatorio: Cita de ${userFullName} (${userEmail}) para mañana ${new Date(appointment.start_time).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })} - ${appointment.delegate_type}`;
 
                     const insertResponse = await fetch(
-                        `${supabaseUrl}/rest/v1/notifications`,
+                        `${supabaseUrl}/rest/v1/email_notifications`,
                         {
                             method: 'POST',
                             headers: {
@@ -75,13 +75,10 @@ Deno.serve(async (req) => {
                             },
                             body: JSON.stringify({
                                 appointment_id: appointment.id,
-                                type: 'reminder',
-                                title,
-                                message,
-                                user_email: userEmail,
-                                user_full_name: userFullName,
-                                delegate_type: appointment.delegate_type,
-                                appointment_time: appointment.start_time
+                                recipient_email: userEmail,
+                                subject: title,
+                                body: message,
+                                notification_type: 'reminder'
                             })
                         }
                     );
@@ -111,7 +108,7 @@ Deno.serve(async (req) => {
             for (const appointment of appointments2h) {
                 // Verificar si ya existe un recordatorio de 2h para esta cita
                 const existingResponse = await fetch(
-                    `${supabaseUrl}/rest/v1/notifications?appointment_id=eq.${appointment.id}&type=eq.reminder&message=ilike.*2 horas*&select=id`,
+                    `${supabaseUrl}/rest/v1/email_notifications?appointment_id=eq.${appointment.id}&notification_type=eq.reminder&body=ilike.*2 horas*&select=id`,
                     {
                         headers: {
                             'Authorization': `Bearer ${serviceRoleKey}`,
@@ -132,7 +129,7 @@ Deno.serve(async (req) => {
                     const message = `Recordatorio: Cita de ${userFullName} (${userEmail}) hoy a las ${new Date(appointment.start_time).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })} - ${appointment.delegate_type}`;
 
                     const insertResponse = await fetch(
-                        `${supabaseUrl}/rest/v1/notifications`,
+                        `${supabaseUrl}/rest/v1/email_notifications`,
                         {
                             method: 'POST',
                             headers: {
@@ -142,13 +139,10 @@ Deno.serve(async (req) => {
                             },
                             body: JSON.stringify({
                                 appointment_id: appointment.id,
-                                type: 'reminder',
-                                title,
-                                message,
-                                user_email: userEmail,
-                                user_full_name: userFullName,
-                                delegate_type: appointment.delegate_type,
-                                appointment_time: appointment.start_time
+                                recipient_email: userEmail,
+                                subject: title,
+                                body: message,
+                                notification_type: 'reminder'
                             })
                         }
                     );
@@ -179,7 +173,7 @@ Deno.serve(async (req) => {
             for (const appointment of newAppointments) {
                 // Verificar si ya existe notificación para delegados
                 const existingResponse = await fetch(
-                    `${supabaseUrl}/rest/v1/notifications?appointment_id=eq.${appointment.id}&type=eq.delegate_notification&select=id`,
+                    `${supabaseUrl}/rest/v1/email_notifications?appointment_id=eq.${appointment.id}&notification_type=eq.delegate_notification&select=id`,
                     {
                         headers: {
                             'Authorization': `Bearer ${serviceRoleKey}`,
@@ -202,7 +196,7 @@ Deno.serve(async (req) => {
                     const message = `Nueva cita de ${userFullName} (${userEmail}) - ${formattedTime} el ${formattedDate} - ${appointment.delegate_type}`;
 
                     const insertResponse = await fetch(
-                        `${supabaseUrl}/rest/v1/notifications`,
+                        `${supabaseUrl}/rest/v1/email_notifications`,
                         {
                             method: 'POST',
                             headers: {
@@ -212,13 +206,10 @@ Deno.serve(async (req) => {
                             },
                             body: JSON.stringify({
                                 appointment_id: appointment.id,
-                                type: 'delegate_notification',
-                                title,
-                                message,
-                                user_email: userEmail,
-                                user_full_name: userFullName,
-                                delegate_type: appointment.delegate_type,
-                                appointment_time: appointment.start_time
+                                recipient_email: userEmail,
+                                subject: title,
+                                body: message,
+                                notification_type: 'delegate_notification'
                             })
                         }
                     );

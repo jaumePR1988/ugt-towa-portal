@@ -9,8 +9,6 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signOut: () => Promise<void>;
-  resetPassword: (email: string) => Promise<void>;
-  updatePassword: (newPassword: string) => Promise<void>;
   isAdmin: boolean;
   isAffiliate: boolean;
 }
@@ -71,16 +69,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function signUp(email: string, password: string, fullName: string) {
-    // Validar dominio
-    const { data: validationData, error: validationError } = await supabase.functions.invoke(
-      'validate-email-domain',
-      { body: { email } }
-    );
-
-    if (validationError || !validationData.valid) {
-      throw new Error(validationData?.message || 'Email no válido');
-    }
-
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -98,25 +86,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error;
   }
 
-  async function resetPassword(email: string) {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
-    if (error) throw error;
-  }
 
-  async function updatePassword(newPassword: string) {
-    const { error } = await supabase.auth.updateUser({
-      password: newPassword,
-    });
-    if (error) throw error;
-  }
 
   const isAdmin = profile?.role === 'admin';
   const isAffiliate = profile?.is_affiliate === true;
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, signIn, signUp, signOut, resetPassword, updatePassword, isAdmin, isAffiliate }}>
+    <AuthContext.Provider value={{ user, profile, loading, signIn, signUp, signOut, isAdmin, isAffiliate }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,12 +1,17 @@
 # Portal Sindical UGT Towa - URLs de Producción
 
-## URL ACTUAL (Fase 1 Completa)
-**https://h50185qwg2s0.space.minimax.io**
-- Fecha de despliegue: 2025-11-10 22:24:16
+## URL ACTUAL (Sin Email)
+**https://ottakjvc490n.space.minimax.io**
+- Fecha de despliegue: 2025-11-11 00:17:28
 - Estado: ✅ PRODUCCIÓN ACTIVA
+- Versión: SIN EMAIL - Solo notificaciones en panel
+
+## URLS ANTERIORES (Para referencia)
+**https://h50185qwg2s0.space.minimax.io**
+- Fecha: 2025-11-10 22:24:16
+- Estado: 🔄 VERSION ANTERIOR
 - Versión: FASE 1 COMPLETA con 4 mejoras implementadas
 
-## URL BACKUP (Versión Anterior)
 **https://e98j3z8sojw0.space.minimax.io**
 - Fecha: 2025-11-10 (anterior a mejoras)
 - Estado: ✅ BACKUP ACTIVA (para rollback si necesario)
@@ -57,8 +62,39 @@
 - **Supabase URL**: https://zaxdscclkeytakcowgww.supabase.co
 
 ## Estado del Proyecto
-- ✅ **Sistema funcionando**: Todas las mejoras operativas
-- ✅ **Testing completado**: Sin errores de compilación
-- ✅ **Backup disponible**: Para rollback seguro
-- ✅ **Documentación completa**: Informes detallados creados
-- ✅ **Próximos pasos**: Mockup de configuración disponible para Fase 2
+- ✅ **Sistema funcionando**: Notificaciones solo en panel admin
+- ✅ **Email eliminado**: Sin envío real de emails
+- ✅ **Compilación exitosa**: Sin errores TypeScript
+- ✅ **Funcionalidad preservada**: 100% de sistema de citas y gestión
+- ✅ **Performance optimizada**: Tamaño reducido (2,449 kB vs 2,603 kB)
+- ✅ **Limpieza completa**: Sin dependencias de email
+
+## ✅ FUNCIONALIDADES ACTUALES
+
+### **✅ MANTENIDO - Sistema de Notificaciones en Panel**
+- Filtros avanzados por usuario, fechas, horarios, palabras clave
+- Estadísticas completas con gráficos (30 días, asistencia, confirmación, horarios pico)
+- Top 5 usuarios más activos
+- Configuración personalizada (recordatorios, horarios, admins, plantillas)
+- Exportación a Excel/CSV y PDF con gráficos
+- Historial completo de notificaciones
+
+### **✅ MANTENIDO - Edge Functions de Base de Datos**
+- `send-notifications`: Solo guarda en BD (no envía emails)
+- `generate-reminders`: Genera recordatorios en BD (no emails automáticos)
+- `validate-email-domain`: Validación de dominios
+
+### **❌ ELIMINADO - Funcionalidades de Email**
+- Envío real de newsletters por email
+- Tracking de aperturas y clics de emails
+- Variable RESEND_API_KEY
+- Panel de envío de newsletters
+- Edge functions de newsletter: send-newsletter, track-email-event
+
+### **✅ MANTENIDO - Otras Funcionalidades**
+- Sistema de autenticación (login/registro)
+- Gestión de citas y delegaciones
+- Panel de administración completo
+- Configuración del sistema
+- Base de datos completa
+- Cron jobs para recordatorios automáticos

@@ -225,12 +225,7 @@ export default function HomePage() {
                 >
                   <span className="font-medium text-gray-900">Solicitar Cita</span>
                 </Link>
-                <Link
-                  to="/newsletter"
-                  className="block p-3 border border-gray-200 rounded-lg hover:border-red-600 hover:bg-red-50 transition"
-                >
-                  <span className="font-medium text-gray-900">Suscribirse al Newsletter</span>
-                </Link>
+
                 <a
                   href="#sugerencias"
                   className="block p-3 border border-gray-200 rounded-lg hover:border-red-600 hover:bg-red-50 transition"

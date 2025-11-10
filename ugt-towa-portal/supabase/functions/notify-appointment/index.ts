@@ -143,28 +143,14 @@ Deno.serve(async (req) => {
     console.log('Contenido para usuario:', emailBodyUser);
     console.log('Contenido para delegado:', emailBodyDelegate);
 
-    // Aquí se integraría con un servicio de email real (Resend, SendGrid, etc.)
-    // Por ahora, registramos la notificación en la base de datos
-    const notificationResponse = await fetch(
-      `${supabaseUrl}/rest/v1/email_notifications`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${serviceRoleKey}`,
-          'apikey': serviceRoleKey,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify({
-          appointment_id: appointmentId,
-          recipient_email: user.email,
-          subject: emailSubject,
-          body: emailBodyUser,
-          notification_type: action,
-          sent_at: new Date().toISOString()
-        })
-      }
-    );
+    // Sistema de notificaciones por email removido durante limpieza
+    // Solo registramos el evento en logs para seguimiento
+    console.log('Notificación registrada para:', {
+      userEmail: user.email,
+      subject: emailSubject,
+      type: action,
+      timestamp: new Date().toISOString()
+    });
 
     return new Response(JSON.stringify({
       data: {

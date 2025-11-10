@@ -7,14 +7,13 @@ import { Toaster } from 'sonner';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import ResetPasswordPage from './pages/ResetPasswordPage';
+
 import QuienesSomosPage from './pages/QuienesSomosPage';
 import ComunicadosPage from './pages/ComunicadosPage';
 import ComunicadoDetailPage from './pages/ComunicadoDetailPage';
 import CitasPage from './pages/CitasPage';
 import EncuestasPage from './pages/EncuestasPage';
-import NewsletterPage from './pages/NewsletterPage';
+
 import DocumentosPage from './pages/DocumentosPage';
 
 // Admin Pages
@@ -29,7 +28,7 @@ import AdminComentarios from './pages/admin/AdminComentarios';
 import AdminDocumentos from './pages/admin/AdminDocumentos';
 import AdminSugerencias from './pages/admin/AdminSugerencias';
 import AdminEncuestasAnalisis from './pages/admin/AdminEncuestasAnalisis';
-import AdminNewsletter from './pages/admin/AdminNewsletter';
+
 import AdminCategoriasDocumentos from './pages/admin/AdminCategoriasDocumentos';
 import AdminQR from './pages/admin/AdminQR';
 import AdminGaleria from './pages/admin/AdminGaleria';
@@ -64,13 +63,12 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
+
           <Route path="/quienes-somos" element={<QuienesSomosPage />} />
           <Route path="/comunicados" element={<ComunicadosPage />} />
           <Route path="/comunicados/:id" element={<ComunicadoDetailPage />} />
           <Route path="/encuestas" element={<EncuestasPage />} />
-          <Route path="/newsletter" element={<NewsletterPage />} />
+
           
           {/* Protected Routes */}
           <Route
@@ -206,14 +204,7 @@ function App() {
               </AdminRoute>
             }
           />
-          <Route
-            path="/admin/newsletter"
-            element={
-              <AdminRoute>
-                <AdminNewsletter />
-              </AdminRoute>
-            }
-          />
+
           <Route
             path="/admin/categorias-documentos"
             element={

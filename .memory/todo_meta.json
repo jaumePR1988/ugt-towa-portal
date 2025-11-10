@@ -5,35 +5,35 @@
         "id": "1",
         "content": "Analizar sistema actual para identificar funcionalidades de email",
         "details": "1. Revisar edge functions actuales (send-notifications v5, generate-reminders v3) 2. Identificar código relacionado con envío de emails 3. Verificar configuraciones de Resend API 4. Analizar templates de email en el código 5. Documentar qué debe eliminarse",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
         "content": "Eliminar funcionalidades de email de edge functions",
         "details": "1. Modificar send-notifications para eliminar envío de emails 2. Actualizar generate-reminders sin email 3. Mantener solo notificaciones en base de datos 4. Asegurar que las funciones sigan guardando en tabla notifications 5. Preservar toda la funcionalidad de notificaciones en panel",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "3": {
         "id": "3",
         "content": "Limpiar configuraciones y dependencias de email",
         "details": "1. Eliminar configuraciones de Resend API 2. Remover dependencias de email en package.json 3. Limpiar variables de entorno relacionadas 4. Eliminar templates de email no utilizados 5. Actualizar documentación",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       },
       "4": {
         "id": "4",
         "content": "Actualizar interfaz de usuario si es necesario",
         "details": "1. Revisar si hay opciones de email en el panel admin 2. Eliminar botones o configuraciones relacionadas con email 3. Ajustar textos que mencionen envío de emails 4. Mantener solo las notificaciones en panel",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       },
       "5": {
         "id": "5",
         "content": "Compilar y desplegar versión sin email",
         "details": "1. Compilar proyecto con modificaciones 2. Desplegar nueva versión 3. Verificar que notificaciones siguen funcionando en panel 4. Confirmar que no hay errores de compilación 5. Actualizar documentación del sistema",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       }
     }

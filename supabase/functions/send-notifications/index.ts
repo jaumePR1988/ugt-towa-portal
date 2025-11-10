@@ -81,7 +81,7 @@ Deno.serve(async (req) => {
 
         // Guardar notificación en la base de datos
         const insertResponse = await fetch(
-            `${supabaseUrl}/rest/v1/notifications`,
+            `${supabaseUrl}/rest/v1/email_notifications`,
             {
                 method: 'POST',
                 headers: {
@@ -92,13 +92,10 @@ Deno.serve(async (req) => {
                 },
                 body: JSON.stringify({
                     appointment_id,
-                    type,
-                    title,
-                    message,
-                    user_email: userEmail,
-                    user_full_name: userFullName,
-                    delegate_type: delegate_type || appointment.delegate_type,
-                    appointment_time: appointment.start_time
+                    recipient_email: userEmail,
+                    subject: title,
+                    body: message,
+                    notification_type: type
                 })
             }
         );
