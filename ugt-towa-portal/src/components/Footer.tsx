@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import { CONTACT_CONFIG, formatPhone } from '../config/contact';
 
 export default function Footer() {
   return (
@@ -12,15 +13,15 @@ export default function Footer() {
             <div className="space-y-2 text-gray-300">
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4" />
-                <span>ugt@towapharmaceutical.com</span>
+                <span>{CONTACT_CONFIG.email}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4" />
-                <span>+34 XXX XXX XXX</span>
+                <span>{formatPhone(CONTACT_CONFIG.phone)}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4" />
-                <span>Towa Pharmaceutical Europe</span>
+                <span>{CONTACT_CONFIG.company}</span>
               </div>
             </div>
           </div>
