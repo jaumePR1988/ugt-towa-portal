@@ -3,45 +3,38 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "FASE 1 - Mejora 1: Búsqueda y filtros avanzados",
-        "details": "✅ COMPLETADO: Todos los filtros implementados: autocompletado usuario, rango fechas, horario, palabras clave, múltiples filtros, botón limpiar. Compatible con sistema actual",
-        "status": "completed",
+        "content": "Analizar sistema actual para identificar funcionalidades de email",
+        "details": "1. Revisar edge functions actuales (send-notifications v5, generate-reminders v3) 2. Identificar código relacionado con envío de emails 3. Verificar configuraciones de Resend API 4. Analizar templates de email en el código 5. Documentar qué debe eliminarse",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "FASE 1 - Mejora 2: Estadísticas y reportes mejorados",
-        "details": "✅ COMPLETADO: Gráfico 30 días, % asistencia, tasa confirmación, horarios pico, top 5 usuarios. Nueva pestaña 'Estadísticas' con Chart.js",
-        "status": "completed",
+        "content": "Eliminar funcionalidades de email de edge functions",
+        "details": "1. Modificar send-notifications para eliminar envío de emails 2. Actualizar generate-reminders sin email 3. Mantener solo notificaciones en base de datos 4. Asegurar que las funciones sigan guardando en tabla notifications 5. Preservar toda la funcionalidad de notificaciones en panel",
+        "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "FASE 1 - Mejora 3: Configuración personalizada",
-        "details": "✅ COMPLETADO: Nueva sección configuración con toggles recordatorios, horarios usuario, gestión admins, plantillas personalizables, activar/desactivar alertas",
-        "status": "completed",
-        "priority": "high"
+        "content": "Limpiar configuraciones y dependencias de email",
+        "details": "1. Eliminar configuraciones de Resend API 2. Remover dependencias de email en package.json 3. Limpiar variables de entorno relacionadas 4. Eliminar templates de email no utilizados 5. Actualizar documentación",
+        "status": "pending",
+        "priority": "medium"
       },
       "4": {
         "id": "4",
-        "content": "FASE 1 - Mejora 4: Exportar datos y reportes",
-        "details": "✅ COMPLETADO: Export Excel/CSV, PDF con gráficos, historial notificaciones, reportes asistencia usuario/período. Modal configuración exportación",
-        "status": "completed",
-        "priority": "high"
+        "content": "Actualizar interfaz de usuario si es necesario",
+        "details": "1. Revisar si hay opciones de email en el panel admin 2. Eliminar botones o configuraciones relacionadas con email 3. Ajustar textos que mencionen envío de emails 4. Mantener solo las notificaciones en panel",
+        "status": "pending",
+        "priority": "medium"
       },
       "5": {
         "id": "5",
-        "content": "FASE 2: Mockup visual de configuración personalizada",
-        "details": "✅ COMPLETADO: Mockup visual estático creado en /workspace/mockup_config.html con diseño moderno, todas las secciones de configuración, componente interactivo para referencia futura",
-        "status": "completed",
-        "priority": "medium"
-      },
-      "6": {
-        "id": "6",
-        "content": "FASE 2: Crear mockup de configuración personalizada",
-        "details": "1. Diseñar interfaz de configuración 2. Crear wireframes de la sección 3. Mostrar opciones de personalización 4. Documentar flujos de usuario 5. Crear mockup visual",
+        "content": "Compilar y desplegar versión sin email",
+        "details": "1. Compilar proyecto con modificaciones 2. Desplegar nueva versión 3. Verificar que notificaciones siguen funcionando en panel 4. Confirmar que no hay errores de compilación 5. Actualizar documentación del sistema",
         "status": "pending",
-        "priority": "medium"
+        "priority": "high"
       }
     }
   }
