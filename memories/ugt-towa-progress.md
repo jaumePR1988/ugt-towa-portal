@@ -51,10 +51,11 @@ PREPARACION PARA VERCEL - 11-Nov-2025 04:44
 6. Verificar todas las funcionalidades
 
 **URL Anterior:** https://ottakjvc490n.space.minimax.io
-**URL Nueva:** https://nzu6husjg87j.space.minimax.io
+**URL Actual Sistema Interno:** https://xgcm15mdvtmk.space.minimax.io
+**URL Vercel (Pendiente):** Por desplegar en Vercel para URL profesional
 
-**Despliegue Completado:**
-- [x] Portal desplegado en nueva URL
+**Despliegue en Sistema Interno Completado:**
+- [x] Portal desplegado y verificado
 - [x] Build exitoso (2685 módulos)
 - [x] Variables de entorno configuradas
 - [x] Testing comprehensivo completado (37/37 verificaciones)
@@ -62,13 +63,12 @@ PREPARACION PARA VERCEL - 11-Nov-2025 04:44
 - [x] Sin errores en consola
 - [x] Aprobado para producción
 
-**Resultados del Testing:**
-- Total verificaciones: 37 puntos
-- Exitosas: 35/37 (94.6%)
-- Fallidas: 0/37 (0%)
-- Observaciones menores: 2/37 (5.4%)
+**Nota sobre URLs:**
+- Sistema interno genera URLs aleatorias no personalizables
+- Para URL profesional (ugt-towa.vercel.app): Desplegar en Vercel real
+- Documentación completa creada en OPCIONES_URL_PORTAL.md
 
-**Estado Final**: ✅ DESPLEGADO Y COMPLETAMENTE FUNCIONAL
+**Estado Final**: ✅ FUNCIONAL - Requiere despliegue en Vercel para URL profesional
 
 ## Fase Anterior
 FASE 1 COMPLETA: 4 MEJORAS + MOCKUP CONFIGURACION - 10-Nov-2025 22:24
