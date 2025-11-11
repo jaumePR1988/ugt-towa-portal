@@ -26,7 +26,7 @@
         "id": "4",
         "content": "Reconectar Vercel y configurar variables de entorno",
         "details": "1. Conectar Vercel al repositorio. 2. Configurar variables: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, VITE_APP_URL. 3. Verificar que el deploy funciona sin errores. 4. Confirmar que la web está accesible con newsletter incluido. 5. Verificar Google Search Console.",
-        "status": "in_progress",
+        "status": "completed",
         "priority": "medium"
       }
     }
