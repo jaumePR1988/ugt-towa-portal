@@ -15,6 +15,9 @@ import CitasPage from './pages/CitasPage';
 import EncuestasPage from './pages/EncuestasPage';
 
 import DocumentosPage from './pages/DocumentosPage';
+import NewsletterPage from './pages/NewsletterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -36,6 +39,7 @@ import AdminAfiliados from './pages/admin/AdminAfiliados';
 import AdminDocumentosSindicales from './pages/admin/AdminDocumentosSindicales';
 
 import AdminBeneficiosUGT from './pages/admin/AdminBeneficiosUGT';
+import AdminNewsletter from './pages/admin/AdminNewsletter';
 
 // Affiliate Pages
 import AffiliateDashboard from './pages/affiliates/AffiliateDashboard';
@@ -68,6 +72,9 @@ function App() {
           <Route path="/comunicados" element={<ComunicadosPage />} />
           <Route path="/comunicados/:id" element={<ComunicadoDetailPage />} />
           <Route path="/encuestas" element={<EncuestasPage />} />
+          <Route path="/newsletter" element={<NewsletterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
 
           
           {/* Protected Routes */}
@@ -251,6 +258,14 @@ function App() {
             element={
               <AdminRoute>
                 <AdminBeneficiosUGT />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/newsletter"
+            element={
+              <AdminRoute>
+                <AdminNewsletter />
               </AdminRoute>
             }
           />

@@ -55,6 +55,9 @@ export default function Navbar() {
             <Link to="/encuestas" className="text-gray-700 hover:text-red-600 transition">
               Encuestas
             </Link>
+            <Link to="/newsletter" className="text-gray-700 hover:text-red-600 transition">
+              Newsletter
+            </Link>
             {user && (
               <Link 
                 to="/afiliados/dashboard" 
@@ -75,13 +78,21 @@ export default function Navbar() {
             {user ? (
               <>
                 {isAdmin && (
-                  <Link
-                    to="/admin/dashboard"
-                    className="flex items-center space-x-1 px-3 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
-                  >
-                    <LayoutDashboard className="h-4 w-4" />
-                    <span>Admin</span>
-                  </Link>
+                  <>
+                    <Link
+                      to="/admin/dashboard"
+                      className="flex items-center space-x-1 px-3 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
+                    >
+                      <LayoutDashboard className="h-4 w-4" />
+                      <span>Admin</span>
+                    </Link>
+                    <Link
+                      to="/admin/newsletter"
+                      className="flex items-center space-x-1 px-3 py-2 rounded-lg border border-red-600 text-red-600 hover:bg-red-50 transition"
+                    >
+                      <span>Newsletter</span>
+                    </Link>
+                  </>
                 )}
                 <button
                   onClick={handleSignOut}
