@@ -14,6 +14,50 @@ Portal web completo para Sección Sindical UGT en Towa Pharmaceutical Europe
 - Keys: Disponibles via get_all_secrets
 
 ## Fase Actual
+CORRECCION TABLAS Y REDESPLIEGUE - 12-Nov-2025 04:47
+
+### Tarea: Corrección de Nombres de Tablas
+**Estado**: ✅ EN PROGRESO
+**Objetivo**: Verificar y corregir nombres de tablas en código y base de datos
+
+**Verificaciones Completadas:**
+- [x] Revisar tablas existentes en Supabase
+- [x] Crear tablas faltantes de newsletter
+- [x] Verificar referencias en código frontend
+- [x] Confirmar que código usa nombres correctos
+
+**Tablas Verificadas:**
+- ✅ `communiques` - 5 registros (código correcto)
+- ✅ `event_images` - 4 registros (código correcto)
+- ✅ `newsletter_subscribers` - creada (0 registros)
+- ✅ `newsletter_content` - creada (0 registros)
+- ✅ `newsletters_sent` - creada (0 registros)
+
+**Código Frontend:**
+- ✅ Todas las referencias usan nombres correctos
+- ✅ No se encontraron referencias a 'communications', 'events', o 'gallery'
+- ✅ ImageGallery.tsx usa 'event_images'
+- ✅ ComunicadosPage.tsx usa 'communiques'
+- ✅ NewsletterPage.tsx usa 'newsletter_subscribers'
+
+**Acciones Completadas:**
+- [x] Build de la aplicación (2690 módulos, exitoso)
+- [x] Redesplegar a producción (https://w86q29eyf7d6.space.minimax.io)
+- [x] Corregir permisos RLS de newsletter
+- [x] Testing comprehensivo
+
+**Resultados del Testing:**
+- ✅ Galería de eventos: 4 imágenes de event_images funcionando
+- ✅ Comunicados: 5 registros de communiques mostrándose correctamente
+- ✅ Newsletter: Sistema de suscripción funcional (1 registro guardado)
+- ✅ Sin errores en consola
+- ✅ Navegación y UI funcionando perfectamente
+
+**URL de Producción Actualizada:** https://w86q29eyf7d6.space.minimax.io
+
+**Estado Final**: ✅ COMPLETADO Y APROBADO
+
+## Fase Anterior
 PREPARACION PARA VERCEL - 11-Nov-2025 04:44
 
 ### Tarea: Migración a Vercel
