@@ -3,37 +3,30 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Crear sistema de backup y protección de la replicación",
-        "details": "1. Crear backup completo con versionado. 2. Sistema de protección de datos sensibles. 3. Almacenamiento seguro en múltiples ubicaciones. 4. Documentación de recuperación.",
-        "status": "completed",
+        "content": "Arreglar estructura del repositorio GitHub para deploy de Vercel",
+        "details": "1. Borrar repositorio actual en https://github.com/jaumePR1988/ugt-towa-portal. 2. Crear nuevo repositorio con el mismo nombre. 3. Subir archivo ugt-towa-portal-github.zip asegurándose de que los archivos queden en la raíz (package.json, src/, public/ directamente visible, NO en subcarpeta).",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Definir requisitos técnicos y checklist de implementación",
-        "details": "1. Requisitos mínimos del sistema. 2. Checklist de configuración técnica. 3. Tiempo estimado de implementación. 4. Recursos necesarios.",
-        "status": "completed",
+        "content": "Reconectar Vercel y verificar deploy funcionando",
+        "details": "1. Una vez arreglada la estructura de GitHub, reconectar Vercel al repositorio. 2. Verificar que el build funciona sin errores. 3. Confirmar que la web está accesible. 4. Verificar que la etiqueta de Google Search Console está presente.",
+        "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Crear lista de verificación de información del cliente",
-        "details": "1. Datos de la empresa requeridos. 2. Branding y personalización necesarios. 3. Configuraciones específicas. 4. Documentación legal y de acceso.",
-        "status": "completed",
-        "priority": "high"
+        "content": "Restaurar sistema completo de newsletter desde backup",
+        "details": "1. Restaurar AdminNewsletter.tsx (gestión completa de newsletter). 2. Restaurar NewsletterPage.tsx (página pública de suscripción). 3. Restaurar ForgotPasswordPage.tsx y ResetPasswordPage.tsx. 4. Restaurar las 6 Supabase edge functions del newsletter. 5. Actualizar App.tsx con las rutas. 6. Actualizar Navbar.tsx con la navegación. 7. Probar toda la funcionalidad.",
+        "status": "pending",
+        "priority": "medium"
       },
       "4": {
         "id": "4",
-        "content": "Desarrollar sistema de onboarding para clientes",
-        "details": "1. Formulario de solicitud de cliente. 2. Proceso de validación de datos. 3. Timeline de implementación. 4. Entrega y documentación final.",
-        "status": "completed",
-        "priority": "medium"
-      },
-      "5": {
-        "id": "5",
-        "content": "Crear sistema de precios y facturación",
-        "details": "1. Estructura de precios por empresa. 2. Modelo de suscripciones. 3. Facturación automática. 4. Sistema de soporte y mantenimiento.",
-        "status": "completed",
+        "content": "Configurar variables de entorno en Vercel",
+        "details": "1. VITE_SUPABASE_URL. 2. VITE_SUPABASE_ANON_KEY. 3. VITE_APP_URL. 4. Verificar que todas las funciones de Supabase funcionen correctamente.",
+        "status": "pending",
         "priority": "medium"
       }
     }
