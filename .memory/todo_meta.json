@@ -19,14 +19,14 @@
         "id": "3",
         "content": "Crear repositorio GitHub con estructura correcta",
         "details": "1. Borrar repositorio actual en https://github.com/jaumePR1988/ugt-towa-portal. 2. Crear nuevo repositorio con el mismo nombre. 3. Subir el ZIP completo asegurándose de que los archivos queden en la raíz (package.json, src/, public/ directamente visible, NO en subcarpeta).",
-        "status": "in_progress",
+        "status": "completed",
         "priority": "high"
       },
       "4": {
         "id": "4",
         "content": "Reconectar Vercel y configurar variables de entorno",
         "details": "1. Conectar Vercel al repositorio. 2. Configurar variables: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, VITE_APP_URL. 3. Verificar que el deploy funciona sin errores. 4. Confirmar que la web está accesible con newsletter incluido. 5. Verificar Google Search Console.",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       }
     }
