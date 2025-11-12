@@ -3,31 +3,10 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Restaurar sistema completo de newsletter desde backup en versión local",
-        "details": "1. Restaurar AdminNewsletter.tsx (gestión completa de newsletter con reportes automáticos mensuales y exportación de usuarios). 2. Restaurar NewsletterPage.tsx (página pública de suscripción). 3. Restaurar ForgotPasswordPage.tsx y ResetPasswordPage.tsx. 4. Restaurar las 6 Supabase edge functions del newsletter. 5. Actualizar App.tsx con las rutas. 6. Actualizar Navbar.tsx con la navegación. 7. Probar toda la funcionalidad en local.",
+        "content": "Implementar sistema completo de newsletter automatizado para UGT Towa",
+        "details": "MANTENER: Página pública /newsletter para suscripciones + botón en menú. MEJORAR: Panel completo en /admin/newsletter con: 1) Lista de suscriptores, 2) Editor de newsletters, 3) Sistema automático mensual (día 1), 4) Generación con comunicados recientes + eventos + noticias, 5) Edición antes de envío/impresión, 6) Vista previa para PDF/impresión, 7) Cron job automático",
         "status": "completed",
         "priority": "high"
-      },
-      "2": {
-        "id": "2",
-        "content": "Regenerar ZIP del proyecto completo con newsletter restaurado",
-        "details": "1. Crear nuevo archivo ugt-towa-portal-github.zip con todos los archivos incluyendo el sistema de newsletter completo. 2. Verificar que incluye: Google Search Console tag, newsletter system completo, todas las edge functions. 3. Asegurar que la estructura es correcta para despliegue.",
-        "status": "completed",
-        "priority": "high"
-      },
-      "3": {
-        "id": "3",
-        "content": "Crear repositorio GitHub con estructura correcta",
-        "details": "1. Borrar repositorio actual en https://github.com/jaumePR1988/ugt-towa-portal. 2. Crear nuevo repositorio con el mismo nombre. 3. Subir el ZIP completo asegurándose de que los archivos queden en la raíz (package.json, src/, public/ directamente visible, NO en subcarpeta).",
-        "status": "completed",
-        "priority": "high"
-      },
-      "4": {
-        "id": "4",
-        "content": "Reconectar Vercel y configurar variables de entorno",
-        "details": "1. Conectar Vercel al repositorio. 2. Configurar variables: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, VITE_APP_URL. 3. Verificar que el deploy funciona sin errores. 4. Confirmar que la web está accesible con newsletter incluido. 5. Verificar Google Search Console.",
-        "status": "completed",
-        "priority": "medium"
       }
     }
   }
