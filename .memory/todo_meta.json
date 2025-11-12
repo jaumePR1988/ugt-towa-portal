@@ -3,29 +3,36 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Modificar esquema de base de datos para citas",
-        "details": "1. Agregar columna 'created_by' para identificar quién hizo la reserva. 2. Agregar columna 'comments' para comentarios del usuario. 3. Agregar columna 'questions' para preguntas pre-reunión. 4. Agregar columna 'documents' para URLs de archivos adjuntos.",
+        "content": "Modificar esquema de base de datos para citas y comunicados",
+        "details": "1. Citas: Agregar columnas 'created_by', 'comments', 'questions', 'documents'. 2. Comunicados: Agregar columna 'attachments' para archivos adjuntos. 3. Configurar relaciones y constraints apropiados.",
         "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Mejorar formulario de citas con campos adicionales",
-        "details": "1. Agregar campo de textarea para comentarios. 2. Agregar campo para preguntas que quiere hacer. 3. Implementar componente de subida de archivos. 4. Validar tipos de archivo permitidos (PDF, imágenes).",
+        "content": "Mejorar formularios con campos adicionales",
+        "details": "1. Formulario de citas: comentarios, preguntas, subida de archivos. 2. Formulario de comunicados: subida de múltiples archivos. 3. Validaciones de tipos y tamaños. 4. UI/UX mejorada para subida de archivos.",
         "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Actualizar vista de administración de citas",
-        "details": "1. Mostrar quién realizó cada reserva (nombre/email). 2. Mostrar los comentarios del usuario. 3. Mostrar las preguntas pre-reunión. 4. Crear enlace de descarga para documentos adjuntos. 5. Agregar estado de citas y opciones de gestión.",
+        "content": "Actualizar vistas de administración",
+        "details": "1. Vista de citas: mostrar quién reservó, comentarios, preguntas, documentos. 2. Vista de comunicados: mostrar archivos adjuntos con descarga. 3. Estados y gestión avanzada para ambas secciones.",
         "status": "pending",
         "priority": "high"
       },
       "4": {
         "id": "4",
         "content": "Implementar subida segura de archivos",
-        "details": "1. Configurar bucket de Supabase Storage para documentos. 2. Implementar validaciones de seguridad. 3. Restringir tipos y tamaños de archivo. 4. Generar URLs seguras para descarga.",
+        "details": "1. Configurar bucket de Supabase Storage para documentos y comunicados. 2. Separar tipos de archivo (documentos vs comunicados). 3. Validaciones de seguridad. 4. URLs de descarga seguras.",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "5": {
+        "id": "5",
+        "content": "Mejorar vista pública de comunicados",
+        "details": "1. Mostrar archivos adjuntos en cada comunicado. 2. Enlaces de descarga para usuarios. 3. Iconos según tipo de archivo (PDF, imagen, etc.). 4. Vista previa de archivos.",
         "status": "pending",
         "priority": "medium"
       }
