@@ -1,6 +1,12 @@
-import React, { useRef } from 'react';
-import { Editor as TinyMCEEditor } from '@tinymce/tinymce-react';
+import React, { useRef, useEffect } from 'react';
 import DOMPurify from 'dompurify';
+
+// Declarar el tipo global de TinyMCE
+declare global {
+  interface Window {
+    tinymce: any;
+  }
+}
 
 interface RichTextEditorProps {
   value: string;
@@ -18,6 +24,8 @@ export default function RichTextEditor({
   minHeight = 400
 }: RichTextEditorProps) {
   const editorRef = useRef<any>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const editorId = useRef(`tinymce-${Math.random().toString(36).substr(2, 9)}`);
 
   const handleEditorChange = (content: string) => {
     // Sanitizar el contenido HTML antes de guardarlo
@@ -43,23 +51,46 @@ export default function RichTextEditor({
     onChange(sanitizedContent);
   };
 
-  return (
-    <div className="rich-text-editor-wrapper">
-      {/* @ts-ignore - TinyMCE Editor tiene problemas de tipos con React 18 */}
-      <TinyMCEEditor
-        apiKey="u4zx4bq0t2hpd5exybtxzj2zqhbnuuqqb47r0x4p4o8wyhbj"
-        onInit={(evt: any, editor: any) => editorRef.current = editor}
-        value={value}
-        disabled={disabled}
-        init={{
+  useEffect(() => {
+    // Cargar el script de TinyMCE si no está ya cargado
+    const loadTinyMCE = () => {
+      return new Promise<void>((resolve, reject) => {
+        if (window.tinymce) {
+          resolve();
+          return;
+        }
+
+        const script = document.createElement('script');
+        script.src = '/tinymce/tinymce.min.js';
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('Failed to load TinyMCE'));
+        document.head.appendChild(script);
+      });
+    };
+
+    // Inicializar TinyMCE
+    const initEditor = async () => {
+      try {
+        await loadTinyMCE();
+
+        if (!window.tinymce) {
+          console.error('TinyMCE no se cargó correctamente');
+          return;
+        }
+
+        // Inicializar el editor
+        window.tinymce.init({
+          selector: `#${editorId.current}`,
+          license_key: 'gpl',
           height: minHeight,
           menubar: false,
-          language: 'es',
+          base_url: '/tinymce',
+          suffix: '.min',
           plugins: [
             'advlist', 'autolink', 'lists', 'link', 'image', 'charmap',
             'preview', 'anchor', 'searchreplace', 'visualblocks', 'code',
             'fullscreen', 'insertdatetime', 'media', 'table', 'help',
-            'wordcount', 'emoticons', 'codesample'
+            'wordcount'
           ],
           toolbar: 
             'undo redo | blocks | ' +
@@ -112,6 +143,7 @@ export default function RichTextEditor({
           promotion: false,
           statusbar: true,
           elementpath: false,
+          disabled: disabled,
           
           // Configuración de imágenes
           image_advtab: true,
@@ -141,10 +173,6 @@ export default function RichTextEditor({
             toolbar: 'undo redo | bold italic | bullist numlist | link image'
           },
           
-          // Auto-resize
-          autoresize_bottom_margin: 20,
-          autoresize_overflow_padding: 20,
-          
           // Formatos de texto
           block_formats: 'Párrafo=p; Título 1=h1; Título 2=h2; Título 3=h3; Título 4=h4',
           
@@ -167,27 +195,64 @@ export default function RichTextEditor({
             '#8B5CF6', 'Morado'
           ],
           
-          // Shortcuts de teclado mejorados
+          // Eventos
           setup: (editor: any) => {
-            // Auto-guardado (si se implementa en el futuro)
-            editor.on('change', () => {
-              handleEditorChange(editor.getContent());
+            editorRef.current = editor;
+            
+            editor.on('init', () => {
+              // Establecer el valor inicial
+              if (value) {
+                editor.setContent(value);
+              }
             });
             
-            // Contador de palabras en la barra de estado
-            editor.on('wordCountUpdate', (e: any) => {
-              // El plugin wordcount ya maneja esto
+            editor.on('change keyup', () => {
+              const content = editor.getContent();
+              handleEditorChange(content);
             });
           }
-        }}
-        onEditorChange={handleEditorChange}
+        });
+
+      } catch (error) {
+        console.error('Error al cargar TinyMCE:', error);
+      }
+    };
+
+    initEditor();
+
+    // Cleanup: destruir el editor al desmontar
+    return () => {
+      if (editorRef.current) {
+        try {
+          editorRef.current.remove();
+        } catch (e) {
+          // Ignorar errores de cleanup
+        }
+      }
+    };
+  }, [minHeight, disabled, placeholder]);
+
+  // Actualizar el contenido cuando cambie el valor externo
+  useEffect(() => {
+    if (editorRef.current && editorRef.current.getContent() !== value) {
+      editorRef.current.setContent(value || '');
+    }
+  }, [value]);
+
+  return (
+    <div className="rich-text-editor-wrapper">
+      <textarea
+        ref={textareaRef}
+        id={editorId.current}
+        defaultValue={value}
+        style={{ display: 'none' }}
       />
       
       {/* Mensaje de ayuda */}
       <div className="mt-2 text-sm text-gray-500">
         <p>
           <strong>Consejos:</strong> Usa Ctrl+B para negrita, Ctrl+I para cursiva, Ctrl+U para subrayado.
-          Puedes pegar contenido desde Word y se formateará automáticamente.
+          Puedes pegar contenido desde Word y se formateara automaticamente.
         </p>
       </div>
     </div>

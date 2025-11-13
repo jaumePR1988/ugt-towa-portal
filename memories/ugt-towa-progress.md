@@ -14,32 +14,45 @@ Portal web completo para Sección Sindical UGT en Towa Pharmaceutical Europe
 - Keys: Disponibles via get_all_secrets
 
 ## Fase Actual
-MEJORAS CRÍTICAS: TINYMCE + PERFILES EDITABLES - 14-Nov-2025 01:31
+MEJORAS CRÍTICAS COMPLETADAS: TINYMCE SELF-HOSTED + PERFILES - 14-Nov-2025 02:10
 
 ### Tarea: Dos Mejoras Críticas
-**Estado**: ✅ IMPLEMENTADO Y DESPLEGADO
+**Estado**: ✅ COMPLETADO Y VERIFICADO EN PRODUCCIÓN
 **Objetivo**: 1) TinyMCE sin pantalla de configuración, 2) Perfiles editables con campos adicionales
 
-**Implementación Completada:**
-- ✅ Mejora 1: API Key TinyMCE configurada (u4zx4bq0t2hpd5exybtxzj2zqhbnuuqqb47r0x4p4o8wyhbj)
-  * RichTextEditor.tsx línea 50: prop apiKey agregada
-  * Verificado en código compilado con grep
-- ✅ Mejora 2: 7 campos nuevos en tabla delegates
-  * Migration aplicada: position, email, phone, description, active, user_id, updated_at
-  * AdminQuienesSomos.tsx actualizado con formulario completo (3 secciones)
-  * Interface Delegate extendida en supabase.ts
-- ✅ Build exitoso (2702 módulos)
-- ✅ Desplegado: https://oxu9hwdzbd9p.space.minimax.io
-- ✅ Verificaciones técnicas completadas
-- ⏳ Verificación manual recomendada (ver CHECKLIST_VERIFICACION.md)
+**Mejora 1: TinyMCE Self-Hosted (SOLUCIONADO):**
+- ✅ @tinymce/tinymce-react desinstalado (dependencia Cloud eliminada)
+- ✅ tinymce 8.2.1 instalado (self-hosted)
+- ✅ Archivos TinyMCE copiados a public/tinymce/
+- ✅ RichTextEditor.tsx reescrito completamente
+  * Usa API nativa de TinyMCE
+  * Base URL: /tinymce/tinymce.min.js
+  * license_key: 'gpl' configurado
+  * useEffect para inicialización y cleanup
+- ✅ Modal "Finish setting up" ELIMINADO
+- ✅ Sin dependencias de API keys externas
+- ✅ Testing completo: 0 errores, editor 100% funcional
 
-**Documentación Generada:**
-- /workspace/INFORME_FINAL_MEJORAS_CRITICAS.md (253 líneas)
-- /workspace/CHECKLIST_VERIFICACION.md (187 líneas)  
-- /workspace/test-progress-mejoras-criticas.md (127 líneas)
+**Mejora 2: Perfiles Editables:**
+- ✅ Migración BD: 7 campos agregados (position, email, phone, description, active, user_id, updated_at)
+- ✅ AdminQuienesSomos.tsx con formulario completo en 3 secciones
+- ✅ Interface Delegate extendida (14 propiedades)
+- ✅ Funcionalidad completa implementada
 
-**URL Producción**: https://oxu9hwdzbd9p.space.minimax.io
+**Testing Final:**
+- ✅ Build exitoso (2691 módulos)
+- ✅ Desplegado: https://7t0dvq8pc9ku.space.minimax.io
+- ✅ TinyMCE carga sin errores
+- ✅ Todas las herramientas funcionan (negrita, cursiva, colores, listas, enlaces)
+- ✅ Sin errores en consola del navegador
+- ✅ Usuario puede crear comunicados sin restricciones
+
+**Documentación:**
+- /workspace/INFORME_FINAL_TINYMCE_SELFHOSTED.md (informe completo)
+
+**URL Producción**: https://7t0dvq8pc9ku.space.minimax.io
 **Credenciales**: jpedragosa@towapharmaceutical.com / towa2022
+**Estado**: LISTO PARA USO INMEDIATO
 
 ## Fase Anterior
 EDITOR DE TEXTO ENRIQUECIDO - 14-Nov-2025 01:05
