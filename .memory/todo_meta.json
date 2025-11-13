@@ -3,37 +3,37 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Implementar editor de texto enriquecido para comunicados",
-        "details": "1. Seleccionar e integrar un editor rich text (TinyMCE, Quill, CKEditor). 2. Configurar toolbar con opciones: negrita, cursiva, subrayar, colores, listas, enlaces. 3. Implementar en formulario de creación de comunicados. 4. Configurar toolbar responsive para móviles.",
-        "status": "completed",
+        "content": "Solucionar problema de API key de TinyMCE",
+        "details": "1. Obtener API key válida de TinyMCE o configurar sin API key. 2. Eliminar la pantalla de configuración inicial. 3. Asegurar que el editor funcione completamente sin restricciones. 4. Probar todas las funcionalidades del editor.",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Actualizar base de datos y backend para HTML",
-        "details": "1. Cambiar campo 'content' de comunicados de TEXT a TEXT (para HTML). 2. Implementar sanitización de HTML para prevenir XSS. 3. Actualizar Edge Functions para manejar contenido HTML. 4. Configurar políticas RLS apropiadas.",
-        "status": "completed",
+        "content": "Sistema de edición de perfiles para usuarios",
+        "details": "1. Crear tabla 'profiles' con campos editables (nombre, cargo, foto, descripción, email). 2. Implementar sistema de autenticación para identificar usuarios. 3. Crear formulario de edición de perfil personal. 4. Agregar botón 'Editar mi perfil' solo para usuarios autenticados.",
+        "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Actualizar vistas públicas para renderizar HTML",
-        "details": "1. Modificar vista pública de comunicados para mostrar HTML formateado. 2. Implementar limpieza de HTML peligroso. 3. Mantener diseño responsivo con contenido HTML. 4. Asegurar compatibilidad con diferentes navegadores.",
-        "status": "completed",
+        "content": "Actualizar página 'quienes somos' con perfiles editables",
+        "details": "1. Modificar la página actual para cargar perfiles desde la base de datos. 2. Mostrar botón 'Editar' solo para el propietario de cada perfil. 3. Integrar con el sistema de autenticación. 4. Implementar permisos: cada usuario solo edita su propio perfil.",
+        "status": "pending",
         "priority": "high"
       },
       "4": {
         "id": "4",
-        "content": "Implementar funcionalidades adicionales del editor",
-        "details": "1. Subida de imágenes dentro del editor (drag & drop en texto). 2. Vista previa en tiempo real del formato. 3. Atajos de teclado (Ctrl+B, Ctrl+I, etc.). 4. Auto-guardado del contenido.",
-        "status": "completed",
+        "content": "Panel de administración para gestión global",
+        "details": "1. Panel admin para gestionar todos los perfiles. 2. Poder activar/desactivar usuarios. 3. Editar cualquier perfil como super-admin. 4. Ver estadísticas de usuarios activos.",
+        "status": "pending",
         "priority": "medium"
       },
       "5": {
         "id": "5",
-        "content": "Testing y optimización de rendimiento",
-        "details": "1. Probar funcionamiento en diferentes navegadores. 2. Optimizar carga del editor para no impactar performance. 3. Validar sanitización HTML contra vulnerabilidades. 4. Testing en dispositivos móviles y desktop.",
-        "status": "completed",
+        "content": "Integración con sistema de autenticación existente",
+        "details": "1. Conectar con Supabase Auth actual. 2. Crear relación entre auth.users y profiles. 3. Implementar hooks para crear perfil automáticamente. 4. Manejar actualizaciones de datos en tiempo real.",
+        "status": "pending",
         "priority": "medium"
       }
     }
