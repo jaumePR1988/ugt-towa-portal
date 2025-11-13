@@ -3,36 +3,36 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Solucionar problema de API key de TinyMCE",
-        "details": "1. Obtener API key válida de TinyMCE o configurar sin API key. 2. Eliminar la pantalla de configuración inicial. 3. Asegurar que el editor funcione completamente sin restricciones. 4. Probar todas las funcionalidades del editor.",
+        "content": "Solucionar error en análisis de encuestas",
+        "details": "Diagnosticar por qué no recoge bien los datos de las encuestas. Revisar la función de análisis y asegurar que los datos se muestren correctamente en el gráfico.",
         "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Sistema de edición de perfiles para usuarios",
-        "details": "1. Crear tabla 'profiles' con campos editables (nombre, cargo, foto, descripción, email). 2. Implementar sistema de autenticación para identificar usuarios. 3. Crear formulario de edición de perfil personal. 4. Agregar botón 'Editar mi perfil' solo para usuarios autenticados.",
+        "content": "Añadir campo tipo encuesta (pública/afiliados)",
+        "details": "Modificar base de datos para incluir campo 'tipo' o 'publica' en tabla encuestas. Actualizar formularios admin para incluir esta opción al crear encuestas.",
         "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Actualizar página 'quienes somos' con perfiles editables",
-        "details": "1. Modificar la página actual para cargar perfiles desde la base de datos. 2. Mostrar botón 'Editar' solo para el propietario de cada perfil. 3. Integrar con el sistema de autenticación. 4. Implementar permisos: cada usuario solo edita su propio perfil.",
+        "content": "Crear panel específico para encuestas de afiliados",
+        "details": "Implementar sección en perfil de afiliados donde solo pueden ver encuestas marcadas como 'afiliados'. Separar de encuestas públicas del panel principal.",
         "status": "pending",
-        "priority": "high"
+        "priority": "medium"
       },
       "4": {
         "id": "4",
-        "content": "Panel de administración para gestión global",
-        "details": "1. Panel admin para gestionar todos los perfiles. 2. Poder activar/desactivar usuarios. 3. Editar cualquier perfil como super-admin. 4. Ver estadísticas de usuarios activos.",
+        "content": "Modificar visualización de encuestas",
+        "details": "Encuestas públicas: se muestran en panel principal para todos. Encuestas de afiliados: solo visible para usuarios con perfil de afiliado activo.",
         "status": "pending",
         "priority": "medium"
       },
       "5": {
         "id": "5",
-        "content": "Integración con sistema de autenticación existente",
-        "details": "1. Conectar con Supabase Auth actual. 2. Crear relación entre auth.users y profiles. 3. Implementar hooks para crear perfil automáticamente. 4. Manejar actualizaciones de datos en tiempo real.",
+        "content": "Testing y verificación completa",
+        "details": "Probar creación de ambos tipos de encuestas, visualización en diferentes contextos (público vs afiliado), y que análisis funcione correctamente.",
         "status": "pending",
         "priority": "medium"
       }
