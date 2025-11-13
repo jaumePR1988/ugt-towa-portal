@@ -7,13 +7,6 @@ import { FileText, Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-// Función auxiliar para extraer texto plano de HTML
-function stripHtml(html: string): string {
-  const tmp = document.createElement('DIV');
-  tmp.innerHTML = html;
-  return tmp.textContent || tmp.innerText || '';
-}
-
 export default function ComunicadosPage() {
   const [communiques, setCommuniques] = useState<Communique[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -128,7 +121,14 @@ export default function ComunicadosPage() {
                       </span>
                     )}
                   </div>
-                  <p className="text-gray-600 mb-4 line-clamp-3">{stripHtml(com.content).substring(0, 200)}...</p>
+                  <div 
+                    className="text-gray-600 mb-4 line-clamp-3 prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ 
+                      __html: com.content.length > 300 
+                        ? com.content.substring(0, 300) + '...' 
+                        : com.content 
+                    }}
+                  />
                   <div className="flex items-center text-sm text-gray-500">
                     <Calendar className="h-4 w-4 mr-2" />
                     <span>{format(new Date(com.created_at), "d 'de' MMMM, yyyy", { locale: es })}</span>

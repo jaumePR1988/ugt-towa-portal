@@ -83,7 +83,21 @@ REEMPLAZO TINYMCE POR EDITOR SIMPLE - 14-Nov-2025 03:29
 - Correcciones aplicadas
 - Testing final pendiente por límite de herramienta
 
-**Estado Final**: ✅ LISTO PARA USO - Versión mejorada desplegada
+**Corrección Crítica Aplicada:**
+- Bug en vista de lista: HTML se mostraba como texto plano
+- Causa: Uso de stripHtml() en lugar de renderizar HTML
+- Solución: Usar dangerouslySetInnerHTML con clase prose
+- Archivos corregidos:
+  * ComunicadosPage.tsx (línea 131)
+  * HomePage.tsx (líneas 149 y 171)
+- Eliminada función stripHtml() sin uso
+
+**Despliegues:**
+- Versión 1: https://4wlibun7su8j.space.minimax.io (con bugs)
+- Versión 2 (mejorada): https://fchqlgpkntb8.space.minimax.io (con bug de renderizado)
+- Versión 3 (FINAL): https://e8of11nmz3o6.space.minimax.io
+
+**Estado Final**: ✅ COMPLETAMENTE FUNCIONAL - Todas las correcciones aplicadas
 
 ## Fase Anterior
 MEJORAS CRÍTICAS: TINYMCE CON API KEY + PERFILES - 14-Nov-2025 02:42

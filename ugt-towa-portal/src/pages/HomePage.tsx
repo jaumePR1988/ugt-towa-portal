@@ -145,9 +145,14 @@ export default function HomePage() {
                         <div className="flex-1 flex flex-col justify-between">
                           <div>
                             <h3 className="text-lg font-semibold text-gray-900 mb-2">{com.title}</h3>
-                            <p className="text-gray-600 line-clamp-2">
-                              {com.content.substring(0, 150)}...
-                            </p>
+                            <div 
+                              className="text-gray-600 line-clamp-2 prose prose-sm max-w-none"
+                              dangerouslySetInnerHTML={{ 
+                                __html: com.content.length > 150 
+                                  ? com.content.substring(0, 150) + '...' 
+                                  : com.content 
+                              }}
+                            />
                           </div>
                           <div className="flex items-center mt-3 text-sm text-gray-500">
                             <span>{format(new Date(com.created_at), "d 'de' MMMM, yyyy", { locale: es })}</span>
@@ -167,9 +172,14 @@ export default function HomePage() {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <h3 className="text-lg font-semibold text-gray-900 mb-2">{com.title}</h3>
-                          <p className="text-gray-600 line-clamp-2">
-                            {com.content.substring(0, 150)}...
-                          </p>
+                          <div 
+                            className="text-gray-600 line-clamp-2 prose prose-sm max-w-none"
+                            dangerouslySetInnerHTML={{ 
+                              __html: com.content.length > 150 
+                                ? com.content.substring(0, 150) + '...' 
+                                : com.content 
+                            }}
+                          />
                           <div className="flex items-center mt-3 text-sm text-gray-500">
                             <span>{format(new Date(com.created_at), "d 'de' MMMM, yyyy", { locale: es })}</span>
                             {com.category && (
