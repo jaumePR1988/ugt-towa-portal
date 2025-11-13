@@ -88,10 +88,10 @@ export default function AdminEncuestasAnalisis() {
       const optionCounts: { [key: number]: number } = {};
       const optionLabels: { [key: number]: string } = {};
 
-      // Inicializar contadores y etiquetas
-      survey.options.forEach((option: any, index: number) => {
-        optionCounts[index] = 0;
-        optionLabels[index] = option.text || `Opción ${index + 1}`;
+      // Inicializar contadores y etiquetas usando option.id
+      survey.options.forEach((option: any) => {
+        optionCounts[option.id] = 0;
+        optionLabels[option.id] = option.text || `Opción ${option.id}`;
       });
 
       // Contar respuestas

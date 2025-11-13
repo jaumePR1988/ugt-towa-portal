@@ -5,35 +5,35 @@
         "id": "1",
         "content": "Solucionar error en análisis de encuestas",
         "details": "Diagnosticar por qué no recoge bien los datos de las encuestas. Revisar la función de análisis y asegurar que los datos se muestren correctamente en el gráfico.",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
         "content": "Añadir campo tipo encuesta (pública/afiliados)",
         "details": "Modificar base de datos para incluir campo 'tipo' o 'publica' en tabla encuestas. Actualizar formularios admin para incluir esta opción al crear encuestas.",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "3": {
         "id": "3",
         "content": "Crear panel específico para encuestas de afiliados",
         "details": "Implementar sección en perfil de afiliados donde solo pueden ver encuestas marcadas como 'afiliados'. Separar de encuestas públicas del panel principal.",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       },
       "4": {
         "id": "4",
         "content": "Modificar visualización de encuestas",
         "details": "Encuestas públicas: se muestran en panel principal para todos. Encuestas de afiliados: solo visible para usuarios con perfil de afiliado activo.",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       },
       "5": {
         "id": "5",
         "content": "Testing y verificación completa",
         "details": "Probar creación de ambos tipos de encuestas, visualización en diferentes contextos (público vs afiliado), y que análisis funcione correctamente.",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       }
     }

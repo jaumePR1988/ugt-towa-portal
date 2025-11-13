@@ -20,6 +20,7 @@ export default function EncuestasPage() {
       .from('surveys')
       .select('*')
       .eq('is_active', true)
+      .eq('tipo', 'publica')
       .order('created_at', { ascending: false });
     if (data) {
       setSurveys(data);

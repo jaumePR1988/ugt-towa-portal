@@ -46,7 +46,7 @@ import AffiliateDashboard from './pages/affiliates/AffiliateDashboard';
 import TestAffiliateDashboard from './pages/affiliates/TestAffiliateDashboard';
 import BibliotecaPage from './pages/affiliates/BibliotecaPage';
 import TestBibliotecaPage from './pages/affiliates/TestBibliotecaPage';
-
+import EncuestasAfiliadosPage from './pages/affiliates/EncuestasAfiliadosPage';
 import BeneficiosPage from './pages/affiliates/BeneficiosPage';
 
 // Components
@@ -109,6 +109,15 @@ function App() {
             element={
               <TestAffiliateRoute>
                 <TestBibliotecaPage />
+              </TestAffiliateRoute>
+            }
+          />
+
+          <Route
+            path="/afiliados/encuestas"
+            element={
+              <TestAffiliateRoute>
+                <EncuestasAfiliadosPage />
               </TestAffiliateRoute>
             }
           />

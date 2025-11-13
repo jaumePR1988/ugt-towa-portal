@@ -14,11 +14,86 @@ Portal web completo para Sección Sindical UGT en Towa Pharmaceutical Europe
 - Keys: Disponibles via get_all_secrets
 
 ## Fase Actual
-MEJORA PREVISUALIZACION COMUNICADOS - 14-Nov-2025 05:40
+SISTEMA DE ENCUESTAS DIFERENCIADAS - 14-Nov-2025 06:15
 
 ### Estado Actual
-- URL PRODUCCIÓN: https://x7wqafm45r9p.space.minimax.io
-- URL Anterior: https://c4s0748tloo8.space.minimax.io
+- URL PRODUCCIÓN: https://4mjz0bncrg9m.space.minimax.io
+- URL Anterior: https://x7wqafm45r9p.space.minimax.io
+
+### Sistema de Encuestas Diferenciadas Completo
+**Estado**: COMPLETADO Y TESTEADO - 14-Nov-2025 06:15
+**Objetivo**: Implementar sistema de encuestas con diferenciación entre públicas y afiliados
+
+**Implementaciones Completadas:**
+1. Backend:
+   - [x] Migración 'add_tipo_to_surveys' aplicada exitosamente
+   - [x] Campo 'tipo' agregado a tabla surveys ('publica' por defecto, 'afiliados')
+   - [x] Interface Survey actualizada en TypeScript (supabase.ts)
+
+2. Admin Panel:
+   - [x] AdminEncuestas.tsx con selector de tipo de encuesta
+   - [x] Estado 'tipo' manejado correctamente
+   - [x] Badge visual mostrando tipo de encuesta (Pública/Solo Afiliados)
+   - [x] Formulario de creación incluyendo campo tipo
+
+3. Análisis Corregido:
+   - [x] AdminEncuestasAnalisis.tsx corregido
+   - [x] Lógica de conteo de opciones arreglada (usa option.id correctamente)
+   - [x] Análisis de encuestas funcionando sin errores
+
+4. Páginas Públicas:
+   - [x] HomePage.tsx filtrando solo encuestas públicas (.eq('tipo', 'publica'))
+   - [x] EncuestasPage.tsx filtrando solo encuestas públicas
+
+5. Sección de Afiliados:
+   - [x] EncuestasAfiliadosPage.tsx creada (204 líneas)
+   - [x] Filtra solo encuestas tipo 'afiliados'
+   - [x] Sistema completo de votación y resultados
+   - [x] Menú lateral de navegación consistente
+   - [x] Ruta /afiliados/encuestas configurada en App.tsx
+   - [x] Enlace agregado en AffiliateDashboard.tsx
+   - [x] Navegación actualizada en BibliotecaPage.tsx y BeneficiosPage.tsx
+
+**Testing Completo Realizado:**
+- [x] Build exitoso (2692 módulos)
+- [x] Desplegado en producción
+- [x] Testing comprehensivo de 9 pasos completado
+- [x] Resultados: 0 BUGS ENCONTRADOS
+- [x] Verificaciones completadas:
+  * Creación de encuesta pública: OK
+  * Creación de encuesta de afiliados: OK
+  * Filtrado en página principal: OK
+  * Filtrado en /encuestas: OK
+  * Filtrado en /afiliados/encuestas: OK
+  * Sistema de votación: OK
+  * Análisis de encuestas: OK
+  * Badges correctos: OK
+  * Sin errores en consola: OK
+
+**Archivos Modificados:**
+- /workspace/ugt-towa-portal/src/pages/admin/AdminEncuestasAnalisis.tsx
+- /workspace/ugt-towa-portal/src/pages/admin/AdminEncuestas.tsx
+- /workspace/ugt-towa-portal/src/pages/HomePage.tsx
+- /workspace/ugt-towa-portal/src/pages/EncuestasPage.tsx
+- /workspace/ugt-towa-portal/src/pages/affiliates/AffiliateDashboard.tsx
+- /workspace/ugt-towa-portal/src/pages/affiliates/BibliotecaPage.tsx
+- /workspace/ugt-towa-portal/src/pages/affiliates/BeneficiosPage.tsx
+- /workspace/ugt-towa-portal/src/App.tsx
+- /workspace/ugt-towa-portal/src/lib/supabase.ts
+
+**Archivo Creado:**
+- /workspace/ugt-towa-portal/src/pages/affiliates/EncuestasAfiliadosPage.tsx
+
+**Documentación:**
+- /workspace/test-progress-encuestas-diferenciadas.md
+
+**Estado Final**: SISTEMA 100% FUNCIONAL - LISTO PARA USO EN PRODUCCIÓN
+
+## Fase Anterior
+MEJORA PREVISUALIZACION COMUNICADOS - 14-Nov-2025 05:40
+
+### Estado Anterior
+- URL: https://x7wqafm45r9p.space.minimax.io
 
 ### Mejora Implementada
 **OBJETIVO**: Mostrar más contenido de texto en la previsualización de comunicados (200 caracteres en lugar de 1-2 palabras)

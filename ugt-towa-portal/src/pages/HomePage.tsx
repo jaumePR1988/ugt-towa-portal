@@ -46,11 +46,12 @@ export default function HomePage() {
         .limit(3);
       if (comData) setCommuniques(comData as any);
 
-      // Cargar encuesta activa
+      // Cargar encuesta activa (solo públicas)
       const { data: surveyData } = await supabase
         .from('surveys')
         .select('*')
         .eq('is_active', true)
+        .eq('tipo', 'publica')
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle();
