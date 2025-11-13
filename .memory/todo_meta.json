@@ -3,37 +3,23 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Solucionar error en análisis de encuestas",
-        "details": "Diagnosticar por qué no recoge bien los datos de las encuestas. Revisar la función de análisis y asegurar que los datos se muestren correctamente en el gráfico.",
-        "status": "completed",
+        "content": "Implementar botones de compartir en redes sociales y WhatsApp",
+        "details": "1. Agregar botones de compartir en vista previa de comunicados\n2. Agregar botones de compartir en página detalle de comunicados\n3. Integrar sharing para Facebook, Twitter, LinkedIn y WhatsApp\n4. URLs de compartir optimizadas con título y descripción\n5. Diseño coherente con el estilo del portal",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Añadir campo tipo encuesta (pública/afiliados)",
-        "details": "Modificar base de datos para incluir campo 'tipo' o 'publica' en tabla encuestas. Actualizar formularios admin para incluir esta opción al crear encuestas.",
-        "status": "completed",
-        "priority": "high"
+        "content": "Agregar funcionalidad de eliminar citas en panel administrador",
+        "details": "1. Agregar botón 'Eliminar' en cada fila de la tabla de citas\n2. Implementar confirmación antes de eliminar\n3. Función de eliminación en base de datos\n4. Filtrar automáticamente citas pasadas (opcional)\n5. Actualización en tiempo real de la lista",
+        "status": "pending",
+        "priority": "medium"
       },
       "3": {
         "id": "3",
-        "content": "Crear panel específico para encuestas de afiliados",
-        "details": "Implementar sección en perfil de afiliados donde solo pueden ver encuestas marcadas como 'afiliados'. Separar de encuestas públicas del panel principal.",
-        "status": "completed",
-        "priority": "medium"
-      },
-      "4": {
-        "id": "4",
-        "content": "Modificar visualización de encuestas",
-        "details": "Encuestas públicas: se muestran en panel principal para todos. Encuestas de afiliados: solo visible para usuarios con perfil de afiliado activo.",
-        "status": "completed",
-        "priority": "medium"
-      },
-      "5": {
-        "id": "5",
-        "content": "Testing y verificación completa",
-        "details": "Probar creación de ambos tipos de encuestas, visualización en diferentes contextos (público vs afiliado), y que análisis funcione correctamente.",
-        "status": "completed",
+        "content": "Agregar botón eliminar suscriptores en newsletter",
+        "details": "1. Agregar botón 'Eliminar' en lista de suscriptores newsletter\n2. Implementar confirmación antes de eliminar\n3. Función de eliminación en base de datos\n4. Actualización en tiempo real de la lista\n5. Manejo de errores y feedback visual",
+        "status": "pending",
         "priority": "medium"
       }
     }
