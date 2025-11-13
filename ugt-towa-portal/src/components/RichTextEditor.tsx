@@ -1,12 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
+import { Editor as TinyMCEEditor } from '@tinymce/tinymce-react';
 import DOMPurify from 'dompurify';
-
-// Declarar el tipo global de TinyMCE
-declare global {
-  interface Window {
-    tinymce: any;
-  }
-}
 
 interface RichTextEditorProps {
   value: string;
@@ -24,8 +18,6 @@ export default function RichTextEditor({
   minHeight = 400
 }: RichTextEditorProps) {
   const editorRef = useRef<any>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const editorId = useRef(`tinymce-${Math.random().toString(36).substr(2, 9)}`);
 
   const handleEditorChange = (content: string) => {
     // Sanitizar el contenido HTML antes de guardarlo
@@ -51,41 +43,17 @@ export default function RichTextEditor({
     onChange(sanitizedContent);
   };
 
-  useEffect(() => {
-    // Cargar el script de TinyMCE si no está ya cargado
-    const loadTinyMCE = () => {
-      return new Promise<void>((resolve, reject) => {
-        if (window.tinymce) {
-          resolve();
-          return;
-        }
-
-        const script = document.createElement('script');
-        script.src = '/tinymce/tinymce.min.js';
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error('Failed to load TinyMCE'));
-        document.head.appendChild(script);
-      });
-    };
-
-    // Inicializar TinyMCE
-    const initEditor = async () => {
-      try {
-        await loadTinyMCE();
-
-        if (!window.tinymce) {
-          console.error('TinyMCE no se cargó correctamente');
-          return;
-        }
-
-        // Inicializar el editor
-        window.tinymce.init({
-          selector: `#${editorId.current}`,
-          license_key: 'gpl',
+  return (
+    <div className="rich-text-editor-wrapper">
+      {/* @ts-ignore - TinyMCE Editor tiene problemas de tipos con React 18 */}
+      <TinyMCEEditor
+        apiKey="u4zx4bq0t2hpd5exybtxzj2zqhbnuuqqb47r0x4p4o8wyhbj"
+        onInit={(evt: any, editor: any) => editorRef.current = editor}
+        value={value}
+        disabled={disabled}
+        init={{
           height: minHeight,
           menubar: false,
-          base_url: '/tinymce',
-          suffix: '.min',
           plugins: [
             'advlist', 'autolink', 'lists', 'link', 'image', 'charmap',
             'preview', 'anchor', 'searchreplace', 'visualblocks', 'code',
@@ -143,16 +111,15 @@ export default function RichTextEditor({
           promotion: false,
           statusbar: true,
           elementpath: false,
-          disabled: disabled,
           
-          // Configuración de imágenes
+          // Configuracion de imagenes
           image_advtab: true,
           image_caption: true,
           image_title: true,
           automatic_uploads: false,
           file_picker_types: 'image',
           
-          // Configuración de enlaces
+          // Configuracion de enlaces
           link_title: true,
           link_target_list: [
             { title: 'Misma ventana', value: '_self' },
@@ -166,15 +133,19 @@ export default function RichTextEditor({
           valid_elements: '*[*]',
           extended_valid_elements: 'img[class|src|border=0|alt|title|width|height|style]',
           
-          // Configuración móvil
+          // Configuracion movil
           mobile: {
             menubar: false,
             toolbar_mode: 'scrolling',
             toolbar: 'undo redo | bold italic | bullist numlist | link image'
           },
           
+          // Auto-resize
+          autoresize_bottom_margin: 20,
+          autoresize_overflow_padding: 20,
+          
           // Formatos de texto
-          block_formats: 'Párrafo=p; Título 1=h1; Título 2=h2; Título 3=h3; Título 4=h4',
+          block_formats: 'Parrafo=p; Titulo 1=h1; Titulo 2=h2; Titulo 3=h3; Titulo 4=h4',
           
           // Estilos de fuente
           font_size_formats: '8px 10px 12px 14px 16px 18px 20px 24px 28px 32px 36px',
@@ -195,57 +166,20 @@ export default function RichTextEditor({
             '#8B5CF6', 'Morado'
           ],
           
-          // Eventos
+          // Shortcuts de teclado mejorados
           setup: (editor: any) => {
-            editorRef.current = editor;
-            
-            editor.on('init', () => {
-              // Establecer el valor inicial
-              if (value) {
-                editor.setContent(value);
-              }
+            // Auto-guardado (si se implementa en el futuro)
+            editor.on('change', () => {
+              handleEditorChange(editor.getContent());
             });
             
-            editor.on('change keyup', () => {
-              const content = editor.getContent();
-              handleEditorChange(content);
+            // Contador de palabras en la barra de estado
+            editor.on('wordCountUpdate', (e: any) => {
+              // El plugin wordcount ya maneja esto
             });
           }
-        });
-
-      } catch (error) {
-        console.error('Error al cargar TinyMCE:', error);
-      }
-    };
-
-    initEditor();
-
-    // Cleanup: destruir el editor al desmontar
-    return () => {
-      if (editorRef.current) {
-        try {
-          editorRef.current.remove();
-        } catch (e) {
-          // Ignorar errores de cleanup
-        }
-      }
-    };
-  }, [minHeight, disabled, placeholder]);
-
-  // Actualizar el contenido cuando cambie el valor externo
-  useEffect(() => {
-    if (editorRef.current && editorRef.current.getContent() !== value) {
-      editorRef.current.setContent(value || '');
-    }
-  }, [value]);
-
-  return (
-    <div className="rich-text-editor-wrapper">
-      <textarea
-        ref={textareaRef}
-        id={editorId.current}
-        defaultValue={value}
-        style={{ display: 'none' }}
+        }}
+        onEditorChange={handleEditorChange}
       />
       
       {/* Mensaje de ayuda */}
@@ -259,7 +193,7 @@ export default function RichTextEditor({
   );
 }
 
-// Función auxiliar para sanitizar HTML (exportable para uso en otros componentes)
+// Funcion auxiliar para sanitizar HTML (exportable para uso en otros componentes)
 export function sanitizeHTML(html: string): string {
   return DOMPurify.sanitize(html, {
     ALLOWED_TAGS: [
