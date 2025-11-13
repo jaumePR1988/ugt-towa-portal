@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase, AppointmentSlot, Appointment } from '@/lib/supabase';
-import { Calendar as CalendarIcon, Clock, ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { supabase, AppointmentSlot, Appointment, AttachmentFile } from '@/lib/supabase';
+import { Calendar as CalendarIcon, Clock, ChevronLeft, ChevronRight, Upload, X, FileText, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -18,6 +18,15 @@ export default function CitasPage() {
   const [selectedType, setSelectedType] = useState<'sindical' | 'prevencion'>('sindical');
   const [slots, setSlots] = useState<AppointmentSlot[]>([]);
   const [myAppointments, setMyAppointments] = useState<Appointment[]>([]);
+  
+  // Modal de reserva
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<AppointmentSlot | null>(null);
+  const [comments, setComments] = useState('');
+  const [questions, setQuestions] = useState('');
+  const [uploadedFiles, setUploadedFiles] = useState<AttachmentFile[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isBooking, setIsBooking] = useState(false);
 
   useEffect(() => {
     loadSlots();
@@ -46,22 +55,107 @@ export default function CitasPage() {
     if (data) setMyAppointments(data as any);
   }
 
-  async function handleBookSlot(slot: AppointmentSlot) {
+  function openBookingModal(slot: AppointmentSlot) {
     if (!user) {
       toast.error('Debes iniciar sesión para reservar una cita');
       return;
     }
+    setSelectedSlot(slot);
+    setShowBookingModal(true);
+    setComments('');
+    setQuestions('');
+    setUploadedFiles([]);
+  }
+
+  function closeBookingModal() {
+    setShowBookingModal(false);
+    setSelectedSlot(null);
+    setComments('');
+    setQuestions('');
+    setUploadedFiles([]);
+  }
+
+  async function handleFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+
+      // Validación de tamaño
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(`El archivo ${file.name} excede el tamaño máximo de 5MB`);
+        continue;
+      }
+
+      // Validación de tipo
+      const allowedTypes = [
+        'application/pdf',
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      ];
+
+      if (!allowedTypes.includes(file.type)) {
+        toast.error(`El archivo ${file.name} no es de un tipo permitido`);
+        continue;
+      }
+
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const { data, error } = await supabase.functions.invoke('upload-appointment-document', {
+          body: formData,
+        });
+
+        if (error) throw error;
+
+        if (data && data.success) {
+          setUploadedFiles(prev => [...prev, {
+            url: data.url,
+            fileName: data.fileName,
+            fileSize: data.fileSize,
+            fileType: data.fileType,
+          }]);
+          toast.success(`Archivo ${file.name} subido correctamente`);
+        }
+      } catch (error: any) {
+        console.error('Error al subir archivo:', error);
+        toast.error(`Error al subir ${file.name}: ${error.message}`);
+      }
+    }
+
+    setIsUploading(false);
+    event.target.value = '';
+  }
+
+  function removeFile(index: number) {
+    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
+  }
+
+  async function handleConfirmBooking() {
+    if (!user || !selectedSlot) return;
+
+    setIsBooking(true);
 
     try {
       const { data: newAppointment, error } = await supabase
         .from('appointments')
         .insert([{
           user_id: user.id,
-          slot_id: slot.id,
+          slot_id: selectedSlot.id,
           delegate_type: selectedType,
-          start_time: slot.start_time,
-          end_time: slot.end_time,
-          status: 'confirmed'
+          start_time: selectedSlot.start_time,
+          end_time: selectedSlot.end_time,
+          status: 'confirmed',
+          comments: comments || null,
+          questions: questions || null,
+          documents: uploadedFiles.length > 0 ? uploadedFiles : null,
         }])
         .select()
         .single();
@@ -83,16 +177,18 @@ export default function CitasPage() {
           });
         } catch (notifyError) {
           console.error('Error al enviar notificación:', notifyError);
-          // No mostramos error al usuario, la cita fue creada correctamente
         }
 
         toast.success('Cita reservada correctamente. Recibirás una confirmación por email.');
+        closeBookingModal();
         loadSlots();
         loadMyAppointments();
       }
     } catch (error: any) {
       console.error('Error al reservar cita:', error);
       toast.error('Error al reservar cita: ' + (error.message || 'Error desconocido'));
+    } finally {
+      setIsBooking(false);
     }
   }
 
@@ -105,7 +201,6 @@ export default function CitasPage() {
       .eq('id', appointmentId);
 
     if (!error) {
-      // Enviar notificación de cancelación
       try {
         await supabase.functions.invoke('notify-appointment', {
           body: {
@@ -137,6 +232,12 @@ export default function CitasPage() {
       const targetHour = parseInt(time.split(':')[0]);
       return slotTime === targetHour;
     });
+  }
+
+  function formatFileSize(bytes: number): string {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   }
 
   const dateStr = selectedDate.toLocaleDateString('es-ES', { 
@@ -213,7 +314,7 @@ export default function CitasPage() {
                     <div key={time} className="relative">
                       {slot ? (
                         <button
-                          onClick={() => handleBookSlot(slot)}
+                          onClick={() => openBookingModal(slot)}
                           className="w-full p-4 rounded-lg border-2 border-green-300 bg-green-50 hover:bg-green-100 transition text-center"
                         >
                           <Clock className="h-5 w-5 mx-auto mb-1 text-green-600" />
@@ -296,6 +397,148 @@ export default function CitasPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal de Reserva */}
+      {showBookingModal && selectedSlot && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-gray-900">Confirmar Cita</h2>
+              <button
+                onClick={closeBookingModal}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600 mb-2">Horario seleccionado:</p>
+                <p className="text-lg font-semibold">
+                  {format(new Date(selectedSlot.start_time), "d 'de' MMMM, yyyy 'a las' HH:mm", { locale: es })}
+                </p>
+                <p className="text-sm text-gray-600 mt-1 capitalize">
+                  Tipo: {selectedType}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Comentarios Generales (opcional)
+                </label>
+                <textarea
+                  value={comments}
+                  onChange={(e) => setComments(e.target.value)}
+                  placeholder="Comparte cualquier información adicional que consideres relevante..."
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+                  rows={3}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Preguntas o Temas a Tratar (opcional)
+                </label>
+                <textarea
+                  value={questions}
+                  onChange={(e) => setQuestions(e.target.value)}
+                  placeholder="¿Qué temas te gustaría abordar en la cita?"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+                  rows={3}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Documentos Adjuntos (opcional)
+                </label>
+                <p className="text-xs text-gray-500 mb-3">
+                  Puedes adjuntar documentos relevantes (PDF, imágenes, Word). Máximo 5MB por archivo.
+                </p>
+
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  <Upload className="h-10 w-10 mx-auto text-gray-400 mb-3" />
+                  <label className="cursor-pointer">
+                    <span className="text-sm text-red-600 hover:text-red-700 font-semibold">
+                      Seleccionar archivos
+                    </span>
+                    <input
+                      type="file"
+                      multiple
+                      accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                      disabled={isUploading}
+                    />
+                  </label>
+                  <p className="text-xs text-gray-500 mt-1">
+                    PDF, JPG, PNG, DOC, DOCX
+                  </p>
+                </div>
+
+                {isUploading && (
+                  <div className="mt-3 flex items-center justify-center text-sm text-gray-600">
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Subiendo archivos...
+                  </div>
+                )}
+
+                {uploadedFiles.length > 0 && (
+                  <div className="mt-4 space-y-2">
+                    {uploadedFiles.map((file, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <div className="flex items-center flex-1 min-w-0">
+                          <FileText className="h-5 w-5 text-gray-600 mr-2 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900 truncate">
+                              {file.fileName}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {formatFileSize(file.fileSize)}
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => removeFile(index)}
+                          className="ml-3 text-red-600 hover:text-red-700 flex-shrink-0"
+                        >
+                          <X className="h-5 w-5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-gray-200 flex items-center justify-end space-x-3">
+              <button
+                onClick={closeBookingModal}
+                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+                disabled={isBooking}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleConfirmBooking}
+                disabled={isBooking}
+                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isBooking ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Reservando...
+                  </>
+                ) : (
+                  'Confirmar Reserva'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </div>
   );

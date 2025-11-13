@@ -5,7 +5,7 @@
         "id": "1",
         "content": "Modificar esquema de base de datos para citas y comunicados",
         "details": "1. Citas: Agregar columnas 'created_by', 'comments', 'questions', 'documents'. 2. Comunicados: Agregar columna 'attachments' para archivos adjuntos. 3. Configurar relaciones y constraints apropiados.",
-        "status": "pending",
+        "status": "in_progress",
         "priority": "high"
       },
       "2": {

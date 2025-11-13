@@ -268,8 +268,11 @@ export default function AdminCitas() {
   }, []);
 
   async function loadAppointments() {
-    const { data } = await supabase.from('appointments').select('*').order('start_time');
-    if (data) setAppointments(data);
+    const { data } = await supabase
+      .from('appointments')
+      .select('*, user:profiles(id, full_name, email)')
+      .order('start_time');
+    if (data) setAppointments(data as any);
   }
 
   async function loadNotifications() {

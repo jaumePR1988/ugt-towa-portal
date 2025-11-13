@@ -14,6 +14,30 @@ Portal web completo para Sección Sindical UGT en Towa Pharmaceutical Europe
 - Keys: Disponibles via get_all_secrets
 
 ## Fase Actual
+MEJORAS SISTEMA DE ARCHIVOS - 14-Nov-2025 00:24
+
+### Tarea: Implementar Archivos en Citas y Comunicados
+**Estado**: EN PROGRESO
+**Objetivo**: Agregar funcionalidad de archivos adjuntos a citas y comunicados
+
+**Implementaciones Pendientes:**
+1. Backend:
+   - [ ] Agregar campos a tabla appointments: created_by, comments, questions, documents
+   - [ ] Agregar campo attachments a tabla communiques
+   - [ ] Crear bucket "documents" para citas
+   - [ ] Crear bucket "attachments" para comunicados
+   - [ ] Crear edge function para subir archivos de citas
+   - [ ] Crear edge function para subir archivos de comunicados
+
+2. Frontend:
+   - [ ] Actualizar CitasPage con campos de comentarios, preguntas y subida de archivos
+   - [ ] Actualizar AdminCitas con visualización de creador y archivos
+   - [ ] Actualizar AdminComunicados con subida de archivos múltiples
+   - [ ] Actualizar ComunicadosPage con visualización de archivos adjuntos
+   - [ ] Componentes drag & drop para subida
+   - [ ] Validaciones de tipos de archivo
+
+## Fase Anterior
 REPOSITORIO GITHUB COMPLETO GENERADO - 12-Nov-2025 13:37
 
 ### Tarea: Generar ZIP Completo para GitHub
