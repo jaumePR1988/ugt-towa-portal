@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import RichTextEditor from '@/components/RichTextEditor';
+import SimpleTextEditor from '@/components/SimpleTextEditor';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase, Communique, Category, AttachmentFile } from '@/lib/supabase';
 import { Plus, Edit2, Trash2, Upload, X, FileText, Loader2, Paperclip } from 'lucide-react';
@@ -174,18 +174,40 @@ export default function AdminComunicados() {
       attachments: formData.attachments.length > 0 ? formData.attachments : null,
     };
 
-    if (editingId) {
-      const { error } = await supabase.from('communiques').update(submitData).eq('id', editingId);
-      if (error) toast.error('Error al actualizar');
-      else { toast.success('Actualizado'); resetForm(); loadCommuniques(); }
-    } else {
-      const { error } = await supabase.from('communiques').insert([{ 
-        ...submitData, 
-        author_id: user?.id, 
-        is_published: true 
-      }]);
-      if (error) toast.error('Error al publicar');
-      else { toast.success('Publicado'); resetForm(); loadCommuniques(); }
+    try {
+      if (editingId) {
+        const { error } = await supabase.from('communiques').update(submitData).eq('id', editingId);
+        if (error) {
+          console.error('Error al actualizar comunicado:', error);
+          toast.error(`Error al actualizar: ${error.message || 'Error desconocido'}`);
+        } else { 
+          toast.success('Comunicado actualizado correctamente');
+          resetForm(); 
+          loadCommuniques(); 
+        }
+      } else {
+        console.log('Intentando insertar comunicado:', { ...submitData, author_id: user?.id, is_published: true });
+        
+        const { data, error } = await supabase.from('communiques').insert([{ 
+          ...submitData, 
+          author_id: user?.id, 
+          is_published: true 
+        }]).select();
+        
+        if (error) {
+          console.error('Error al publicar comunicado:', error);
+          toast.error(`Error al publicar: ${error.message || 'Error desconocido'}`);
+          toast.error(`Detalles: ${JSON.stringify(error)}`);
+        } else { 
+          console.log('Comunicado creado exitosamente:', data);
+          toast.success('Comunicado publicado correctamente');
+          resetForm(); 
+          loadCommuniques(); 
+        }
+      }
+    } catch (error: any) {
+      console.error('Error inesperado:', error);
+      toast.error(`Error inesperado: ${error.message || 'Error desconocido'}`);
     }
   }
 
@@ -261,7 +283,7 @@ export default function AdminComunicados() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Contenido
               </label>
-              <RichTextEditor 
+              <SimpleTextEditor 
                 value={formData.content}
                 onChange={(content) => setFormData({...formData, content})}
                 placeholder="Escribe el contenido del comunicado..."
