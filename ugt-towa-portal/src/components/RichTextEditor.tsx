@@ -47,7 +47,7 @@ export default function RichTextEditor({
     <div className="rich-text-editor-wrapper">
       {/* @ts-ignore - TinyMCE Editor tiene problemas de tipos con React 18 */}
       <TinyMCEEditor
-        apiKey="no-api-key"
+        apiKey="u4zx4bq0t2hpd5exybtxzj2zqhbnuuqqb47r0x4p4o8wyhbj"
         onInit={(evt: any, editor: any) => editorRef.current = editor}
         value={value}
         disabled={disabled}

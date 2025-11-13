@@ -2,13 +2,24 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { supabase, Delegate } from '@/lib/supabase';
-import { Plus, Trash2, Upload, X, User } from 'lucide-react';
+import { Plus, Trash2, Upload, X, User, Edit2, Mail, Phone, Briefcase } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminQuienesSomos() {
   const [delegates, setDelegates] = useState<Delegate[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({ full_name: '', role_type: 'comite', bio: '', photo_url: '' });
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [formData, setFormData] = useState({ 
+    full_name: '', 
+    role_type: 'comite', 
+    bio: '', 
+    photo_url: '',
+    position: '',
+    email: '',
+    phone: '',
+    description: '',
+    active: true
+  });
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -17,7 +28,10 @@ export default function AdminQuienesSomos() {
   }, []);
 
   async function loadDelegates() {
-    const { data } = await supabase.from('delegates').select('*').order('display_order');
+    const { data } = await supabase
+      .from('delegates')
+      .select('*')
+      .order('display_order', { ascending: true, nullsFirst: false });
     if (data) setDelegates(data);
   }
 
@@ -64,15 +78,64 @@ export default function AdminQuienesSomos() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const { error } = await supabase.from('delegates').insert([formData]);
-    if (error) toast.error('Error');
-    else { toast.success('Delegado añadido'); resetForm(); loadDelegates(); }
+    
+    const submitData = {
+      full_name: formData.full_name,
+      role_type: formData.role_type,
+      bio: formData.bio,
+      photo_url: formData.photo_url,
+      position: formData.position || null,
+      email: formData.email || null,
+      phone: formData.phone || null,
+      description: formData.description || formData.bio,
+      active: formData.active
+    };
+
+    if (editingId) {
+      const { error } = await supabase
+        .from('delegates')
+        .update(submitData)
+        .eq('id', editingId);
+      if (error) toast.error('Error al actualizar');
+      else { toast.success('Perfil actualizado'); resetForm(); loadDelegates(); }
+    } else {
+      const { error } = await supabase.from('delegates').insert([submitData]);
+      if (error) toast.error('Error al crear perfil');
+      else { toast.success('Perfil añadido'); resetForm(); loadDelegates(); }
+    }
   }
 
   function resetForm() {
-    setFormData({ full_name: '', role_type: 'comite', bio: '', photo_url: '' });
+    setFormData({ 
+      full_name: '', 
+      role_type: 'comite', 
+      bio: '', 
+      photo_url: '',
+      position: '',
+      email: '',
+      phone: '',
+      description: '',
+      active: true
+    });
+    setEditingId(null);
     setShowForm(false);
     setSelectedFile(null);
+  }
+
+  function handleEdit(delegate: Delegate) {
+    setFormData({
+      full_name: delegate.full_name,
+      role_type: delegate.role_type,
+      bio: delegate.bio,
+      photo_url: delegate.photo_url || delegate.image_url || '',
+      position: delegate.position || '',
+      email: delegate.email || '',
+      phone: delegate.phone || '',
+      description: delegate.description || delegate.bio,
+      active: delegate.active !== false
+    });
+    setEditingId(delegate.id);
+    setShowForm(true);
   }
 
   async function handleDelete(id: string) {
@@ -88,21 +151,122 @@ export default function AdminQuienesSomos() {
       <Navbar />
       <div className="container mx-auto px-4 py-12">
         <div className="flex justify-between mb-8">
-          <h1 className="text-3xl font-bold">Gestionar Delegados</h1>
-          <button onClick={() => setShowForm(!showForm)} className="px-4 py-2 bg-red-600 text-white rounded-lg"><Plus className="inline h-5 w-5" /> Añadir</button>
+          <h1 className="text-3xl font-bold">Gestionar Perfiles</h1>
+          <button onClick={() => { resetForm(); setShowForm(!showForm); }} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+            <Plus className="inline h-5 w-5 mr-1" /> Añadir Perfil
+          </button>
         </div>
         {showForm && (
           <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow mb-8">
-            <input type="text" placeholder="Nombre" value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} className="w-full p-2 border rounded mb-4" required />
-            <select value={formData.role_type} onChange={e => setFormData({...formData, role_type: e.target.value as any})} className="w-full p-2 border rounded mb-4">
-              <option value="comite">Comité</option>
-              <option value="sindical">Sindical</option>
-              <option value="prevencion">Prevención</option>
-            </select>
-            <textarea placeholder="Biografía" value={formData.bio} onChange={e => setFormData({...formData, bio: e.target.value})} className="w-full p-2 border rounded mb-4" required />
+            <h2 className="text-xl font-bold mb-4">{editingId ? 'Editar Perfil' : 'Nuevo Perfil'}</h2>
             
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Foto del Delegado (opcional)</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre Completo *</label>
+                <input 
+                  type="text" 
+                  placeholder="Nombre completo" 
+                  value={formData.full_name} 
+                  onChange={e => setFormData({...formData, full_name: e.target.value})} 
+                  className="w-full p-3 border rounded" 
+                  required 
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Cargo/Posición</label>
+                <div className="relative">
+                  <Briefcase className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                  <input 
+                    type="text" 
+                    placeholder="Ej: Delegado Sindical Principal" 
+                    value={formData.position} 
+                    onChange={e => setFormData({...formData, position: e.target.value})} 
+                    className="w-full p-3 pl-10 border rounded" 
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                  <input 
+                    type="email" 
+                    placeholder="correo@ejemplo.com" 
+                    value={formData.email} 
+                    onChange={e => setFormData({...formData, email: e.target.value})} 
+                    className="w-full p-3 pl-10 border rounded" 
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                  <input 
+                    type="tel" 
+                    placeholder="+34 XXX XXX XXX" 
+                    value={formData.phone} 
+                    onChange={e => setFormData({...formData, phone: e.target.value})} 
+                    className="w-full p-3 pl-10 border rounded" 
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Rol *</label>
+              <select 
+                value={formData.role_type} 
+                onChange={e => setFormData({...formData, role_type: e.target.value as any})} 
+                className="w-full p-3 border rounded"
+              >
+                <option value="comite">Comité de Empresa</option>
+                <option value="sindical">Delegado Sindical</option>
+                <option value="prevencion">Prevención de Riesgos</option>
+              </select>
+            </div>
+            
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Biografía Breve *</label>
+              <textarea 
+                placeholder="Descripción breve para la tarjeta de perfil" 
+                value={formData.bio} 
+                onChange={e => setFormData({...formData, bio: e.target.value})} 
+                className="w-full p-3 border rounded" 
+                rows={2}
+                required 
+              />
+            </div>
+            
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Descripción Completa</label>
+              <textarea 
+                placeholder="Descripción detallada, experiencia, responsabilidades..." 
+                value={formData.description} 
+                onChange={e => setFormData({...formData, description: e.target.value})} 
+                className="w-full p-3 border rounded" 
+                rows={4}
+              />
+              <p className="text-xs text-gray-500 mt-1">Si se deja vacío, se usará la biografía breve</p>
+            </div>
+            
+            <div className="mt-4">
+              <label className="flex items-center">
+                <input 
+                  type="checkbox" 
+                  checked={formData.active} 
+                  onChange={e => setFormData({...formData, active: e.target.checked})} 
+                  className="mr-2 h-4 w-4"
+                />
+                <span className="text-sm font-medium text-gray-700">Perfil activo (visible en la página pública)</span>
+              </label>
+            </div>
+            
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Foto del Perfil (opcional)</label>
               {formData.photo_url ? (
                 <div className="relative inline-block">
                   <img src={formData.photo_url} alt="Preview" className="h-32 w-32 rounded-full object-cover border-4 border-gray-200" />
@@ -134,9 +298,11 @@ export default function AdminQuienesSomos() {
               )}
             </div>
 
-            <div className="flex gap-2">
-              <button type="submit" className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Guardar</button>
-              <button type="button" onClick={resetForm} className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Cancelar</button>
+            <div className="flex gap-2 mt-6">
+              <button type="submit" className="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                {editingId ? 'Actualizar' : 'Crear Perfil'}
+              </button>
+              <button type="button" onClick={resetForm} className="px-6 py-2 bg-gray-200 rounded hover:bg-gray-300">Cancelar</button>
             </div>
           </form>
         )}

@@ -14,6 +14,34 @@ Portal web completo para Sección Sindical UGT en Towa Pharmaceutical Europe
 - Keys: Disponibles via get_all_secrets
 
 ## Fase Actual
+MEJORAS CRÍTICAS: TINYMCE + PERFILES EDITABLES - 14-Nov-2025 01:31
+
+### Tarea: Dos Mejoras Críticas
+**Estado**: ✅ IMPLEMENTADO Y DESPLEGADO
+**Objetivo**: 1) TinyMCE sin pantalla de configuración, 2) Perfiles editables con campos adicionales
+
+**Implementación Completada:**
+- ✅ Mejora 1: API Key TinyMCE configurada (u4zx4bq0t2hpd5exybtxzj2zqhbnuuqqb47r0x4p4o8wyhbj)
+  * RichTextEditor.tsx línea 50: prop apiKey agregada
+  * Verificado en código compilado con grep
+- ✅ Mejora 2: 7 campos nuevos en tabla delegates
+  * Migration aplicada: position, email, phone, description, active, user_id, updated_at
+  * AdminQuienesSomos.tsx actualizado con formulario completo (3 secciones)
+  * Interface Delegate extendida en supabase.ts
+- ✅ Build exitoso (2702 módulos)
+- ✅ Desplegado: https://oxu9hwdzbd9p.space.minimax.io
+- ✅ Verificaciones técnicas completadas
+- ⏳ Verificación manual recomendada (ver CHECKLIST_VERIFICACION.md)
+
+**Documentación Generada:**
+- /workspace/INFORME_FINAL_MEJORAS_CRITICAS.md (253 líneas)
+- /workspace/CHECKLIST_VERIFICACION.md (187 líneas)  
+- /workspace/test-progress-mejoras-criticas.md (127 líneas)
+
+**URL Producción**: https://oxu9hwdzbd9p.space.minimax.io
+**Credenciales**: jpedragosa@towapharmaceutical.com / towa2022
+
+## Fase Anterior
 EDITOR DE TEXTO ENRIQUECIDO - 14-Nov-2025 01:05
 
 ### Tarea: Implementar Editor Rich Text para Comunicados
