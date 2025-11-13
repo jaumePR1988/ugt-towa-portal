@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase, Communique, Category } from '@/lib/supabase';
-import { Plus, Edit2, Trash2, Upload, X } from 'lucide-react';
+import { supabase, Communique, Category, AttachmentFile } from '@/lib/supabase';
+import { Plus, Edit2, Trash2, Upload, X, FileText, Loader2, Paperclip } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminComunicados() {
@@ -12,9 +12,16 @@ export default function AdminComunicados() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ title: '', content: '', category_id: '', image_url: '' });
+  const [formData, setFormData] = useState({ 
+    title: '', 
+    content: '', 
+    category_id: '', 
+    image_url: '',
+    attachments: [] as AttachmentFile[]
+  });
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadingAttachments, setUploadingAttachments] = useState(false);
 
   useEffect(() => {
     loadCommuniques();
@@ -75,14 +82,100 @@ export default function AdminComunicados() {
     }
   }
 
+  async function handleAttachmentsUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploadingAttachments(true);
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(`El archivo ${file.name} excede el tamaño máximo de 5MB`);
+        continue;
+      }
+
+      const allowedTypes = [
+        'application/pdf',
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      ];
+
+      if (!allowedTypes.includes(file.type)) {
+        toast.error(`El archivo ${file.name} no es de un tipo permitido`);
+        continue;
+      }
+
+      try {
+        const formDataUpload = new FormData();
+        formDataUpload.append('file', file);
+
+        const { data, error } = await supabase.functions.invoke('upload-communique-attachment', {
+          body: formDataUpload,
+        });
+
+        if (error) throw error;
+
+        if (data && data.success) {
+          setFormData(prev => ({
+            ...prev,
+            attachments: [...prev.attachments, {
+              url: data.url,
+              fileName: data.fileName,
+              fileSize: data.fileSize,
+              fileType: data.fileType,
+            }]
+          }));
+          toast.success(`Archivo ${file.name} subido correctamente`);
+        }
+      } catch (error: any) {
+        console.error('Error al subir archivo:', error);
+        toast.error(`Error al subir ${file.name}: ${error.message}`);
+      }
+    }
+
+    setUploadingAttachments(false);
+    event.target.value = '';
+  }
+
+  function removeAttachment(index: number) {
+    setFormData(prev => ({
+      ...prev,
+      attachments: prev.attachments.filter((_, i) => i !== index)
+    }));
+  }
+
+  function formatFileSize(bytes: number): string {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    
+    const submitData = {
+      title: formData.title,
+      content: formData.content,
+      category_id: formData.category_id,
+      image_url: formData.image_url || null,
+      attachments: formData.attachments.length > 0 ? formData.attachments : null,
+    };
+
     if (editingId) {
-      const { error } = await supabase.from('communiques').update(formData).eq('id', editingId);
+      const { error } = await supabase.from('communiques').update(submitData).eq('id', editingId);
       if (error) toast.error('Error al actualizar');
       else { toast.success('Actualizado'); resetForm(); loadCommuniques(); }
     } else {
-      const { error } = await supabase.from('communiques').insert([{ ...formData, author_id: user?.id, is_published: true }]);
+      const { error } = await supabase.from('communiques').insert([{ 
+        ...submitData, 
+        author_id: user?.id, 
+        is_published: true 
+      }]);
       if (error) toast.error('Error al publicar');
       else { toast.success('Publicado'); resetForm(); loadCommuniques(); }
     }
@@ -101,14 +194,21 @@ export default function AdminComunicados() {
       title: com.title, 
       content: com.content, 
       category_id: com.category_id || '', 
-      image_url: com.image_url || '' 
+      image_url: com.image_url || '',
+      attachments: com.attachments || []
     });
     setEditingId(com.id);
     setShowForm(true);
   }
 
   function resetForm() {
-    setFormData({ title: '', content: '', category_id: '', image_url: '' });
+    setFormData({ 
+      title: '', 
+      content: '', 
+      category_id: '', 
+      image_url: '',
+      attachments: []
+    });
     setEditingId(null);
     setShowForm(false);
     setSelectedFile(null);
@@ -158,7 +258,7 @@ export default function AdminComunicados() {
             />
             
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Imagen (opcional)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Imagen destacada (opcional)</label>
               {formData.image_url ? (
                 <div className="relative inline-block">
                   <img src={formData.image_url} alt="Preview" className="h-32 w-auto rounded border" />
@@ -190,6 +290,72 @@ export default function AdminComunicados() {
               )}
             </div>
 
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Archivos Adjuntos (opcional)
+              </label>
+              <p className="text-xs text-gray-500 mb-3">
+                Puedes adjuntar documentos relevantes (PDF, imágenes, Word). Máximo 5MB por archivo.
+              </p>
+
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center mb-4">
+                <Paperclip className="h-10 w-10 mx-auto text-gray-400 mb-3" />
+                <label className="cursor-pointer">
+                  <span className="text-sm text-red-600 hover:text-red-700 font-semibold">
+                    Seleccionar archivos
+                  </span>
+                  <input
+                    type="file"
+                    multiple
+                    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                    onChange={handleAttachmentsUpload}
+                    className="hidden"
+                    disabled={uploadingAttachments}
+                  />
+                </label>
+                <p className="text-xs text-gray-500 mt-1">
+                  PDF, JPG, PNG, DOC, DOCX
+                </p>
+              </div>
+
+              {uploadingAttachments && (
+                <div className="flex items-center justify-center text-sm text-gray-600 mb-3">
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Subiendo archivos...
+                </div>
+              )}
+
+              {formData.attachments.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-700">
+                    Archivos adjuntos ({formData.attachments.length})
+                  </p>
+                  {formData.attachments.map((file, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="flex items-center flex-1 min-w-0">
+                        <FileText className="h-5 w-5 text-gray-600 mr-2 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">
+                            {file.fileName}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {formatFileSize(file.fileSize)}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeAttachment(index)}
+                        className="ml-3 text-red-600 hover:text-red-700 flex-shrink-0"
+                      >
+                        <X className="h-5 w-5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <div className="flex gap-2">
               <button type="submit" className="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700">
                 {editingId ? 'Actualizar' : 'Publicar'}
@@ -215,6 +381,12 @@ export default function AdminComunicados() {
                       </span>
                     )}
                     <p className="text-gray-600">{com.content.substring(0,200)}...</p>
+                    {com.attachments && com.attachments.length > 0 && (
+                      <p className="text-sm text-blue-600 mt-2 flex items-center">
+                        <Paperclip className="h-4 w-4 mr-1" />
+                        {com.attachments.length} archivo(s) adjunto(s)
+                      </p>
+                    )}
                     <p className="text-sm text-gray-500 mt-2">{new Date(com.created_at).toLocaleString('es-ES')}</p>
                   </div>
                   <div className="flex gap-2 ml-4">
