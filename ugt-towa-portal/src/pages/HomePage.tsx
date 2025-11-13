@@ -8,6 +8,23 @@ import { Calendar, FileText, Vote, MessageSquare, QrCode } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
+// Función para extraer texto plano del HTML y truncarlo de manera segura
+function getTextPreview(html: string, maxLength: number = 200): string {
+  // Crear un elemento temporal para parsear el HTML
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+  
+  // Obtener solo el texto sin etiquetas HTML
+  const text = temp.textContent || temp.innerText || '';
+  
+  // Truncar el texto si es muy largo
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength).trim() + '...';
+  }
+  
+  return text;
+}
+
 export default function HomePage() {
   const [communiques, setCommuniques] = useState<Communique[]>([]);
   const [activeSurvey, setActiveSurvey] = useState<Survey | null>(null);
@@ -145,14 +162,9 @@ export default function HomePage() {
                         <div className="flex-1 flex flex-col justify-between">
                           <div>
                             <h3 className="text-lg font-semibold text-gray-900 mb-2">{com.title}</h3>
-                            <div 
-                              className="prose prose-sm max-w-none line-clamp-2 text-gray-600"
-                              dangerouslySetInnerHTML={{ 
-                                __html: com.content.length > 150 
-                                  ? com.content.substring(0, 150) + '...' 
-                                  : com.content 
-                              }}
-                            />
+                            <p className="text-gray-600 line-clamp-2">
+                              {getTextPreview(com.content, 180)}
+                            </p>
                           </div>
                           <div className="flex items-center mt-3 text-sm text-gray-500">
                             <span>{format(new Date(com.created_at), "d 'de' MMMM, yyyy", { locale: es })}</span>
@@ -172,14 +184,9 @@ export default function HomePage() {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <h3 className="text-lg font-semibold text-gray-900 mb-2">{com.title}</h3>
-                          <div 
-                            className="prose prose-sm max-w-none line-clamp-2 text-gray-600"
-                            dangerouslySetInnerHTML={{ 
-                              __html: com.content.length > 150 
-                                ? com.content.substring(0, 150) + '...' 
-                                : com.content 
-                            }}
-                          />
+                          <p className="text-gray-600 line-clamp-2">
+                            {getTextPreview(com.content, 180)}
+                          </p>
                           <div className="flex items-center mt-3 text-sm text-gray-500">
                             <span>{format(new Date(com.created_at), "d 'de' MMMM, yyyy", { locale: es })}</span>
                             {com.category && (

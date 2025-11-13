@@ -14,6 +14,41 @@ Portal web completo para Sección Sindical UGT en Towa Pharmaceutical Europe
 - Keys: Disponibles via get_all_secrets
 
 ## Fase Actual
+MEJORA PREVISUALIZACION COMUNICADOS - 14-Nov-2025 05:40
+
+### Estado Actual
+- URL PRODUCCIÓN: https://x7wqafm45r9p.space.minimax.io
+- URL Anterior: https://c4s0748tloo8.space.minimax.io
+
+### Mejora Implementada
+**OBJETIVO**: Mostrar más contenido de texto en la previsualización de comunicados (200 caracteres en lugar de 1-2 palabras)
+
+### Solución Técnica
+**Función Helper Creada**: `getTextPreview(html, maxLength)`
+- Extrae texto plano del HTML de manera segura usando DOM parsing
+- Trunca el texto a 200 caracteres (180 en HomePage)
+- Agrega "..." al final si es necesario
+- Evita problemas de HTML malformado por truncamiento
+
+### Cambios Implementados
+1. **ComunicadosPage.tsx**:
+   - Agregada función `getTextPreview()`
+   - Cambiado de `dangerouslySetInnerHTML` con `substring()` a texto plano extraído
+   - Previsualización ahora muestra 200 caracteres de texto legible
+
+2. **HomePage.tsx**:
+   - Agregada función `getTextPreview()`
+   - Actualizadas 2 instancias de previsualización (con y sin imagen)
+   - Previsualización ahora muestra 180 caracteres de texto legible
+
+### Ventajas de la Solución
+- ✅ Muestra significativamente más contenido (200 vs ~30 caracteres antes)
+- ✅ Extrae solo texto plano, evitando HTML roto
+- ✅ Más fácil de leer sin etiquetas HTML
+- ✅ Seguro y confiable
+- ✅ Mantiene vista completa con formato en detalle
+
+## Fase Anterior
 CORRECCION FINAL EDITOR - 14-Nov-2025 05:13
 
 ### Estado Actual
