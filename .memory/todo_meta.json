@@ -3,37 +3,37 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Modificar esquema de base de datos para citas y comunicados",
-        "details": "1. Citas: Agregar columnas 'created_by', 'comments', 'questions', 'documents'. 2. Comunicados: Agregar columna 'attachments' para archivos adjuntos. 3. Configurar relaciones y constraints apropiados.",
-        "status": "completed",
+        "content": "Implementar editor de texto enriquecido para comunicados",
+        "details": "1. Seleccionar e integrar un editor rich text (TinyMCE, Quill, CKEditor). 2. Configurar toolbar con opciones: negrita, cursiva, subrayar, colores, listas, enlaces. 3. Implementar en formulario de creación de comunicados. 4. Configurar toolbar responsive para móviles.",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Mejorar formularios con campos adicionales",
-        "details": "1. Formulario de citas: comentarios, preguntas, subida de archivos. 2. Formulario de comunicados: subida de múltiples archivos. 3. Validaciones de tipos y tamaños. 4. UI/UX mejorada para subida de archivos.",
-        "status": "completed",
+        "content": "Actualizar base de datos y backend para HTML",
+        "details": "1. Cambiar campo 'content' de comunicados de TEXT a TEXT (para HTML). 2. Implementar sanitización de HTML para prevenir XSS. 3. Actualizar Edge Functions para manejar contenido HTML. 4. Configurar políticas RLS apropiadas.",
+        "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Actualizar vistas de administración y solucionar problemas",
-        "details": "1. Vista de citas: mostrar quién reservó, comentarios, preguntas, documentos. 2. Vista de comunicados: mostrar archivos adjuntos con descarga. 3. SOLUCIONAR: Error 'invalid token' en galería de eventos al crear eventos. 4. Permitir añadir fotos a eventos. 5. Estados y gestión avanzada para ambas secciones.",
-        "status": "completed",
+        "content": "Actualizar vistas públicas para renderizar HTML",
+        "details": "1. Modificar vista pública de comunicados para mostrar HTML formateado. 2. Implementar limpieza de HTML peligroso. 3. Mantener diseño responsivo con contenido HTML. 4. Asegurar compatibilidad con diferentes navegadores.",
+        "status": "pending",
         "priority": "high"
       },
       "4": {
         "id": "4",
-        "content": "Implementar subida segura de archivos",
-        "details": "1. Configurar bucket de Supabase Storage para documentos y comunicados. 2. Separar tipos de archivo (documentos vs comunicados). 3. Validaciones de seguridad. 4. URLs de descarga seguras.",
-        "status": "completed",
+        "content": "Implementar funcionalidades adicionales del editor",
+        "details": "1. Subida de imágenes dentro del editor (drag & drop en texto). 2. Vista previa en tiempo real del formato. 3. Atajos de teclado (Ctrl+B, Ctrl+I, etc.). 4. Auto-guardado del contenido.",
+        "status": "pending",
         "priority": "medium"
       },
       "5": {
         "id": "5",
-        "content": "Mejorar vista pública de comunicados",
-        "details": "1. Mostrar archivos adjuntos en cada comunicado. 2. Enlaces de descarga para usuarios. 3. Iconos según tipo de archivo (PDF, imagen, etc.). 4. Vista previa de archivos.",
-        "status": "completed",
+        "content": "Testing y optimización de rendimiento",
+        "details": "1. Probar funcionamiento en diferentes navegadores. 2. Optimizar carga del editor para no impactar performance. 3. Validar sanitización HTML contra vulnerabilidades. 4. Testing en dispositivos móviles y desktop.",
+        "status": "pending",
         "priority": "medium"
       }
     }
