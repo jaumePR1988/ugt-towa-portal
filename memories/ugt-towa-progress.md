@@ -14,11 +14,32 @@ Portal web completo para Sección Sindical UGT en Towa Pharmaceutical Europe
 - Keys: Disponibles via get_all_secrets
 
 ## Fase Actual
-SISTEMA DE ENCUESTAS DIFERENCIADAS - 14-Nov-2025 06:15
+CORRECCIÓN NAVEGACIÓN AFILIADOS - 14-Nov-2025 07:00
 
 ### Estado Actual
-- URL PRODUCCIÓN: https://4mjz0bncrg9m.space.minimax.io
-- URL Anterior: https://x7wqafm45r9p.space.minimax.io
+- URL PRODUCCIÓN: https://zckoybr0khsn.space.minimax.io
+- URL Anterior: https://4mjz0bncrg9m.space.minimax.io
+
+### Corrección de Navegación Aplicada
+**Fecha**: 14-Nov-2025 07:00
+**Problema**: Ruta `/afiliados` no estaba definida, causando comportamiento inconsistente en navegación
+**Solución**: Agregada redirección automática de `/afiliados` a `/afiliados/dashboard`
+
+**Cambios Implementados:**
+- Agregada ruta en App.tsx: `<Route path="/afiliados" element={<Navigate to="/afiliados/dashboard" replace />} />`
+- Build exitoso (2692 módulos)
+- Desplegado en producción
+
+**Archivos Modificados:**
+- /workspace/ugt-towa-portal/src/App.tsx (agregada redirección)
+
+**Estado**: CORRECCIÓN APLICADA Y DESPLEGADA
+
+## Fase Anterior
+SISTEMA DE ENCUESTAS DIFERENCIADAS - 14-Nov-2025 06:15
+
+### Estado Anterior
+- URL: https://4mjz0bncrg9m.space.minimax.io
 
 ### Sistema de Encuestas Diferenciadas Completo
 **Estado**: COMPLETADO Y TESTEADO - 14-Nov-2025 06:15

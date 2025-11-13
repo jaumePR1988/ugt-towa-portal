@@ -97,6 +97,10 @@ function App() {
           
           {/* Affiliate Routes */}
           <Route
+            path="/afiliados"
+            element={<Navigate to="/afiliados/dashboard" replace />}
+          />
+          <Route
             path="/afiliados/dashboard"
             element={
               <TestAffiliateRoute>
