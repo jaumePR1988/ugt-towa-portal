@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { sanitizeHTML } from '@/components/RichTextEditor';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase, Communique, Comment as CommentType, CommentReaction, CommentReply } from '@/lib/supabase';
 import { Calendar, MessageSquare, ThumbsUp, ThumbsDown, Trash2, Reply, FileText, Download, Paperclip } from 'lucide-react';
@@ -302,7 +303,10 @@ export default function ComunicadoDetailPage() {
                   className="w-full h-auto rounded-lg mb-6"
                 />
               )}
-              <p className="text-gray-700 whitespace-pre-line">{communique.content}</p>
+              <div 
+                className="text-gray-700 prose prose-lg max-w-none"
+                dangerouslySetInnerHTML={{ __html: sanitizeHTML(communique.content) }}
+              />
             </div>
 
             {communique.attachments && communique.attachments.length > 0 && (

@@ -5,35 +5,35 @@
         "id": "1",
         "content": "Implementar editor de texto enriquecido para comunicados",
         "details": "1. Seleccionar e integrar un editor rich text (TinyMCE, Quill, CKEditor). 2. Configurar toolbar con opciones: negrita, cursiva, subrayar, colores, listas, enlaces. 3. Implementar en formulario de creación de comunicados. 4. Configurar toolbar responsive para móviles.",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
         "content": "Actualizar base de datos y backend para HTML",
         "details": "1. Cambiar campo 'content' de comunicados de TEXT a TEXT (para HTML). 2. Implementar sanitización de HTML para prevenir XSS. 3. Actualizar Edge Functions para manejar contenido HTML. 4. Configurar políticas RLS apropiadas.",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "3": {
         "id": "3",
         "content": "Actualizar vistas públicas para renderizar HTML",
         "details": "1. Modificar vista pública de comunicados para mostrar HTML formateado. 2. Implementar limpieza de HTML peligroso. 3. Mantener diseño responsivo con contenido HTML. 4. Asegurar compatibilidad con diferentes navegadores.",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "4": {
         "id": "4",
         "content": "Implementar funcionalidades adicionales del editor",
         "details": "1. Subida de imágenes dentro del editor (drag & drop en texto). 2. Vista previa en tiempo real del formato. 3. Atajos de teclado (Ctrl+B, Ctrl+I, etc.). 4. Auto-guardado del contenido.",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       },
       "5": {
         "id": "5",
         "content": "Testing y optimización de rendimiento",
         "details": "1. Probar funcionamiento en diferentes navegadores. 2. Optimizar carga del editor para no impactar performance. 3. Validar sanitización HTML contra vulnerabilidades. 4. Testing en dispositivos móviles y desktop.",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       }
     }

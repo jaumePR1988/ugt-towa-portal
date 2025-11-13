@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import RichTextEditor from '@/components/RichTextEditor';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase, Communique, Category, AttachmentFile } from '@/lib/supabase';
 import { Plus, Edit2, Trash2, Upload, X, FileText, Loader2, Paperclip } from 'lucide-react';
 import { toast } from 'sonner';
+
+// Función auxiliar para extraer texto plano de HTML
+function stripHtml(html: string): string {
+  const tmp = document.createElement('DIV');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+}
 
 export default function AdminComunicados() {
   const { user } = useAuth();
@@ -248,14 +256,18 @@ export default function AdminComunicados() {
                 </option>
               ))}
             </select>
-            <textarea 
-              placeholder="Contenido" 
-              value={formData.content} 
-              onChange={e => setFormData({...formData, content: e.target.value})} 
-              className="w-full p-3 border rounded mb-4" 
-              rows={10} 
-              required 
-            />
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Contenido
+              </label>
+              <RichTextEditor 
+                value={formData.content}
+                onChange={(content) => setFormData({...formData, content})}
+                placeholder="Escribe el contenido del comunicado..."
+                minHeight={450}
+              />
+            </div>
             
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">Imagen destacada (opcional)</label>
@@ -380,7 +392,7 @@ export default function AdminComunicados() {
                         {category.name}
                       </span>
                     )}
-                    <p className="text-gray-600">{com.content.substring(0,200)}...</p>
+                    <p className="text-gray-600">{stripHtml(com.content).substring(0,200)}...</p>
                     {com.attachments && com.attachments.length > 0 && (
                       <p className="text-sm text-blue-600 mt-2 flex items-center">
                         <Paperclip className="h-4 w-4 mr-1" />
