@@ -122,7 +122,7 @@ export default function ComunicadosPage() {
                     )}
                   </div>
                   <div 
-                    className="text-gray-600 mb-4 line-clamp-3 prose prose-sm max-w-none"
+                    className="prose prose-sm max-w-none mb-4 line-clamp-3 text-gray-600"
                     dangerouslySetInnerHTML={{ 
                       __html: com.content.length > 300 
                         ? com.content.substring(0, 300) + '...' 

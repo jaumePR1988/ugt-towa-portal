@@ -303,7 +303,7 @@ export default function ComunicadoDetailPage() {
                 />
               )}
               <div 
-                className="text-gray-700 prose prose-lg max-w-none"
+                className="prose prose-lg max-w-none text-gray-700"
                 dangerouslySetInnerHTML={{ __html: communique.content }}
               />
             </div>

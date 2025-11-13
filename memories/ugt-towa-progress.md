@@ -14,6 +14,33 @@ Portal web completo para Sección Sindical UGT en Towa Pharmaceutical Europe
 - Keys: Disponibles via get_all_secrets
 
 ## Fase Actual
+CORRECCION FINAL EDITOR - 14-Nov-2025 05:13
+
+### Estado Actual
+- URL PRODUCCIÓN: https://c4s0748tloo8.space.minimax.io
+- URL Diagnóstico: https://0812wapvekpf.space.minimax.io (con logs)
+
+### Problema Identificado y Solucionado
+**CAUSA RAÍZ**: Plugin @tailwindcss/typography NO estaba instalado
+- Las clases `prose` no aplicaban estilos sin este plugin
+- Esto causaba que negrita, cursiva y otros formatos no se mostraran
+
+### Solución Implementada
+- ✅ Instalado @tailwindcss/typography plugin (v0.5.19)
+- ✅ Reorganizadas clases CSS (prose primero para mejor especificidad)
+- ✅ Reforzadas reglas CSS con especificidad máxima
+- ✅ Eliminados console.log de depuración
+- ✅ Build exitoso (71.56 KB CSS vs 46.32 KB anterior)
+- ✅ Desplegado en producción
+
+### Cambios Técnicos
+1. **tailwind.config.js**: Plugin typography agregado
+2. **index.css**: Reglas CSS expandidas con variantes prose-sm y prose-lg
+3. **ComunicadosPage.tsx**: Clases reorganizadas (prose primero)
+4. **HomePage.tsx**: Clases reorganizadas (2 instancias)
+5. **ComunicadoDetailPage.tsx**: Clases reorganizadas
+
+## Fase Anterior
 REEMPLAZO TINYMCE POR EDITOR SIMPLE - 14-Nov-2025 03:29
 
 ### Tarea: Reemplazar TinyMCE Problemático por Editor Simple

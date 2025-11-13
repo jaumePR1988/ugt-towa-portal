@@ -146,7 +146,7 @@ export default function HomePage() {
                           <div>
                             <h3 className="text-lg font-semibold text-gray-900 mb-2">{com.title}</h3>
                             <div 
-                              className="text-gray-600 line-clamp-2 prose prose-sm max-w-none"
+                              className="prose prose-sm max-w-none line-clamp-2 text-gray-600"
                               dangerouslySetInnerHTML={{ 
                                 __html: com.content.length > 150 
                                   ? com.content.substring(0, 150) + '...' 
@@ -173,7 +173,7 @@ export default function HomePage() {
                         <div className="flex-1">
                           <h3 className="text-lg font-semibold text-gray-900 mb-2">{com.title}</h3>
                           <div 
-                            className="text-gray-600 line-clamp-2 prose prose-sm max-w-none"
+                            className="prose prose-sm max-w-none line-clamp-2 text-gray-600"
                             dangerouslySetInnerHTML={{ 
                               __html: com.content.length > 150 
                                 ? com.content.substring(0, 150) + '...' 

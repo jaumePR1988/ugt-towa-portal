@@ -62,13 +62,9 @@ export default function SimpleTextEditor({
     if (editorRef.current) {
       let content = editorRef.current.innerHTML;
       
-      console.log('📝 HTML capturado en handleInput:', content);
-      
       // Limpiar y normalizar HTML
       content = content.replace(/<div>/g, '<p>').replace(/<\/div>/g, '</p>');
       content = content.replace(/<br><br>/g, '<br>');
-      
-      console.log('📝 HTML después de normalizar:', content);
       
       onChange(content);
       updateCharCount();
@@ -77,15 +73,11 @@ export default function SimpleTextEditor({
 
   // Ejecutar comando de formato
   const executeCommand = (command: string, value: string | null = null) => {
-    console.log('🎯 Ejecutando comando:', command, 'con valor:', value);
     editorRef.current?.focus();
     document.execCommand(command, false, value || undefined);
     
     // Usar setTimeout para asegurar que el DOM se actualice antes de capturar HTML
     setTimeout(() => {
-      if (editorRef.current) {
-        console.log('✅ HTML del editor después de execCommand:', editorRef.current.innerHTML);
-      }
       handleInput(); // Actualizar contenido después del comando
     }, 0);
   };

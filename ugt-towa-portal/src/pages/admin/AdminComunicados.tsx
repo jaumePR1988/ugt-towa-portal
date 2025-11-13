@@ -166,8 +166,6 @@ export default function AdminComunicados() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     
-    console.log('💾 GUARDANDO COMUNICADO - HTML a enviar a Supabase:', formData.content);
-    
     const submitData = {
       title: formData.title,
       content: formData.content,
@@ -175,8 +173,6 @@ export default function AdminComunicados() {
       image_url: formData.image_url || null,
       attachments: formData.attachments.length > 0 ? formData.attachments : null,
     };
-    
-    console.log('💾 submitData completo:', submitData);
 
     try {
       if (editingId) {
@@ -289,10 +285,7 @@ export default function AdminComunicados() {
               </label>
               <SimpleTextEditor 
                 value={formData.content}
-                onChange={(content) => {
-                  console.log('🔄 EDITOR onChange - HTML recibido:', content);
-                  setFormData({...formData, content});
-                }}
+                onChange={(content) => setFormData({...formData, content})}
                 placeholder="Escribe el contenido del comunicado..."
                 minHeight={450}
               />
