@@ -4,22 +4,29 @@
       "5": {
         "id": "5",
         "content": "Implementar botón eliminar afiliados",
-        "details": "Agregar botón rojo con icono de eliminar en el panel de administración de afiliados para poder eliminar usuarios afiliados no deseados. Incluir modal de confirmación.",
-        "status": "pending",
+        "details": "✅ COMPLETADO: Botón rojo con icono Trash2 en AdminAfiliados.tsx. Modal de confirmación con nombre/email. Eliminación permanente de usuarios. Testing verificado.",
+        "status": "completed",
         "priority": "high"
       },
       "6": {
         "id": "6",
         "content": "Crear panel de gestión de administradores",
-        "details": "Implementar sección en el panel de administración para:\n1. Ver todos los usuarios administradores actuales\n2. Promover usuarios normales a administradores\n3. Crear nuevos usuarios directamente como administradores\n4. Quitar rol de administrador a usuarios existentes\n\nIncluir validaciones de seguridad y confirmaciones.",
-        "status": "pending",
+        "details": "✅ COMPLETADO: Nuevo panel AdminAdministradores.tsx (503 líneas) en /admin/administradores. Funciones: ver admins, promover usuarios, crear nuevos admins, remover privilegios. Incluye búsqueda y validaciones.",
+        "status": "completed",
         "priority": "high"
       },
       "7": {
         "id": "7",
         "content": "Ajustar políticas RLS para nuevas funcionalidades",
-        "details": "Configurar permisos en Supabase para permitir a administradores:\n- Eliminar afiliados (delete en profiles)\n- Crear nuevos administradores (insert/update en profiles con role='admin')",
-        "status": "pending",
+        "details": "✅ COMPLETADO: 4 migraciones SQL aplicadas. Políticas para eliminar afiliados, promover a admin, crear perfiles de admin. Todas las operaciones ahora seguras y funcionales.",
+        "status": "completed",
+        "priority": "high"
+      },
+      "8": {
+        "id": "8",
+        "content": "Mostrar todas las encuestas activas con contador de días",
+        "details": "✅ COMPLETADO: Home.tsx modificado. Muestra TODAS las encuestas activas (3). Contador '29 días restantes' funcionando. Grid responsive. Migración añadida columna fecha_fin a surveys.",
+        "status": "completed",
         "priority": "high"
       }
     }

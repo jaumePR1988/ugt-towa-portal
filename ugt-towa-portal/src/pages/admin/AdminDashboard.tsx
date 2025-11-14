@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { supabase } from '@/lib/supabase';
-import { LayoutDashboard, FileText, Calendar, Vote, Users, MessageSquare, Tag, FolderOpen, Inbox, BarChart3, FolderTree, QrCode, Image, UserCheck, BookOpen, Gift } from 'lucide-react';
+import { LayoutDashboard, FileText, Calendar, Vote, Users, MessageSquare, Tag, FolderOpen, Inbox, BarChart3, FolderTree, QrCode, Image, UserCheck, BookOpen, Gift, Shield } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -55,6 +55,7 @@ export default function AdminDashboard() {
     { to: '/admin/galeria', icon: Image, title: 'Galería de Eventos', desc: 'Gestionar imágenes del carrusel de eventos' },
 
     { to: '/admin/afiliados', icon: UserCheck, title: 'Gestión de Afiliados', desc: 'Marcar usuarios como afiliados UGT' },
+    { to: '/admin/administradores', icon: Shield, title: 'Gestión de Administradores', desc: 'Crear y gestionar administradores del sistema' },
     { to: '/admin/documentos-sindicales', icon: BookOpen, title: 'Documentos Sindicales', desc: 'Gestionar documentos exclusivos para afiliados' },
     { to: '/admin/beneficios-ugt', icon: Gift, title: 'Beneficios UGT', desc: 'Gestionar descuentos para afiliados' }
   ];

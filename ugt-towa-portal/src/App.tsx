@@ -36,6 +36,7 @@ import AdminCategoriasDocumentos from './pages/admin/AdminCategoriasDocumentos';
 import AdminQR from './pages/admin/AdminQR';
 import AdminGaleria from './pages/admin/AdminGaleria';
 import AdminAfiliados from './pages/admin/AdminAfiliados';
+import AdminAdministradores from './pages/admin/AdminAdministradores';
 import AdminDocumentosSindicales from './pages/admin/AdminDocumentosSindicales';
 
 import AdminBeneficiosUGT from './pages/admin/AdminBeneficiosUGT';
@@ -254,6 +255,14 @@ function App() {
             element={
               <AdminRoute>
                 <AdminAfiliados />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/administradores"
+            element={
+              <AdminRoute>
+                <AdminAdministradores />
               </AdminRoute>
             }
           />
