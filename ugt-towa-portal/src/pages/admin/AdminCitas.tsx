@@ -3,7 +3,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { supabase, Appointment } from '@/lib/supabase';
 import { toast } from 'sonner';
-import { Bell, CheckCircle, XCircle, Calendar, Clock, Filter, TrendingUp, AlertCircle, Search, User, RefreshCcw, BarChart3, Users, Target, Activity, Settings, Plus, Minus, Edit3, Save, X, Download, FileText, FileSpreadsheet, CalendarDays, Clock3, TrendingDown, Mail } from 'lucide-react';
+import { Bell, CheckCircle, XCircle, Calendar, Clock, Filter, TrendingUp, AlertCircle, Search, User, RefreshCcw, BarChart3, Users, Target, Activity, Settings, Plus, Minus, Edit3, Save, X, Download, FileText, FileSpreadsheet, CalendarDays, Clock3, TrendingDown, Mail, Trash2 } from 'lucide-react';
 import { DayPicker, DateRange } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { format, parseISO, isWithinInterval, startOfDay, endOfDay, getHours, subDays, eachDayOfInterval, startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
@@ -228,6 +228,11 @@ export default function AdminCitas() {
   const [editingTemplate, setEditingTemplate] = useState<string | null>(null);
   const [newAdminEmail, setNewAdminEmail] = useState<string>('');
   const [showAddAdmin, setShowAddAdmin] = useState<boolean>(false);
+
+  // Estados para eliminar citas
+  const [deleteAppointmentId, setDeleteAppointmentId] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [deleting, setDeleting] = useState<boolean>(false);
 
   // Estados para exportación y reportes
   const [showExportModal, setShowExportModal] = useState<boolean>(false);
@@ -1107,6 +1112,38 @@ export default function AdminCitas() {
     }
   }
 
+  function confirmDeleteAppointment(id: string) {
+    setDeleteAppointmentId(id);
+    setShowDeleteModal(true);
+  }
+
+  async function deleteAppointment() {
+    if (!deleteAppointmentId) return;
+    
+    setDeleting(true);
+    try {
+      const { error } = await supabase
+        .from('appointments')
+        .delete()
+        .eq('id', deleteAppointmentId);
+
+      if (error) throw error;
+
+      toast.success('Cita eliminada correctamente');
+      setShowDeleteModal(false);
+      setDeleteAppointmentId(null);
+      loadAppointments();
+      loadNotifications();
+      calculateStats();
+      loadAdvancedStats();
+    } catch (error) {
+      console.error('Error al eliminar cita:', error);
+      toast.error('Error al eliminar la cita');
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   async function markAsRead(id: string) {
     const { error } = await supabase.from('notifications').update({ read: true }).eq('id', id);
     if (error) toast.error('Error al marcar como leída');
@@ -1609,28 +1646,38 @@ export default function AdminCitas() {
               ) : (
                 filteredAppointments.map(apt => (
                   <div key={apt.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">Fecha y Hora</p>
-                        <p className="font-semibold">{new Date(apt.start_time).toLocaleString('es-ES')}</p>
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 flex-1">
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">Fecha y Hora</p>
+                          <p className="font-semibold">{new Date(apt.start_time).toLocaleString('es-ES')}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">Tipo de Delegado</p>
+                          <p className="font-semibold capitalize">{apt.delegate_type}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">Estado</p>
+                          <select 
+                            value={apt.status} 
+                            onChange={e => updateStatus(apt.id, e.target.value)} 
+                            className="px-3 py-1 border border-gray-300 rounded-md text-sm font-semibold"
+                          >
+                            <option value="pending">Pendiente</option>
+                            <option value="confirmed">Confirmada</option>
+                            <option value="cancelled">Cancelada</option>
+                            <option value="completed">Completada</option>
+                          </select>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">Tipo de Delegado</p>
-                        <p className="font-semibold capitalize">{apt.delegate_type}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">Estado</p>
-                        <select 
-                          value={apt.status} 
-                          onChange={e => updateStatus(apt.id, e.target.value)} 
-                          className="px-3 py-1 border border-gray-300 rounded-md text-sm font-semibold"
-                        >
-                          <option value="pending">Pendiente</option>
-                          <option value="confirmed">Confirmada</option>
-                          <option value="cancelled">Cancelada</option>
-                          <option value="completed">Completada</option>
-                        </select>
-                      </div>
+                      <button
+                        onClick={() => confirmDeleteAppointment(apt.id)}
+                        className="ml-4 flex items-center space-x-1 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex-shrink-0"
+                        aria-label="Eliminar cita"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        <span className="text-sm font-medium">Eliminar</span>
+                      </button>
                     </div>
 
                     {apt.user && (
@@ -2919,6 +2966,55 @@ export default function AdminCitas() {
                   <Download className="w-4 h-4" />
                 )}
                 {exporting ? 'Generando...' : 'Exportar'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de confirmación para eliminar cita */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <div className="flex items-center mb-4">
+              <div className="flex-shrink-0 w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                <Trash2 className="h-6 w-6 text-red-600" />
+              </div>
+              <div className="ml-4">
+                <h3 className="text-lg font-semibold text-gray-900">Confirmar Eliminación</h3>
+                <p className="text-sm text-gray-500">Esta acción no se puede deshacer</p>
+              </div>
+            </div>
+            <p className="text-gray-700 mb-6">
+              Estás a punto de eliminar esta cita. Se eliminará permanentemente de la base de datos junto con todas las notificaciones asociadas.
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setDeleteAppointmentId(null);
+                }}
+                disabled={deleting}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={deleteAppointment}
+                disabled={deleting}
+                className="flex items-center gap-2 bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 font-medium disabled:bg-red-400 disabled:cursor-not-allowed transition-colors"
+              >
+                {deleting ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <span>Eliminando...</span>
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="h-4 w-4" />
+                    <span>Eliminar Cita</span>
+                  </>
+                )}
               </button>
             </div>
           </div>

@@ -100,6 +100,11 @@ export default function AdminNewsletter() {
 
   // Subscribers
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
+  
+  // Estados para eliminar suscriptores
+  const [deleteSubscriberId, setDeleteSubscriberId] = useState<string | null>(null);
+  const [showDeleteSubscriberModal, setShowDeleteSubscriberModal] = useState<boolean>(false);
+  const [deletingSubscriber, setDeletingSubscriber] = useState<boolean>(false);
 
   useEffect(() => {
     loadDashboardStats();
@@ -240,7 +245,7 @@ export default function AdminNewsletter() {
       const { data, error } = await supabase
         .from('newsletter_subscribers')
         .select('*')
-        .order('subscribed_at', { ascending: false });
+        .order('subscribed_at', { ascending: false});
 
       if (error) throw error;
       setSubscribers(data || []);
@@ -248,6 +253,36 @@ export default function AdminNewsletter() {
       console.error('Error loading subscribers:', error);
     }
   };
+
+  function confirmDeleteSubscriber(id: string) {
+    setDeleteSubscriberId(id);
+    setShowDeleteSubscriberModal(true);
+  }
+
+  async function deleteSubscriber() {
+    if (!deleteSubscriberId) return;
+    
+    setDeletingSubscriber(true);
+    try {
+      const { error } = await supabase
+        .from('newsletter_subscribers')
+        .delete()
+        .eq('id', deleteSubscriberId);
+
+      if (error) throw error;
+
+      toast.success('Suscriptor eliminado correctamente');
+      setShowDeleteSubscriberModal(false);
+      setDeleteSubscriberId(null);
+      loadSubscribers();
+      loadDashboardStats();
+    } catch (error) {
+      console.error('Error al eliminar suscriptor:', error);
+      toast.error('Error al eliminar el suscriptor');
+    } finally {
+      setDeletingSubscriber(false);
+    }
+  }
 
   const loadConfig = async () => {
     try {
@@ -1078,10 +1113,11 @@ export default function AdminNewsletter() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {subscribers.slice(0, 5).map((sub) => (
+                    {subscribers.slice(0, 10).map((sub) => (
                       <tr key={sub.id}>
                         <td className="px-6 py-4 text-sm text-gray-900">{sub.email}</td>
                         <td className="px-6 py-4 text-sm text-gray-900">{sub.name || '-'}</td>
@@ -1094,6 +1130,16 @@ export default function AdminNewsletter() {
                           ) : (
                             <span className="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">Inactivo</span>
                           )}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-right">
+                          <button
+                            onClick={() => confirmDeleteSubscriber(sub.id)}
+                            className="inline-flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-xs font-medium"
+                            aria-label="Eliminar suscriptor"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                            <span>Eliminar</span>
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -1615,6 +1661,55 @@ export default function AdminNewsletter() {
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                 >
                   Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal de confirmación para eliminar suscriptor */}
+        {showDeleteSubscriberModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+              <div className="flex items-center mb-4">
+                <div className="flex-shrink-0 w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                  <Trash2 className="h-6 w-6 text-red-600" />
+                </div>
+                <div className="ml-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Confirmar Eliminación</h3>
+                  <p className="text-sm text-gray-500">Esta acción no se puede deshacer</p>
+                </div>
+              </div>
+              <p className="text-gray-700 mb-6">
+                Estás a punto de eliminar este suscriptor. Se eliminará permanentemente de la base de datos y no recibirá más newsletters.
+              </p>
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={() => {
+                    setShowDeleteSubscriberModal(false);
+                    setDeleteSubscriberId(null);
+                  }}
+                  disabled={deletingSubscriber}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium disabled:opacity-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={deleteSubscriber}
+                  disabled={deletingSubscriber}
+                  className="flex items-center gap-2 bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 font-medium disabled:bg-red-400 disabled:cursor-not-allowed transition-colors"
+                >
+                  {deletingSubscriber ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <span>Eliminando...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="h-4 w-4" />
+                      <span>Eliminar Suscriptor</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>

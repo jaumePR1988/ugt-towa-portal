@@ -14,11 +14,57 @@ Portal web completo para Sección Sindical UGT en Towa Pharmaceutical Europe
 - Keys: Disponibles via get_all_secrets
 
 ## Fase Actual
-CORRECCIÓN NAVEGACIÓN AFILIADOS - 14-Nov-2025 07:00
+TRES MEJORAS CRÍTICAS IMPLEMENTADAS - 14-Nov-2025 07:35
 
 ### Estado Actual
-- URL PRODUCCIÓN: https://zckoybr0khsn.space.minimax.io
-- URL Anterior: https://4mjz0bncrg9m.space.minimax.io
+- URL PRODUCCIÓN: https://nyn3gqez8ode.space.minimax.io
+- URL Anterior: https://zckoybr0khsn.space.minimax.io
+
+### Mejoras Implementadas
+**Fecha**: 14-Nov-2025 07:35
+**Estado**: COMPLETADO Y DESPLEGADO
+
+**1. Botones de Compartir en Redes Sociales:**
+- Componente ShareButtons.tsx creado (103 líneas)
+- Integrado en ComunicadoDetailPage.tsx
+- Redes sociales: Facebook, Twitter, LinkedIn, WhatsApp
+- Botón copiar enlace al portapapeles
+- Diseño responsive y accesible
+- Toast notifications para feedback
+
+**2. Eliminar Citas en Panel Admin:**
+- Botón "Eliminar" agregado en cada cita (AdminCitas.tsx)
+- Modal de confirmación implementado
+- Función deleteAppointment con eliminación en Supabase
+- Estados de loading durante eliminación
+- Actualización automática de estadísticas post-eliminación
+- Icono Trash2 importado de lucide-react
+
+**3. Eliminar Suscriptores de Newsletter:**
+- Columna "Acciones" agregada a tabla de suscriptores
+- Botón "Eliminar" en cada suscriptor (AdminNewsletter.tsx)
+- Modal de confirmación implementado
+- Función deleteSubscriber con eliminación en Supabase
+- Actualización automática de dashboard stats
+- Límite de suscriptores mostrados: 10 (antes 5)
+
+**Archivos Modificados:**
+- /workspace/ugt-towa-portal/src/components/ShareButtons.tsx (NUEVO)
+- /workspace/ugt-towa-portal/src/pages/ComunicadoDetailPage.tsx
+- /workspace/ugt-towa-portal/src/pages/admin/AdminCitas.tsx
+- /workspace/ugt-towa-portal/src/pages/admin/AdminNewsletter.tsx
+
+**Build:**
+- 2693 módulos transformados
+- 603.12 kB gzip (assets principales)
+
+**Estado**: LISTO PARA USO EN PRODUCCIÓN
+
+## Fase Anterior
+CORRECCIÓN NAVEGACIÓN AFILIADOS - 14-Nov-2025 07:00
+
+### Estado Anterior
+- URL: https://zckoybr0khsn.space.minimax.io
 
 ### Corrección de Navegación Aplicada
 **Fecha**: 14-Nov-2025 07:00

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import ShareButtons from '@/components/ShareButtons';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase, Communique, Comment as CommentType, CommentReaction, CommentReply } from '@/lib/supabase';
 import { Calendar, MessageSquare, ThumbsUp, ThumbsDown, Trash2, Reply, FileText, Download, Paperclip } from 'lucide-react';
@@ -294,7 +295,15 @@ export default function ComunicadoDetailPage() {
                 </span>
               )}
             </div>
-            <div className="prose max-w-none">
+            
+            {/* Botones de compartir en redes sociales */}
+            <ShareButtons 
+              url={window.location.href}
+              title={communique.title}
+              description={communique.content.replace(/<[^>]*>/g, '').substring(0, 150)}
+            />
+            
+            <div className="prose max-w-none mt-6">
               {communique.image_url && (
                 <img 
                   src={communique.image_url} 
