@@ -1,32 +1,25 @@
 {
   "todos": {
     "Coordinator": {
-      "1": {
-        "id": "1",
-        "content": "Implementar botones de compartir en redes sociales/WhatsApp en comunicados",
-        "details": "Componente ShareButtons.tsx implementado con botones para Facebook, Twitter, LinkedIn y WhatsApp. Ubicado en esquina superior derecha de detalles de comunicados.",
-        "status": "completed",
+      "5": {
+        "id": "5",
+        "content": "Implementar botón eliminar afiliados",
+        "details": "Agregar botón rojo con icono de eliminar en el panel de administración de afiliados para poder eliminar usuarios afiliados no deseados. Incluir modal de confirmación.",
+        "status": "pending",
         "priority": "high"
       },
-      "2": {
-        "id": "2",
-        "content": "Agregar botón eliminar citas en panel administrador",
-        "details": "Función deleteAppointment implementada en AdminCitas.tsx con modal de confirmación. Políticas RLS aplicadas para permitir eliminación.",
-        "status": "completed",
+      "6": {
+        "id": "6",
+        "content": "Crear panel de gestión de administradores",
+        "details": "Implementar sección en el panel de administración para:\n1. Ver todos los usuarios administradores actuales\n2. Promover usuarios normales a administradores\n3. Crear nuevos usuarios directamente como administradores\n4. Quitar rol de administrador a usuarios existentes\n\nIncluir validaciones de seguridad y confirmaciones.",
+        "status": "pending",
         "priority": "high"
       },
-      "3": {
-        "id": "3",
-        "content": "Agregar botón eliminar suscriptores newsletter",
-        "details": "Función deleteSubscriber implementada en AdminNewsletter.tsx con modal de confirmación. Políticas RLS aplicadas para permitir eliminación.",
-        "status": "completed",
-        "priority": "high"
-      },
-      "4": {
-        "id": "4",
-        "content": "Corregir persistencia de cambios de afiliación",
-        "details": "PROBLEMA: Los cambios de estado a afiliado no se guardaban en base de datos. CORRECCIÓN: Política RLS agregada para permitir a administradores actualizar campo is_affiliate. Estado ahora persiste correctamente.",
-        "status": "completed",
+      "7": {
+        "id": "7",
+        "content": "Ajustar políticas RLS para nuevas funcionalidades",
+        "details": "Configurar permisos en Supabase para permitir a administradores:\n- Eliminar afiliados (delete en profiles)\n- Crear nuevos administradores (insert/update en profiles con role='admin')",
+        "status": "pending",
         "priority": "high"
       }
     }
