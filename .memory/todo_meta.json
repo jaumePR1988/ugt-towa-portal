@@ -21,6 +21,13 @@
         "details": "Función deleteSubscriber implementada en AdminNewsletter.tsx con modal de confirmación. Políticas RLS aplicadas para permitir eliminación.",
         "status": "completed",
         "priority": "high"
+      },
+      "4": {
+        "id": "4",
+        "content": "Corregir persistencia de cambios de afiliación",
+        "details": "PROBLEMA: Los cambios de estado a afiliado no se guardaban en base de datos. CORRECCIÓN: Política RLS agregada para permitir a administradores actualizar campo is_affiliate. Estado ahora persiste correctamente.",
+        "status": "completed",
+        "priority": "high"
       }
     }
   }
