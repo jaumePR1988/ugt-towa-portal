@@ -14,11 +14,49 @@ Portal web completo para Sección Sindical UGT en Towa Pharmaceutical Europe
 - Keys: Disponibles via get_all_secrets
 
 ## Fase Actual
-TRES MEJORAS CRÍTICAS IMPLEMENTADAS - 14-Nov-2025 07:35
+CORRECCIÓN FUNCIONES DE ELIMINACIÓN - 14-Nov-2025 22:34
 
 ### Estado Actual
 - URL PRODUCCIÓN: https://nyn3gqez8ode.space.minimax.io
-- URL Anterior: https://zckoybr0khsn.space.minimax.io
+- BLOQUEADOR: Token de Supabase expirado - no se pueden aplicar migraciones automáticamente
+
+### Problema Identificado
+**CRÍTICO**: Funciones de eliminación no funcionan correctamente
+- Eliminar citas en AdminCitas.tsx
+- Eliminar suscriptores en AdminNewsletter.tsx
+- Causa: Faltan políticas RLS de DELETE en Supabase
+
+### Soluciones Preparadas - Esperando Decisión del Usuario
+1. [x] Código frontend revisado - Implementación correcta
+2. [x] Script SQL preparado: FIX_DELETE_POLICIES.sql
+3. [x] Instrucciones manuales creadas: INSTRUCCIONES_CORRECCION_URGENTE.md
+4. [ ] Esperando que usuario elija:
+   - OPCIÓN 1 (RECOMENDADA): Aplicar SQL manualmente vía Dashboard (2 min)
+   - OPCIÓN 2: Proporcionar SERVICE_ROLE_KEY para aplicación automática
+   - OPCIÓN 3: Solicitar refresh del ACCESS_TOKEN
+
+### Migraciones SQL Pendientes
+```sql
+-- Migration: add_delete_policies_appointments
+DROP POLICY IF EXISTS "Allow authenticated users to delete appointments" ON appointments;
+DROP POLICY IF EXISTS "Allow admins to delete any appointment" ON appointments;
+
+CREATE POLICY "Allow authenticated users to delete appointments" 
+ON appointments FOR DELETE USING (auth.uid() = user_id);
+
+CREATE POLICY "Allow admins to delete any appointment" 
+ON appointments FOR DELETE USING (
+  EXISTS (SELECT 1 FROM profiles WHERE profiles.id = auth.uid() AND profiles.role = 'admin')
+);
+
+-- Migration: add_delete_policies_newsletter_subscribers  
+DROP POLICY IF EXISTS "Allow admins to delete subscribers" ON newsletter_subscribers;
+
+CREATE POLICY "Allow admins to delete subscribers" 
+ON newsletter_subscribers FOR DELETE USING (
+  EXISTS (SELECT 1 FROM profiles WHERE profiles.id = auth.uid() AND profiles.role = 'admin')
+);
+```
 
 ### Mejoras Implementadas
 **Fecha**: 14-Nov-2025 07:35
