@@ -1,33 +1,26 @@
 {
   "todos": {
     "Coordinator": {
-      "5": {
-        "id": "5",
-        "content": "Implementar botón eliminar afiliados",
-        "details": "✅ COMPLETADO: Botón rojo con icono Trash2 en AdminAfiliados.tsx. Modal de confirmación con nombre/email. Eliminación permanente de usuarios. Testing verificado.",
+      "9": {
+        "id": "9",
+        "content": "Corregir navegación en panel de afiliados",
+        "details": "✅ COMPLETADO: Problema identificado en TestAffiliateDashboard.tsx y TestBibliotecaPage.tsx. Faltaba la entrada 'Encuestas' en el array menuItems. Añadida con icono Vote. Ahora el menú lateral muestra las 4 opciones desde el inicio: Dashboard, Biblioteca, Encuestas, Beneficios.",
         "status": "completed",
         "priority": "high"
       },
-      "6": {
-        "id": "6",
-        "content": "Crear panel de gestión de administradores",
-        "details": "✅ COMPLETADO: Nuevo panel AdminAdministradores.tsx (503 líneas) en /admin/administradores. Funciones: ver admins, promover usuarios, crear nuevos admins, remover privilegios. Incluye búsqueda y validaciones.",
-        "status": "completed",
-        "priority": "high"
+      "10": {
+        "id": "10",
+        "content": "Mejorar espacios disponibles en página principal",
+        "details": "Basándose en la imagen analizada:\n1. Columna derecha: Agregar barra lateral de utilidades rápidas con enlaces a área de afiliados, FAQ, delegados, calendario de eventos\n2. Encabezado profesional: Menú de navegación completo con servicios, áreas de trabajo, contacto\n3. Pie de página: Información legal, datos de contacto, mapas del sitio\n4. Mejoras en contenido: Categorización, filtros, vistas detalladas de noticias",
+        "status": "pending",
+        "priority": "medium"
       },
-      "7": {
-        "id": "7",
-        "content": "Ajustar políticas RLS para nuevas funcionalidades",
-        "details": "✅ COMPLETADO: 4 migraciones SQL aplicadas. Políticas para eliminar afiliados, promover a admin, crear perfiles de admin. Todas las operaciones ahora seguras y funcionales.",
-        "status": "completed",
-        "priority": "high"
-      },
-      "8": {
-        "id": "8",
-        "content": "Mostrar todas las encuestas activas con contador de días",
-        "details": "✅ COMPLETADO: Home.tsx modificado. Muestra TODAS las encuestas activas (3). Contador '29 días restantes' funcionando. Grid responsive. Migración añadida columna fecha_fin a surveys.",
-        "status": "completed",
-        "priority": "high"
+      "11": {
+        "id": "11",
+        "content": "Implementar elementos visuales profesionales",
+        "details": "1. Consistencia de marca UGT (colores: rojo, verde, amarillo, blanco, negro)\n2. Tipografías legibles y consistentes\n3. Iconografía moderna para servicios\n4. Diseño responsivo para móviles/tablets\n5. Micro-interacciones y feedback visual\n6. Imágenes de alta calidad contextuales",
+        "status": "pending",
+        "priority": "medium"
       }
     }
   }

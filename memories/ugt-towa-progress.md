@@ -14,12 +14,43 @@ Portal web completo para Sección Sindical UGT en Towa Pharmaceutical Europe
 - Keys: Disponibles via get_all_secrets
 
 ## Fase Actual
-NUEVAS FUNCIONALIDADES ADMINISTRATIVAS - 14-Nov-2025 23:30
+CORRECCION NAVEGACION AFILIADOS - 15-Nov-2025 00:31
 
-### Estado Actual
-- URL PRODUCCIÓN: https://88f9cfhzyl98.space.minimax.io
-- Build exitoso y desplegado
-- Testing exhaustivo completado: 100% EXITOSO
+### Problema Identificado
+CAUSA RAÍZ: TestAffiliateDashboard.tsx y TestBibliotecaPage.tsx tienen menuItems incompletos
+- Solo tienen 3 opciones: Dashboard, Biblioteca, Beneficios
+- FALTA: Encuestas (con icono Vote)
+- Por eso "Encuestas" solo aparece al navegar a BeneficiosPage (que sí tiene el menú completo)
+
+### Solución Aplicada
+- [x] Agregado import Vote icon a TestAffiliateDashboard.tsx
+- [x] Agregado entrada "Encuestas" a menuItems en TestAffiliateDashboard.tsx
+- [x] Agregado import Vote icon a TestBibliotecaPage.tsx
+- [x] Agregado entrada "Encuestas" a menuItems en TestBibliotecaPage.tsx
+- [x] Build exitoso (2694 módulos)
+- [x] Desplegado en: https://sq21nmyyv17u.space.minimax.io
+- [x] Testing comprehensivo completado: 100% EXITOSO
+
+### Verificaciones de Testing
+- ✅ Login exitoso
+- ✅ Menu lateral muestra 4 opciones desde el inicio (Dashboard, Biblioteca, Encuestas, Beneficios)
+- ✅ "Encuestas" visible sin necesidad de navegar a otra sección primero
+- ✅ Navegación entre todas las secciones funcional
+- ✅ Menu lateral consistente en todas las páginas
+- ✅ Sin errores en consola
+
+### Archivos Modificados
+- /workspace/ugt-towa-portal/src/pages/affiliates/TestAffiliateDashboard.tsx
+- /workspace/ugt-towa-portal/src/pages/affiliates/TestBibliotecaPage.tsx
+
+### Estado Final
+✅ COMPLETADO Y APROBADO - Problema de navegación resuelto completamente
+
+### URL Anterior
+- https://88f9cfhzyl98.space.minimax.io
+
+### URL Actual
+- https://sq21nmyyv17u.space.minimax.io
 
 ### Funcionalidades Implementadas y Verificadas
 **COMPLETADO Y TESTEADO**:
