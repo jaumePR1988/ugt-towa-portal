@@ -3,24 +3,24 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Implementar botones de compartir en redes sociales y WhatsApp",
-        "details": "1. Agregar botones de compartir en vista previa de comunicados\n2. Agregar botones de compartir en página detalle de comunicados\n3. Integrar sharing para Facebook, Twitter, LinkedIn y WhatsApp\n4. URLs de compartir optimizadas con título y descripción\n5. Diseño coherente con el estilo del portal",
+        "content": "Implementar botones de compartir en redes sociales/WhatsApp en comunicados",
+        "details": "Componente ShareButtons.tsx implementado con botones para Facebook, Twitter, LinkedIn y WhatsApp. Ubicado en esquina superior derecha de detalles de comunicados.",
         "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Agregar funcionalidad de eliminar citas en panel administrador",
-        "details": "1. Agregar botón 'Eliminar' en cada fila de la tabla de citas\n2. Implementar confirmación antes de eliminar\n3. Función de eliminación en base de datos\n4. Filtrar automáticamente citas pasadas (opcional)\n5. Actualización en tiempo real de la lista",
+        "content": "Agregar botón eliminar citas en panel administrador",
+        "details": "Función deleteAppointment implementada en AdminCitas.tsx con modal de confirmación. Políticas RLS aplicadas para permitir eliminación.",
         "status": "completed",
-        "priority": "medium"
+        "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Agregar botón eliminar suscriptores en newsletter",
-        "details": "1. Agregar botón 'Eliminar' en lista de suscriptores newsletter\n2. Implementar confirmación antes de eliminar\n3. Función de eliminación en base de datos\n4. Actualización en tiempo real de la lista\n5. Manejo de errores y feedback visual",
+        "content": "Agregar botón eliminar suscriptores newsletter",
+        "details": "Función deleteSubscriber implementada en AdminNewsletter.tsx con modal de confirmación. Políticas RLS aplicadas para permitir eliminación.",
         "status": "completed",
-        "priority": "medium"
+        "priority": "high"
       }
     }
   }
