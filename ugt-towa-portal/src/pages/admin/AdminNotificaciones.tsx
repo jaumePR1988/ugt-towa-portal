@@ -2,9 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Bell, Send, TestTube, Check, X, Smartphone } from 'lucide-react';
+import { Bell, Send, TestTube, Check, X, Smartphone, Upload, Image as ImageIcon, Trash2, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
+
+interface NotificationLogo {
+  id: string;
+  name: string;
+  url: string;
+  is_active: boolean;
+  created_at: string;
+  uploaded_by: string;
+  file_size: number;
+  format: string;
+}
 
 export default function AdminNotificaciones() {
   const navigate = useNavigate();
@@ -17,9 +28,41 @@ export default function AdminNotificaciones() {
     lastSent: null as string | null
   });
 
+  // Estados para gestión de logos
+  const [logos, setLogos] = useState<NotificationLogo[]>([]);
+  const [activeLogo, setActiveLogo] = useState<NotificationLogo | null>(null);
+  const [isLoadingLogos, setIsLoadingLogos] = useState(true);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [logoName, setLogoName] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+  const [showLogoManagement, setShowLogoManagement] = useState(false);
+
   useEffect(() => {
     loadStats();
+    loadLogos();
   }, []);
+
+  const loadLogos = async () => {
+    try {
+      setIsLoadingLogos(true);
+      const { data, error } = await supabase
+        .from('notification_logos')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      setLogos(data || []);
+      const active = data?.find(logo => logo.is_active);
+      setActiveLogo(active || null);
+    } catch (error) {
+      console.error('Error cargando logos:', error);
+      toast.error('Error al cargar logos');
+    } finally {
+      setIsLoadingLogos(false);
+    }
+  };
 
   const loadStats = async () => {
     try {
@@ -33,6 +76,131 @@ export default function AdminNotificaciones() {
       }));
     } catch (error) {
       console.error('Error cargando estadísticas:', error);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validar tipo de archivo
+    if (!file.type.includes('png') && !file.type.includes('svg')) {
+      toast.error('Solo se permiten archivos PNG o SVG');
+      return;
+    }
+
+    // Validar tamaño (1MB máximo)
+    if (file.size > 1024 * 1024) {
+      toast.error('El archivo debe ser menor a 1MB');
+      return;
+    }
+
+    setSelectedFile(file);
+    setLogoName(file.name.replace(/\.(png|svg)$/i, ''));
+
+    // Crear vista previa
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewUrl(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleLogoUpload = async () => {
+    if (!selectedFile || !logoName.trim()) {
+      toast.error('Por favor selecciona un archivo y proporciona un nombre');
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      formData.append('name', logoName.trim());
+
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/upload-notification-logo`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session?.access_token}`
+          },
+          body: formData
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success('Logo subido exitosamente');
+        setSelectedFile(null);
+        setPreviewUrl(null);
+        setLogoName('');
+        await loadLogos();
+      } else {
+        throw new Error(result.error || 'Error al subir logo');
+      }
+    } catch (error: any) {
+      console.error('Error subiendo logo:', error);
+      toast.error(error.message || 'Error al subir logo');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleActivateLogo = async (logoId: string) => {
+    try {
+      // Primero desactivar todos los logos
+      await supabase
+        .from('notification_logos')
+        .update({ is_active: false })
+        .neq('id', '00000000-0000-0000-0000-000000000000');
+
+      // Activar el logo seleccionado
+      const { error } = await supabase
+        .from('notification_logos')
+        .update({ is_active: true })
+        .eq('id', logoId);
+
+      if (error) throw error;
+
+      toast.success('Logo activado correctamente');
+      await loadLogos();
+    } catch (error) {
+      console.error('Error activando logo:', error);
+      toast.error('Error al activar logo');
+    }
+  };
+
+  const handleDeleteLogo = async (logoId: string, logoUrl: string) => {
+    if (!confirm('¿Estás seguro de que deseas eliminar este logo?')) {
+      return;
+    }
+
+    try {
+      // Eliminar archivo del storage
+      const fileName = logoUrl.split('/').pop();
+      if (fileName) {
+        await supabase.storage
+          .from('notification-logos')
+          .remove([fileName]);
+      }
+
+      // Eliminar registro de la base de datos
+      const { error } = await supabase
+        .from('notification_logos')
+        .delete()
+        .eq('id', logoId);
+
+      if (error) throw error;
+
+      toast.success('Logo eliminado correctamente');
+      await loadLogos();
+    } catch (error) {
+      console.error('Error eliminando logo:', error);
+      toast.error('Error al eliminar logo');
     }
   };
 
@@ -230,14 +398,23 @@ export default function AdminNotificaciones() {
 
                 {/* Vista previa */}
                 <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900">
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Vista previa:
-                  </p>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Vista previa:
+                    </p>
+                    <button
+                      onClick={() => setShowLogoManagement(!showLogoManagement)}
+                      className="text-xs text-red-600 hover:text-red-700 flex items-center gap-1"
+                    >
+                      <ImageIcon className="w-3 h-3" />
+                      {showLogoManagement ? 'Ocultar' : 'Gestionar'} logos
+                    </button>
+                  </div>
                   <div className="flex gap-3 bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm">
                     <img 
-                      src="/ugt-towa-icon-96.png" 
+                      src={activeLogo?.url || '/ugt-towa-icon-96.png'} 
                       alt="Icon" 
-                      className="w-12 h-12 rounded"
+                      className="w-12 h-12 rounded object-cover"
                     />
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-gray-900 dark:text-white text-sm">
@@ -248,6 +425,11 @@ export default function AdminNotificaciones() {
                       </p>
                     </div>
                   </div>
+                  {activeLogo && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                      Logo activo: {activeLogo.name}
+                    </p>
+                  )}
                 </div>
 
                 {/* Botones de acción */}
@@ -306,6 +488,166 @@ export default function AdminNotificaciones() {
                 </li>
               </ul>
             </div>
+
+            {/* Gestión de logos */}
+            {showLogoManagement && (
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <ImageIcon className="w-6 h-6 text-red-600" />
+                  Gestión de Logos de Notificaciones
+                </h2>
+
+                {/* Subir nuevo logo */}
+                <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
+                    Subir Nuevo Logo
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Nombre del logo
+                      </label>
+                      <input
+                        type="text"
+                        value={logoName}
+                        onChange={(e) => setLogoName(e.target.value)}
+                        placeholder="Ej: Logo Navidad 2025"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Archivo de imagen
+                      </label>
+                      <input
+                        type="file"
+                        accept=".png,.svg"
+                        onChange={handleFileSelect}
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"
+                      />
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        Formato: PNG o SVG | Tamaño máximo: 1MB | Recomendado: 512x512px
+                      </p>
+                    </div>
+
+                    {previewUrl && (
+                      <div className="flex items-center gap-4">
+                        <div className="flex-shrink-0">
+                          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Vista previa:
+                          </p>
+                          <img
+                            src={previewUrl}
+                            alt="Preview"
+                            className="w-24 h-24 object-cover rounded-lg border-2 border-gray-200 dark:border-gray-700"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <button
+                            onClick={handleLogoUpload}
+                            disabled={isUploading}
+                            className="flex items-center gap-2 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                          >
+                            {isUploading ? (
+                              <>
+                                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                                Subiendo...
+                              </>
+                            ) : (
+                              <>
+                                <Upload className="w-4 h-4" />
+                                Subir Logo
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Lista de logos */}
+                <div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
+                    Logos Disponibles ({logos.length})
+                  </h3>
+                  
+                  {isLoadingLogos ? (
+                    <div className="flex justify-center py-8">
+                      <div className="animate-spin rounded-full h-8 w-8 border-2 border-red-600 border-t-transparent" />
+                    </div>
+                  ) : logos.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                      <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                      <p>No hay logos subidos. Sube el primer logo para personalizar las notificaciones.</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {logos.map((logo) => (
+                        <div
+                          key={logo.id}
+                          className={`border rounded-lg p-4 ${
+                            logo.is_active
+                              ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                              : 'border-gray-200 dark:border-gray-700'
+                          }`}
+                        >
+                          <div className="flex gap-4">
+                            <img
+                              src={logo.url}
+                              alt={logo.name}
+                              className="w-20 h-20 object-cover rounded-lg"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between mb-2">
+                                <div className="flex-1 min-w-0">
+                                  <h4 className="font-semibold text-gray-900 dark:text-white truncate">
+                                    {logo.name}
+                                  </h4>
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                                    {logo.format.toUpperCase()} • {(logo.file_size / 1024).toFixed(0)} KB
+                                  </p>
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                                    {new Date(logo.created_at).toLocaleDateString('es-ES')}
+                                  </p>
+                                </div>
+                                {logo.is_active && (
+                                  <span className="flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs font-medium rounded">
+                                    <CheckCircle className="w-3 h-3" />
+                                    Activo
+                                  </span>
+                                )}
+                              </div>
+                              
+                              <div className="flex gap-2 mt-2">
+                                {!logo.is_active && (
+                                  <button
+                                    onClick={() => handleActivateLogo(logo.id)}
+                                    className="flex items-center gap-1 px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition-colors"
+                                  >
+                                    <CheckCircle className="w-3 h-3" />
+                                    Activar
+                                  </button>
+                                )}
+                                <button
+                                  onClick={() => handleDeleteLogo(logo.id, logo.url)}
+                                  className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors"
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                  Eliminar
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Sidebar */}

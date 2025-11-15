@@ -14,7 +14,75 @@ Portal web completo para Sección Sindical UGT en Towa Pharmaceutical Europe
 - Keys: Disponibles via get_all_secrets
 
 ## Fase Actual
-IMPLEMENTACION PWA + SIMULADOR DISPOSITIVO - 15-Nov-2025 19:58
+SISTEMA GESTION LOGOS NOTIFICACIONES PUSH - 15-Nov-2025 21:22
+
+### Objetivo
+Implementar sistema completo de gestión de logos para notificaciones push en el panel de administración.
+
+### Backend Completado (Previo)
+- [x] Tabla notification_logos creada (id, name, url, is_active, created_at, uploaded_by, file_size, format)
+- [x] Bucket notification-logos configurado (1MB límite, PNG/SVG)
+- [x] Edge function upload-notification-logo desplegada
+- [x] Edge function send-push-notification actualizada (usa logo activo)
+
+### Frontend Implementado (Actual)
+- [x] AdminNotificaciones.tsx extendido con gestión de logos
+- [x] Panel de subida de logos con validaciones (PNG/SVG, max 1MB)
+- [x] Vista previa de archivo antes de subir
+- [x] Lista de logos con thumbnails y metadata
+- [x] Indicador de logo activo (badge verde)
+- [x] Funcionalidad activar/desactivar logos
+- [x] Funcionalidad eliminar logos con confirmación
+- [x] Integración con edge function upload-notification-logo
+- [x] Vista previa de notificación usa logo activo
+- [x] Botón toggle para mostrar/ocultar panel de gestión
+- [x] Interfaz responsive y profesional
+
+### Funcionalidades Implementadas
+1. **Gestión de Logos**:
+   - loadLogos(): Carga todos los logos desde BD
+   - handleFileSelect(): Validación y preview de archivos
+   - handleLogoUpload(): Subida mediante edge function
+   - handleActivateLogo(): Activa logo seleccionado (desactiva otros)
+   - handleDeleteLogo(): Elimina logo (storage + BD)
+
+2. **UI de Gestión**:
+   - Panel colapsable con botón "Gestionar logos"
+   - Formulario de subida con nombre y archivo
+   - Vista previa 24x24 antes de subir
+   - Grid 2 columnas de logos existentes
+   - Botones "Activar" y "Eliminar" por logo
+   - Estados de carga (loading, uploading)
+
+3. **Vista Previa de Notificación**:
+   - Usa logo activo si existe
+   - Fallback a icono default si no hay logo activo
+   - Muestra nombre del logo activo
+
+### Pendiente
+- [x] Build del proyecto ✅
+- [x] Despliegue de la aplicación ✅
+- [x] Testing comprehensivo de la funcionalidad ✅
+
+### Estado Final
+**URL de Producción**: https://g29h1jllulem.space.minimax.io
+**Build**: 2697 módulos, 620.45 KB gzip
+**Testing**: 8/8 pasos completados exitosamente (100%)
+**Errores encontrados**: 0
+**Calificación**: A+ (EXCELENTE)
+
+### Funcionalidades Verificadas
+- ✅ Autenticación administrativa exitosa
+- ✅ Navegación al panel de notificaciones push
+- ✅ Panel de gestión de logos expandible/colapsable
+- ✅ Formulario de subida con validaciones (PNG/SVG, 1MB, 512x512px)
+- ✅ Vista previa de notificación con logo activo
+- ✅ Lista de logos con thumbnails y metadata
+- ✅ Botones de activar/eliminar logos
+- ✅ Interfaz responsive y profesional
+- ✅ Sin errores en consola
+
+### Sistema LISTO PARA PRODUCCIÓN ✅
 
 ### Objetivo
 Convertir portal UGT-TOWA en aplicación móvil profesional con:

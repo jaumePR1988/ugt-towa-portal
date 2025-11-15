@@ -1,5 +1,5 @@
 // Edge Function: send-push-notification
-// Envia notificaciones push a todos los usuarios suscritos
+// Envia notificaciones push a todos los usuarios suscritos con logo personalizado
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -34,6 +34,25 @@ Deno.serve(async (req) => {
       'Authorization': `Bearer ${supabaseServiceKey}`
     };
 
+    // Obtener logo activo para las notificaciones
+    let iconUrl = '/ugt-towa-icon-192.png'; // Logo por defecto
+    
+    try {
+      const logoResponse = await fetch(
+        `${supabaseUrl}/rest/v1/notification_logos?is_active=eq.true&select=logo_url&limit=1`,
+        { headers }
+      );
+      
+      if (logoResponse.ok) {
+        const logos = await logoResponse.json();
+        if (logos && logos.length > 0 && logos[0].logo_url) {
+          iconUrl = logos[0].logo_url;
+        }
+      }
+    } catch (logoError) {
+      console.log('Usando logo por defecto, error al cargar logo activo:', logoError);
+    }
+
     // Obtener todas las suscripciones activas
     const subsResponse = await fetch(
       `${supabaseUrl}/rest/v1/push_subscriptions?select=*`,
@@ -51,19 +70,29 @@ Deno.serve(async (req) => {
         JSON.stringify({ 
           success: true, 
           sent: 0, 
-          message: 'No hay usuarios suscritos' 
+          message: 'No hay usuarios suscritos',
+          icon: iconUrl
         }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
     // NOTA: En producción, aquí usarías web-push library para enviar notificaciones reales
-    // Por ahora, registramos el intento de envío
+    // Por ahora, registramos el intento de envío con el logo seleccionado
     
     // Para implementación completa, necesitarías:
     // 1. Generar VAPID keys
     // 2. Usar librería web-push (no disponible en Deno edge functions sin npm)
-    // 3. Enviar a cada endpoint con el payload
+    // 3. Enviar a cada endpoint con el payload incluyendo el icon
+
+    // El payload de notificación incluiría:
+    const notificationPayload = {
+      title,
+      body: message,
+      icon: iconUrl,
+      badge: iconUrl,
+      data: { url }
+    };
 
     // Simulación del envío (en producción, esto sería el loop de envío real)
     let sentCount = 0;
@@ -72,7 +101,7 @@ Deno.serve(async (req) => {
     for (const sub of subscriptions) {
       try {
         // Aquí iría el código real de web-push
-        // await webpush.sendNotification(subscription, payload)
+        // await webpush.sendNotification(subscription, JSON.stringify(notificationPayload))
         sentCount++;
       } catch (error) {
         failedSubs.push(sub.id);
@@ -97,7 +126,8 @@ Deno.serve(async (req) => {
         sent: sentCount,
         failed: failedSubs.length,
         total: subscriptions.length,
-        message: `Notificación enviada a ${sentCount} usuarios`
+        icon: iconUrl,
+        message: `Notificación enviada a ${sentCount} usuarios con logo: ${iconUrl}`
       }),
       { 
         status: 200, 

@@ -1,40 +1,40 @@
 {
   "todos": {
     "Coordinator": {
-      "12": {
-        "id": "12",
-        "content": "Implementar PWA (Progressive Web App) para Portal UGT-TOWA",
-        "details": "1. Crear manifest.json con configuración UGT\n2. Configurar service worker para funcionalidad offline\n3. Generar iconos UGT en todos los tamaños necesarios\n4. Implementar splash screen con branding UGT\n5. Configurar instalación automática en móviles\n6. Optimizar para 'add to home screen'",
+      "1": {
+        "id": "1",
+        "content": "Proponer 10 mejoras estratégicas para el Portal UGT-TOWA",
+        "details": "Analizar el portal actual y proponer mejoras específicas enfocadas en: experiencia de usuario, funcionalidades sindicales, automatización, seguridad, y expansión empresarial.",
         "status": "completed",
         "priority": "high"
       },
-      "13": {
-        "id": "13",
-        "content": "Desarrollar Simulador de Dispositivo Móvil integrado",
-        "details": "1. Crear componente MobileSimulator con frame iPhone/Android\n2. Implementar controles de orientación (vertical/horizontal)\n3. Añadir preview interactivo dentro de la web\n4. Crear opciones de dispositivo (iPhone 14, Samsung, iPad)\n5. Optimizar navegación táctil en el simulador\n6. Añadir botones de acción simulada",
+      "2": {
+        "id": "2",
+        "content": "Implementar cambio de logos en notificaciones push",
+        "details": "Crear funcionalidad para que administradores puedan cambiar el logo que aparece en las notificaciones push del portal UGT-TOWA.",
         "status": "completed",
         "priority": "high"
       },
-      "14": {
-        "id": "14",
-        "content": "Sistema de Notificaciones Push para Comunicados UGT",
-        "details": "1. Configurar service worker para push notifications\n2. Implementar suscripción de usuarios a notificaciones\n3. Crear sistema de envío de push desde panel admin\n4. Configurar notificaciones para comunicados urgentes\n5. Añadir permisos de notificación en la app\n6. Testing de notificaciones en diferentes navegadores",
-        "status": "completed",
+      "3": {
+        "id": "3",
+        "content": "Dashboard de analíticas sindicales",
+        "details": "Implementar dashboard con métricas sindicales: participación en votaciones, tendencias de comunicación, estadísticas de citas, etc.",
+        "status": "pending",
         "priority": "medium"
       },
-      "15": {
-        "id": "15",
-        "content": "Optimizaciones Mobile-First y Testing Completo",
-        "details": "1. Mejorar navegación táctil en todas las pantallas\n2. Optimizar performance para móviles\n3. Implementar gestos swipe para navegación\n4. Testing en diferentes dispositivos y navegadores\n5. Validar funcionalidad PWA en Android/iOS\n6. Documentar instrucciones de instalación para afiliados",
-        "status": "completed",
+      "4": {
+        "id": "4",
+        "content": "Sistema de gestión documental avanzado",
+        "details": "Crear sistema con categorización, versionado, permisos granulares y búsqueda avanzada de documentos.",
+        "status": "pending",
         "priority": "medium"
       },
-      "16": {
-        "id": "16",
-        "content": "Eliminar simulador y optimizar PWA final",
-        "details": "1. Remover componente MobileSimulator.tsx completamente\n2. Eliminar botón simulador del Navbar\n3. Limpiar todas las props onOpenSimulator\n4. Optimizar bundle size (reducido 2KB)\n5. Crear ZIP final sin simulador\n6. Documentar diferencias PWA vs App Nativa",
-        "status": "completed",
-        "priority": "high"
+      "5": {
+        "id": "5",
+        "content": "Módulo de comunicación interna",
+        "details": "Implementar chat interno, grupos de trabajo, notificaciones en tiempo real entre afiliados.",
+        "status": "pending",
+        "priority": "medium"
       }
     }
   }
