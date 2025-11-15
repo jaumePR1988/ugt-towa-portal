@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📱 INSTALAR PWA UGT TOWA - MÓVIL</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin: 0;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .install-button {
+            width: 100%;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .install-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .install-button:active {
+            transform: translateY(0);
+        }
+        
+        .instruction-card {
+            background: rgba(255,255,255,0.15);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .instruction-card h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+            color: #fff;
+        }
+        
+        .step {
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.5;
+        }
+        
+        .step::before {
+            content: counter(step-counter);
+            counter-increment: step-counter;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #ff6b6b;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .instructions {
+            counter-reset: step-counter;
+        }
+        
+        .alternative {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 14px;
+            border-left: 4px solid #4ecdc4;
+        }
+        
+        .warning {
+            background: rgba(255,193,7,0.2);
+            border: 1px solid rgba(255,193,7,0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .success {
+            background: rgba(40,167,69,0.2);
+            border: 1px solid rgba(40,167,69,0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .pwa-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .feature {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        
+        .feature-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 UGT Towa</h1>
+            <div class="subtitle">Instalar Aplicación PWA</div>
+        </div>
+        
+        <div class="pwa-features">
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <div>Aplicación rápida</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📴</div>
+                <div>Funciona offline</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔔</div>
+                <div>Notificaciones</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📱</div>
+                <div>Pantalla de inicio</div>
+            </div>
+        </div>
+        
+        <button class="install-button" onclick="abrirSitioEInstalar()">
+            🚀 INSTALAR AHORA
+        </button>
+        
+        <div class="instruction-card">
+            <h3>📋 Instrucciones paso a paso:</h3>
+            <div class="instructions">
+                <div class="step">
+                    Abre el sitio web en tu navegador
+                </div>
+                <div class="step">
+                    Busca el botón de "Instalar" o "Agregar a pantalla de inicio"
+                </div>
+                <div class="step">
+                    Toca el botón y confirma la instalación
+                </div>
+                <div class="step">
+                    ¡Listo! Ya tienes la app instalada
+                </div>
+            </div>
+        </div>
+        
+        <div class="warning">
+            <strong>💡 Tip:</strong> Si no ves el botón de instalación, espera 30 segundos o usa el botón verde de arriba.
+        </div>
+        
+        <div class="success" id="successMessage">
+            <strong>✅ ¡Instalación exitosa!</strong><br>
+            Busca el icono "UGT Towa" en tu pantalla de inicio.
+        </div>
+        
+        <div class="alternative">
+            <strong>📱 Métodos alternativos:</strong><br>
+            • <strong>Chrome Android:</strong> Menú (⋮) > "Agregar a pantalla de inicio"<br>
+            • <strong>Safari iPhone:</strong> Botón compartir (⬆️) > "Agregar a pantalla de inicio"
+        </div>
+    </div>
+    
+    <script>
+        function abrirSitioEInstalar() {
+            // Abrir sitio en la misma ventana
+            window.location.href = 'https://9ya0vtpov5ir.space.minimax.io';
+            
+            // Mostrar mensaje
+            setTimeout(() => {
+                document.getElementById('successMessage').style.display = 'block';
+                
+                // Scroll al mensaje
+                document.getElementById('successMessage').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }, 3000);
+        }
+        
+        // Detectar si estamos en móvil
+        function isMobile() {
+            return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
+        // Detectar tipo de navegador
+        function getBrowser() {
+            const ua = navigator.userAgent;
+            if (ua.includes('Chrome')) return 'Chrome';
+            if (ua.includes('Safari') && !ua.includes('Chrome')) return 'Safari';
+            if (ua.includes('Firefox')) return 'Firefox';
+            if (ua.includes('SamsungBrowser')) return 'Samsung Internet';
+            return 'Otro';
+        }
+        
+        // Instrucciones dinámicas
+        window.onload = function() {
+            const browser = getBrowser();
+            const isMobileDevice = isMobile();
+            
+            console.log('📱 Dispositivo:', isMobileDevice ? 'Móvil' : 'Escritorio');
+            console.log('🌐 Navegador:', browser);
+            
+            if (!isMobileDevice) {
+                // Instrucciones para escritorio
+                const instructions = document.querySelector('.instructions');
+                instructions.innerHTML = `
+                    <div class="step">
+                        Presiona F12 para abrir la consola
+                    </div>
+                    <div class="step">
+                        Copia y pega este código:
+                        <code>localStorage.clear(); location.reload();</code>
+                    </div>
+                    <div class="step">
+                        Presiona Enter y busca el popup
+                    </div>
+                    <div class="step">
+                        ¡Popup aparecerá en 2 segundos!
+                    </div>
+                `;
+            } else {
+                // Instrucciones específicas para móvil
+                if (browser === 'Chrome') {
+                    document.querySelector('.alternative').innerHTML = 
+                        '<strong>📱 Chrome Android:</strong><br>• Menú (⋮) > "Agregar a pantalla de inicio"<br>• O espera 30 segundos para ver el popup automático';
+                } else if (browser === 'Safari') {
+                    document.querySelector('.alternative').innerHTML = 
+                        '<strong>🍎 Safari iPhone:</strong><br>• Botón compartir (⬆️) > "Agregar a pantalla de inicio"<br>• O espera 30 segundos para ver el popup automático';
+                }
+            }
+            
+            // Auto-mostrar el popup después de 30 segundos si no se ha instalado
+            setTimeout(() => {
+                if (!localStorage.getItem('pwa-installed')) {
+                    console.log('🎯 Auto-invocando instalación...');
+                    abrirSitioEInstalar();
+                }
+            }, 30000);
+        };
+        
+        // Guardar cuando se instala
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                // Usuario cambió de app, puede haber instalado
+                setTimeout(() => {
+                    localStorage.setItem('pwa-installed', 'true');
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
