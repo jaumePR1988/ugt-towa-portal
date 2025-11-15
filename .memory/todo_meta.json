@@ -3,36 +3,36 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Proponer 10 mejoras estratégicas para el Portal UGT-TOWA",
-        "details": "Analizar el portal actual y proponer mejoras específicas enfocadas en: experiencia de usuario, funcionalidades sindicales, automatización, seguridad, y expansión empresarial.",
-        "status": "completed",
+        "content": "Implementar Centro de Anuncios Centralizado",
+        "details": "Desarrollar sistema de anuncios con categorías (Urgente, Informativo, Evento), editor rich text, sistema de lectura marcado, historial. Incluye: tabla announcements, UI admin, notificaciones, estadísticas de lectura.",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Implementar cambio de logos en notificaciones push",
-        "details": "Crear funcionalidad para que administradores puedan cambiar el logo que aparece en las notificaciones push del portal UGT-TOWA.",
-        "status": "completed",
+        "content": "Desarrollar Directorio de Contactos UGT",
+        "details": "Crear agenda searchable de afiliados con filtros por departamento, turno, rol. Funcionalidades: búsqueda en tiempo real, contactos favoritos, estado online, integración con usuarios existentes de Supabase.",
+        "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Dashboard de analíticas sindicales",
-        "details": "Implementar dashboard con métricas sindicales: participación en votaciones, tendencias de comunicación, estadísticas de citas, etc.",
+        "content": "Implementar Sistema de Perfiles de Usuario y Segmentación Básica",
+        "details": "Crear base de datos extendida con atributos del usuario (departamento, turno, antigüedad, rol), reglas de segmentación visuales, motor de contenido dinámico por reglas. Incluye: UI visual para reglas, sistema de logging, preview testing.",
         "status": "pending",
-        "priority": "medium"
+        "priority": "high"
       },
       "4": {
         "id": "4",
-        "content": "Sistema de gestión documental avanzado",
-        "details": "Crear sistema con categorización, versionado, permisos granulares y búsqueda avanzada de documentos.",
+        "content": "Desarrollar Chat Sindical Básico",
+        "details": "Sistema de mensajería simple entre afiliados y delegados. Funcionalidades: chat directo usuario-a-usuario, grupos por departamento/turno, notificaciones de mensajes, lista de conversaciones activas. Backend con WebSocket/Supabase realtime.",
         "status": "pending",
         "priority": "medium"
       },
       "5": {
         "id": "5",
-        "content": "Módulo de comunicación interna",
-        "details": "Implementar chat interno, grupos de trabajo, notificaciones en tiempo real entre afiliados.",
+        "content": "Generar paquete ZIP actualizado del proyecto",
+        "details": "Crear archivo ZIP con todo el código actualizado incluyendo las nuevas funcionalidades implementadas, documentación de cambios, instrucciones de deployment.",
         "status": "pending",
         "priority": "medium"
       }
