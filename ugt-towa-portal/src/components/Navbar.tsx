@@ -1,11 +1,15 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { LogOut, User, LayoutDashboard } from 'lucide-react';
+import { LogOut, User, LayoutDashboard, Smartphone } from 'lucide-react';
 import { toast } from 'sonner';
 import ThemeToggle from './ThemeToggle';
 
-export default function Navbar() {
+interface NavbarProps {
+  onOpenSimulator?: () => void;
+}
+
+export default function Navbar({ onOpenSimulator }: NavbarProps) {
   const { user, signOut, isAdmin, isAffiliate } = useAuth();
   const location = useLocation();
 
@@ -79,6 +83,14 @@ export default function Navbar() {
               <>
                 {isAdmin && (
                   <>
+                    <button
+                      onClick={onOpenSimulator}
+                      className="flex items-center space-x-1 px-3 py-2 rounded-lg border border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition"
+                      title="Simulador de dispositivo móvil"
+                    >
+                      <Smartphone className="h-4 w-4" />
+                      <span className="hidden lg:inline">Simulador</span>
+                    </button>
                     <Link
                       to="/admin/dashboard"
                       className="flex items-center space-x-1 px-3 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
@@ -88,7 +100,7 @@ export default function Navbar() {
                     </Link>
                     <Link
                       to="/admin/newsletter"
-                      className="flex items-center space-x-1 px-3 py-2 rounded-lg border border-red-600 text-red-600 hover:bg-red-50 transition"
+                      className="flex items-center space-x-1 px-3 py-2 rounded-lg border border-red-600 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition"
                     >
                       <span>Newsletter</span>
                     </Link>

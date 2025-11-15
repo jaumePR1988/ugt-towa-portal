@@ -4,7 +4,11 @@ import Footer from '@/components/Footer';
 import { supabase, Delegate } from '@/lib/supabase';
 import { Users, User } from 'lucide-react';
 
-export default function QuienesSomosPage() {
+interface QuienesSomosPageProps {
+  onOpenSimulator?: () => void;
+}
+
+export default function QuienesSomosPage({ onOpenSimulator }: QuienesSomosPageProps) {
   const [delegates, setDelegates] = useState<{
     comite: Delegate[];
     sindical: Delegate[];
@@ -45,7 +49,7 @@ export default function QuienesSomosPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <Navbar onOpenSimulator={onOpenSimulator} />
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center mb-8">

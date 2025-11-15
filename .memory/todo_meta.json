@@ -5,28 +5,28 @@
         "id": "12",
         "content": "Implementar PWA (Progressive Web App) para Portal UGT-TOWA",
         "details": "1. Crear manifest.json con configuración UGT\n2. Configurar service worker para funcionalidad offline\n3. Generar iconos UGT en todos los tamaños necesarios\n4. Implementar splash screen con branding UGT\n5. Configurar instalación automática en móviles\n6. Optimizar para 'add to home screen'",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "13": {
         "id": "13",
         "content": "Desarrollar Simulador de Dispositivo Móvil integrado",
         "details": "1. Crear componente MobileSimulator con frame iPhone/Android\n2. Implementar controles de orientación (vertical/horizontal)\n3. Añadir preview interactivo dentro de la web\n4. Crear opciones de dispositivo (iPhone 14, Samsung, iPad)\n5. Optimizar navegación táctil en el simulador\n6. Añadir botones de acción simulada",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "14": {
         "id": "14",
         "content": "Sistema de Notificaciones Push para Comunicados UGT",
         "details": "1. Configurar service worker para push notifications\n2. Implementar suscripción de usuarios a notificaciones\n3. Crear sistema de envío de push desde panel admin\n4. Configurar notificaciones para comunicados urgentes\n5. Añadir permisos de notificación en la app\n6. Testing de notificaciones en diferentes navegadores",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       },
       "15": {
         "id": "15",
         "content": "Optimizaciones Mobile-First y Testing Completo",
         "details": "1. Mejorar navegación táctil en todas las pantallas\n2. Optimizar performance para móviles\n3. Implementar gestos swipe para navegación\n4. Testing en diferentes dispositivos y navegadores\n5. Validar funcionalidad PWA en Android/iOS\n6. Documentar instrucciones de instalación para afiliados",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       }
     }

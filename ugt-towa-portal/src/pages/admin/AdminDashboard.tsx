@@ -3,9 +3,13 @@ import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { supabase } from '@/lib/supabase';
-import { LayoutDashboard, FileText, Calendar, Vote, Users, MessageSquare, Tag, FolderOpen, Inbox, BarChart3, FolderTree, QrCode, Image, UserCheck, BookOpen, Gift, Shield } from 'lucide-react';
+import { LayoutDashboard, FileText, Calendar, Vote, Users, MessageSquare, Tag, FolderOpen, Inbox, BarChart3, FolderTree, QrCode, Image, UserCheck, BookOpen, Gift, Shield, Bell } from 'lucide-react';
 
-export default function AdminDashboard() {
+interface AdminDashboardProps {
+  onOpenSimulator?: () => void;
+}
+
+export default function AdminDashboard({ onOpenSimulator }: AdminDashboardProps) {
   const [stats, setStats] = useState({
     communiques: 0,
     appointments: 0,
@@ -40,6 +44,7 @@ export default function AdminDashboard() {
   }
 
   const menuItems = [
+    { to: '/admin/notificaciones', icon: Bell, title: 'Notificaciones Push', desc: 'Enviar notificaciones a usuarios con PWA instalada' },
     { to: '/admin/quienes-somos', icon: Users, title: 'Quiénes Somos', desc: 'Gestionar delegados y contenido' },
     { to: '/admin/comunicados', icon: FileText, title: 'Comunicados', desc: 'Publicar y editar comunicados' },
     { to: '/admin/categorias', icon: Tag, title: 'Categorías', desc: 'Gestionar categorías de comunicados' },
@@ -62,7 +67,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <Navbar onOpenSimulator={onOpenSimulator} />
       <div className="container mx-auto px-4 py-12">
         <div className="flex items-center mb-8">
           <LayoutDashboard className="h-8 w-8 text-red-600 mr-3" />

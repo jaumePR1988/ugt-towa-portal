@@ -12,7 +12,11 @@ const TIME_SLOTS = [
   '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'
 ];
 
-export default function CitasPage() {
+interface CitasPageProps {
+  onOpenSimulator?: () => void;
+}
+
+export default function CitasPage({ onOpenSimulator }: CitasPageProps) {
   const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedType, setSelectedType] = useState<'sindical' | 'prevencion'>('sindical');
@@ -249,7 +253,7 @@ export default function CitasPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <Navbar onOpenSimulator={onOpenSimulator} />
       <div className="container mx-auto px-4 py-12">
         <div className="flex items-center mb-8">
           <CalendarIcon className="h-8 w-8 text-red-600 mr-3" />

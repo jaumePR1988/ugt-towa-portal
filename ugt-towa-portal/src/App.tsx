@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { Toaster } from 'sonner';
+import { usePWA } from './hooks/usePWA';
+import { PWAInstallPrompt } from './components/PWAInstallPrompt';
+import { MobileSimulator } from './components/MobileSimulator';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -41,6 +44,7 @@ import AdminDocumentosSindicales from './pages/admin/AdminDocumentosSindicales';
 
 import AdminBeneficiosUGT from './pages/admin/AdminBeneficiosUGT';
 import AdminNewsletter from './pages/admin/AdminNewsletter';
+import AdminNotificaciones from './pages/admin/AdminNotificaciones';
 
 // Affiliate Pages
 import AffiliateDashboard from './pages/affiliates/AffiliateDashboard';
@@ -59,21 +63,38 @@ import TestAffiliateRoute from './components/TestAffiliateRoute';
 import './index.css';
 
 function App() {
+  const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
+  const { isInstallable, promptInstall } = usePWA();
+
   return (
     <BrowserRouter>
       <AuthProvider>
         <Toaster position="top-right" richColors />
+        
+        {/* PWA Install Prompt */}
+        <PWAInstallPrompt 
+          isInstallable={isInstallable}
+          onInstall={promptInstall}
+        />
+        
+        {/* Mobile Simulator */}
+        <MobileSimulator 
+          isOpen={isSimulatorOpen}
+          onClose={() => setIsSimulatorOpen(false)}
+        />
+        
+        {/* Pass simulator handler to routes that need it */}
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<HomePage onOpenSimulator={() => setIsSimulatorOpen(true)} />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
-          <Route path="/quienes-somos" element={<QuienesSomosPage />} />
-          <Route path="/comunicados" element={<ComunicadosPage />} />
-          <Route path="/comunicados/:id" element={<ComunicadoDetailPage />} />
-          <Route path="/encuestas" element={<EncuestasPage />} />
-          <Route path="/newsletter" element={<NewsletterPage />} />
+          <Route path="/quienes-somos" element={<QuienesSomosPage onOpenSimulator={() => setIsSimulatorOpen(true)} />} />
+          <Route path="/comunicados" element={<ComunicadosPage onOpenSimulator={() => setIsSimulatorOpen(true)} />} />
+          <Route path="/comunicados/:id" element={<ComunicadoDetailPage onOpenSimulator={() => setIsSimulatorOpen(true)} />} />
+          <Route path="/encuestas" element={<EncuestasPage onOpenSimulator={() => setIsSimulatorOpen(true)} />} />
+          <Route path="/newsletter" element={<NewsletterPage onOpenSimulator={() => setIsSimulatorOpen(true)} />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
 
@@ -83,7 +104,7 @@ function App() {
             path="/citas"
             element={
               <PrivateRoute>
-                <CitasPage />
+                <CitasPage onOpenSimulator={() => setIsSimulatorOpen(true)} />
               </PrivateRoute>
             }
           />
@@ -91,7 +112,7 @@ function App() {
             path="/documentos"
             element={
               <PrivateRoute>
-                <DocumentosPage />
+                <DocumentosPage onOpenSimulator={() => setIsSimulatorOpen(true)} />
               </PrivateRoute>
             }
           />
@@ -141,7 +162,15 @@ function App() {
             path="/admin/dashboard"
             element={
               <AdminRoute>
-                <AdminDashboard />
+                <AdminDashboard onOpenSimulator={() => setIsSimulatorOpen(true)} />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/notificaciones"
+            element={
+              <AdminRoute>
+                <AdminNotificaciones onOpenSimulator={() => setIsSimulatorOpen(true)} />
               </AdminRoute>
             }
           />

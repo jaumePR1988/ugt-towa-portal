@@ -6,7 +6,11 @@ import { supabase, Survey, SurveyResponse } from '@/lib/supabase';
 import { Vote, BarChart3 } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function EncuestasPage() {
+interface EncuestasPageProps {
+  onOpenSimulator?: () => void;
+}
+
+export default function EncuestasPage({ onOpenSimulator }: EncuestasPageProps) {
   const { user } = useAuth();
   const [surveys, setSurveys] = useState<Survey[]>([]);
   const [responses, setResponses] = useState<Record<string, SurveyResponse[]>>({});
@@ -81,7 +85,7 @@ export default function EncuestasPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <Navbar onOpenSimulator={onOpenSimulator} />
       <div className="container mx-auto px-4 py-12">
         <div className="flex items-center mb-8">
           <Vote className="h-8 w-8 text-red-600 mr-3" />

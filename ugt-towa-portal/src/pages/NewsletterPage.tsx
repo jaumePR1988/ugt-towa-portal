@@ -5,7 +5,11 @@ import { supabase } from '@/lib/supabase';
 import { Mail } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function NewsletterPage() {
+interface NewsletterPageProps {
+  onOpenSimulator?: () => void;
+}
+
+export default function NewsletterPage({ onOpenSimulator }: NewsletterPageProps) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -37,7 +41,7 @@ export default function NewsletterPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <Navbar onOpenSimulator={onOpenSimulator} />
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-12">
