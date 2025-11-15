@@ -1,0 +1,133 @@
+/**
+ * 🎯 SCRIPT PARA FORZAR POPUP PWA - UGT TOWA
+ * 
+ * INSTRUCCIONES:
+ * 1. Abre tu sitio web: https://9ya0vtpov5ir.space.minimax.io
+ * 2. Presiona F12 para abrir la consola del navegador
+ * 3. Copia y pega TODO este código en la consola
+ * 4. Presiona Enter
+ * 
+ * El popup aparecerá inmediatamente
+ */
+
+// 🧹 LIMPIAR ESTADO ANTERIOR
+localStorage.removeItem('pwa-install-dismissed');
+localStorage.removeItem('pwa-install-dismissed-time');
+
+// 🎯 MÉTODO 1: Forzar usando el evento personalizado
+function forzarPopupInmediato() {
+    console.log('🎯 Forzando popup PWA...');
+    
+    // Buscar y activar el componente PWA
+    setTimeout(() => {
+        // Intentar encontrar el popup por clase
+        const popups = document.querySelectorAll('[class*="animate-slide-up"], [class*="fixed"], [class*="z-50"]');
+        
+        popups.forEach(element => {
+            if (element.innerHTML.includes('UGT') || element.innerHTML.includes('Instalar')) {
+                console.log('✅ Popup encontrado:', element);
+                element.style.display = 'block';
+                element.style.opacity = '1';
+                element.style.transform = 'translateY(0)';
+                element.style.zIndex = '9999';
+                
+                // Scroll hasta el popup si está fuera de vista
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+        
+        // Si no se encuentra, forzar reaparición después de recarga
+        if (popups.length === 0) {
+            console.log('🔄 Popup no encontrado, recargando página...');
+            location.reload();
+        }
+        
+    }, 1000);
+}
+
+// 🎯 MÉTODO 2: Forzar con evento personalizado (si el componente lo soporta)
+function forzarConEvento() {
+    const evento = new CustomEvent('force-pwa-prompt');
+    window.dispatchEvent(evento);
+    console.log('📢 Evento personalizado enviado');
+}
+
+// 🎯 MÉTODO 3: Simular comportamiento PWA
+function simularPWAAvailable() {
+    console.log('🎭 Simulando PWA disponible...');
+    
+    // Crear evento simulado
+    const eventoSimulado = new Event('beforeinstallprompt');
+    window.dispatchEvent(eventoSimulado);
+    
+    // Actualizar estado localStorage
+    localStorage.setItem('pwa-prompt-available', 'true');
+    localStorage.setItem('pwa-prompt-timestamp', Date.now().toString());
+    
+    forzarPopupInmediato();
+}
+
+// 🚀 EJECUTAR MÉTODOS
+console.log('🚀 Iniciando forzado de popup PWA...');
+
+// Método principal
+forzarPopupInmediato();
+
+// Métodos alternativos
+setTimeout(() => forzarConEvento(), 2000);
+setTimeout(() => simularPWAAvailable(), 3000);
+
+// 📱 INFORMACIÓN DE DEBUG
+console.log('📊 Estado actual:', {
+    localStorage: {
+        dismissed: localStorage.getItem('pwa-install-dismissed'),
+        timestamp: localStorage.getItem('pwa-install-dismissed-time')
+    },
+    browser: {
+        standalone: window.matchMedia('(display-mode: standalone)').matches,
+        serviceWorker: 'serviceWorker' in navigator,
+        installPrompt: 'beforeinstallprompt' in window
+    }
+});
+
+// 🔄 FUNCIÓN DE RESET COMPLETO
+window.resetearPWACompleto = function() {
+    console.log('🔄 Reseteo completo de PWA...');
+    
+    localStorage.removeItem('pwa-install-dismissed');
+    localStorage.removeItem('pwa-install-dismissed-time');
+    localStorage.removeItem('pwa-prompt-available');
+    localStorage.removeItem('pwa-prompt-timestamp');
+    localStorage.removeItem('pwa-installed');
+    
+    // Si existe service worker, desregistrarlo temporalmente
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+            registrations.forEach(registration => {
+                registration.unregister();
+                console.log('🧹 Service Worker desregistrado');
+            });
+        });
+    }
+    
+    // Recargar página
+    setTimeout(() => {
+        console.log('🔄 Recargando página...');
+        location.reload();
+    }, 500);
+};
+
+// 📋 COMANDOS ADICIONALES DISPONIBLES:
+// - resetearPWACompleto() → Reset completo y recarga
+// - forzarPopupInmediato() → Forzar popup sin recarga
+// - simularPWAAvailable() → Simular PWA disponible
+
+console.log(`
+🎯 UGT Towa PWA Popup Forcer
+Comandos listos:
+✅ resetearPWACompleto()    → Reset completo
+✅ forzarPopupInmediato()   → Forzar popup
+✅ simularPWAAvailable()    → Simular PWA disponible
+
+🎮 Presiona Enter si no apareció el popup
+`);

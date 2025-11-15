@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UGT Towa - PWA Popup Forzado</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .pwa-popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            max-width: 350px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 9999;
+            border: 1px solid #e50000;
+            overflow: hidden;
+        }
+        
+        .pwa-header {
+            background: linear-gradient(135deg, #e50000, #dc2626);
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .pwa-body {
+            padding: 20px;
+        }
+        
+        .pwa-icon {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .pwa-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .pwa-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .pwa-description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+        
+        .pwa-features {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+        
+        .pwa-features li {
+            font-size: 13px;
+            color: #444;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .pwa-features li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #e50000;
+            font-weight: bold;
+        }
+        
+        .pwa-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .pwa-btn-install {
+            flex: 1;
+            background: #e50000;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .pwa-btn-install:hover {
+            background: #dc2626;
+        }
+        
+        .pwa-btn-later {
+            background: #f3f4f6;
+            color: #666;
+            border: 1px solid #d1d5db;
+            padding: 12px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .pwa-btn-later:hover {
+            background: #e5e7eb;
+        }
+        
+        .pwa-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+        
+        .pwa-close:hover {
+            opacity: 1;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .pwa-popup {
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        .demo-controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .demo-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .demo-btn:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-controls">
+        <h2>🎯 Prueba del Popup PWA - UGT Towa</h2>
+        <p><strong>Instrucciones:</strong></p>
+        <ol>
+            <li>El popup aparecerá automáticamente en 3 segundos</li>
+            <li>También puedes usar los botones de abajo para controlarlo</li>
+        </ol>
+        
+        <button class="demo-btn" onclick="mostrarPopup()">Mostrar Popup</button>
+        <button class="demo-btn" onclick="cerrarPopup()">Cerrar Popup</button>
+        <button class="demo-btn" onclick="forzarInstalacion()">Simular Instalación</button>
+    </div>
+    
+    <!-- Popup PWA que se muestra automáticamente -->
+    <div id="pwaPopup" class="pwa-popup" style="display: none;">
+        <div class="pwa-header">
+            <button class="pwa-close" onclick="cerrarPopup()">×</button>
+            <div class="pwa-icon">
+                <img src="/ugt-towa-icon-192.png" alt="UGT Towa" style="width: 40px; height: 40px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div style="display: none; color: #e50000; font-weight: bold;">UGT</div>
+            </div>
+            <div class="pwa-title">UGT Towa</div>
+            <div class="pwa-subtitle">Instalar aplicación</div>
+        </div>
+        
+        <div class="pwa-body">
+            <div class="pwa-description">
+                Instala la aplicación en tu dispositivo para acceder más rápido y recibir notificaciones de comunicados importantes.
+            </div>
+            
+            <ul class="pwa-features">
+                <li>Acceso instantáneo desde la pantalla de inicio</li>
+                <li>Funciona sin conexión a internet</li>
+                <li>Notificaciones push de comunicados urgentes</li>
+            </ul>
+            
+            <div class="pwa-buttons">
+                <button class="pwa-btn-install" onclick="instalarApp()">
+                    📱 Instalar ahora
+                </button>
+                <button class="pwa-btn-later" onclick="cerrarPopup()">
+                    Ahora no
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let popupVisible = false;
+        
+        // Mostrar popup automáticamente después de 3 segundos
+        setTimeout(() => {
+            mostrarPopup();
+        }, 3000);
+        
+        function mostrarPopup() {
+            if (popupVisible) return;
+            
+            const popup = document.getElementById('pwaPopup');
+            popup.style.display = 'block';
+            popupVisible = true;
+            
+            console.log('🎯 Popup PWA mostrado');
+            
+            // Simular evento de instalación disponible
+            if ('beforeinstallprompt' in window) {
+                console.log('✅ PWA instalable detectado');
+            }
+        }
+        
+        function cerrarPopup() {
+            const popup = document.getElementById('pwaPopup');
+            popup.style.display = 'none';
+            popupVisible = false;
+            
+            // Guardar que fue descartado
+            localStorage.setItem('pwa-install-dismissed', 'true');
+            localStorage.setItem('pwa-install-dismissed-time', Date.now().toString());
+            
+            console.log('❌ Popup PWA cerrado');
+        }
+        
+        function instalarApp() {
+            console.log('📱 Simulando instalación PWA...');
+            
+            // Simular instalación exitosa
+            alert('🎉 ¡Instalación exitosa! La app se agregará a tu pantalla de inicio.');
+            
+            // Marcar como instalado
+            localStorage.setItem('pwa-installed', 'true');
+            localStorage.removeItem('pwa-install-dismissed');
+            
+            cerrarPopup();
+        }
+        
+        function forzarInstalacion() {
+            console.log('🔧 Forzando estado de instalación...');
+            localStorage.removeItem('pwa-install-dismissed');
+            localStorage.removeItem('pwa-install-dismissed-time');
+            mostrarPopup();
+        }
+        
+        // Función para resetear completamente el estado
+        function resetearEstadoPWA() {
+            localStorage.removeItem('pwa-install-dismissed');
+            localStorage.removeItem('pwa-install-dismissed-time');
+            localStorage.removeItem('pwa-installed');
+            console.log('🔄 Estado PWA reseteado');
+        }
+        
+        // Detectar si la app ya está instalada
+        function verificarInstalacion() {
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                console.log('✅ App ya está instalada');
+                return true;
+            }
+            
+            if (localStorage.getItem('pwa-installed')) {
+                console.log('✅ App marcada como instalada');
+                return true;
+            }
+            
+            return false;
+        }
+        
+        // Log inicial
+        console.log('🚀 UGT Towa PWA Popup cargado');
+        console.log('Estado actual:', {
+            ventana: !window.matchMedia('(display-mode: standalone)').matches,
+            localStorage: {
+                dismissed: !!localStorage.getItem('pwa-install-dismissed'),
+                installed: !!localStorage.getItem('pwa-installed')
+            },
+            soportPWA: 'serviceWorker' in navigator
+        });
+        
+        // Auto-resetear si el estado es inconsistente
+        setTimeout(() => {
+            if (!verificarInstalacion() && !localStorage.getItem('pwa-install-dismissed')) {
+                console.log('🔄 Auto-reseteando estado inconsistente');
+                resetearEstadoPWA();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
