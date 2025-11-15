@@ -28,6 +28,13 @@
         "details": "1. Mejorar navegación táctil en todas las pantallas\n2. Optimizar performance para móviles\n3. Implementar gestos swipe para navegación\n4. Testing en diferentes dispositivos y navegadores\n5. Validar funcionalidad PWA en Android/iOS\n6. Documentar instrucciones de instalación para afiliados",
         "status": "completed",
         "priority": "medium"
+      },
+      "16": {
+        "id": "16",
+        "content": "Eliminar simulador y optimizar PWA final",
+        "details": "1. Remover componente MobileSimulator.tsx completamente\n2. Eliminar botón simulador del Navbar\n3. Limpiar todas las props onOpenSimulator\n4. Optimizar bundle size (reducido 2KB)\n5. Crear ZIP final sin simulador\n6. Documentar diferencias PWA vs App Nativa",
+        "status": "completed",
+        "priority": "high"
       }
     }
   }

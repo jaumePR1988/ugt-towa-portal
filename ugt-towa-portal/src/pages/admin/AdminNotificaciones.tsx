@@ -6,11 +6,7 @@ import { Bell, Send, TestTube, Check, X, Smartphone } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
 
-interface AdminNotificacionesProps {
-  onOpenSimulator?: () => void;
-}
-
-export default function AdminNotificaciones({ onOpenSimulator }: AdminNotificacionesProps) {
+export default function AdminNotificaciones() {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
@@ -149,7 +145,7 @@ export default function AdminNotificaciones({ onOpenSimulator }: AdminNotificaci
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Navbar onOpenSimulator={onOpenSimulator} />
+      <Navbar />
       
       <div className="container mx-auto px-4 py-8">
         {/* Header */}

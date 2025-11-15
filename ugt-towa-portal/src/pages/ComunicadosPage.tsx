@@ -24,11 +24,8 @@ function getTextPreview(html: string, maxLength: number = 200): string {
   return text;
 }
 
-interface ComunicadosPageProps {
-  onOpenSimulator?: () => void;
-}
 
-export default function ComunicadosPage({ onOpenSimulator }: ComunicadosPageProps) {
+export default function ComunicadosPage() {
   const [communiques, setCommuniques] = useState<Communique[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,7 +66,7 @@ export default function ComunicadosPage({ onOpenSimulator }: ComunicadosPageProp
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar onOpenSimulator={onOpenSimulator} />
+      <Navbar />
       <div className="container mx-auto px-4 py-12">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center">

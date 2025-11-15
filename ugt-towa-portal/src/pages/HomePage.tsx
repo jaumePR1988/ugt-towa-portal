@@ -25,11 +25,7 @@ function getTextPreview(html: string, maxLength: number = 200): string {
   return text;
 }
 
-interface HomePageProps {
-  onOpenSimulator?: () => void;
-}
-
-export default function HomePage({ onOpenSimulator }: HomePageProps) {
+export default function HomePage() {
   const [communiques, setCommuniques] = useState<Communique[]>([]);
   const [activeSurveys, setActiveSurveys] = useState<Survey[]>([]);
   const [qrCode, setQrCode] = useState<any>(null);
@@ -76,7 +72,7 @@ export default function HomePage({ onOpenSimulator }: HomePageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar onOpenSimulator={onOpenSimulator} />
+      <Navbar />
 
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-red-600 to-red-700 text-white">

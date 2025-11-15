@@ -45,7 +45,17 @@ Convertir portal UGT-TOWA en aplicación móvil profesional con:
 - [x] Testing comprehensivo completado (100% exitoso)
 
 ### URL FINAL
-https://116fcym39snr.space.minimax.io (PWA + Backend Push Completo)
+https://3t26lt1nd3tu.space.minimax.io (SIN SIMULADOR - PRODUCCION)
+
+### ELIMINACION SIMULADOR - 15-Nov-2025 21:10
+- [x] Componente MobileSimulator.tsx eliminado
+- [x] Todas las referencias eliminadas (12 archivos modificados)
+- [x] Botón simulador removido del Navbar
+- [x] Props onOpenSimulator eliminadas (10 páginas)
+- [x] Build exitoso (2697 módulos, 617.65 KB gzip)
+- [x] Deployment exitoso
+- [x] Funcionalidades PWA preservadas 100%
+- [x] Verificación manual completada
 
 ### Documentación Completa
 /workspace/IMPLEMENTACION_COMPLETA_PWA_UGT_TOWA.md

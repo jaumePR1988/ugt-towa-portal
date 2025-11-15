@@ -9,11 +9,7 @@ import { toast } from 'sonner';
 
 const CATEGORIES = ['Todos', 'Nóminas', 'Contratos', 'Políticas', 'Procedimientos', 'Otros'];
 
-interface DocumentosPageProps {
-  onOpenSimulator?: () => void;
-}
-
-export default function DocumentosPage({ onOpenSimulator }: DocumentosPageProps) {
+export default function DocumentosPage() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [filteredDocs, setFilteredDocs] = useState<Document[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('Todos');
@@ -71,7 +67,7 @@ export default function DocumentosPage({ onOpenSimulator }: DocumentosPageProps)
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar onOpenSimulator={onOpenSimulator} />
+      <Navbar />
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">

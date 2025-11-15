@@ -1,15 +1,11 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { LogOut, User, LayoutDashboard, Smartphone } from 'lucide-react';
+import { LogOut, User, LayoutDashboard } from 'lucide-react';
 import { toast } from 'sonner';
 import ThemeToggle from './ThemeToggle';
 
-interface NavbarProps {
-  onOpenSimulator?: () => void;
-}
-
-export default function Navbar({ onOpenSimulator }: NavbarProps) {
+export default function Navbar() {
   const { user, signOut, isAdmin, isAffiliate } = useAuth();
   const location = useLocation();
 
@@ -83,14 +79,6 @@ export default function Navbar({ onOpenSimulator }: NavbarProps) {
               <>
                 {isAdmin && (
                   <>
-                    <button
-                      onClick={onOpenSimulator}
-                      className="flex items-center space-x-1 px-3 py-2 rounded-lg border border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition"
-                      title="Simulador de dispositivo móvil"
-                    >
-                      <Smartphone className="h-4 w-4" />
-                      <span className="hidden lg:inline">Simulador</span>
-                    </button>
                     <Link
                       to="/admin/dashboard"
                       className="flex items-center space-x-1 px-3 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"

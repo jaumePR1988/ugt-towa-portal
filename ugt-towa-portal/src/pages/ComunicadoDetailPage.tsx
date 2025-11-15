@@ -10,11 +10,8 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { toast } from 'sonner';
 
-interface ComunicadoDetailPageProps {
-  onOpenSimulator?: () => void;
-}
 
-export default function ComunicadoDetailPage({ onOpenSimulator }: ComunicadoDetailPageProps) {
+export default function ComunicadoDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { user, profile } = useAuth();
   const [communique, setCommunique] = useState<Communique | null>(null);
@@ -257,7 +254,7 @@ export default function ComunicadoDetailPage({ onOpenSimulator }: ComunicadoDeta
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Navbar onOpenSimulator={onOpenSimulator} />
+        <Navbar />
         <div className="container mx-auto px-4 py-12 text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
         </div>
@@ -269,7 +266,7 @@ export default function ComunicadoDetailPage({ onOpenSimulator }: ComunicadoDeta
   if (!communique) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Navbar onOpenSimulator={onOpenSimulator} />
+        <Navbar />
         <div className="container mx-auto px-4 py-12 text-center">
           <p className="text-gray-600">Comunicado no encontrado</p>
         </div>
@@ -282,7 +279,7 @@ export default function ComunicadoDetailPage({ onOpenSimulator }: ComunicadoDeta
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar onOpenSimulator={onOpenSimulator} />
+      <Navbar />
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <article className="bg-white rounded-lg shadow-md p-8 mb-8">

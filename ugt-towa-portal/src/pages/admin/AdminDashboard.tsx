@@ -5,11 +5,7 @@ import Footer from '@/components/Footer';
 import { supabase } from '@/lib/supabase';
 import { LayoutDashboard, FileText, Calendar, Vote, Users, MessageSquare, Tag, FolderOpen, Inbox, BarChart3, FolderTree, QrCode, Image, UserCheck, BookOpen, Gift, Shield, Bell } from 'lucide-react';
 
-interface AdminDashboardProps {
-  onOpenSimulator?: () => void;
-}
-
-export default function AdminDashboard({ onOpenSimulator }: AdminDashboardProps) {
+export default function AdminDashboard() {
   const [stats, setStats] = useState({
     communiques: 0,
     appointments: 0,
@@ -67,7 +63,7 @@ export default function AdminDashboard({ onOpenSimulator }: AdminDashboardProps)
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar onOpenSimulator={onOpenSimulator} />
+      <Navbar />
       <div className="container mx-auto px-4 py-12">
         <div className="flex items-center mb-8">
           <LayoutDashboard className="h-8 w-8 text-red-600 mr-3" />

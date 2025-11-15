@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { Toaster } from 'sonner';
 import { usePWA } from './hooks/usePWA';
 import { PWAInstallPrompt } from './components/PWAInstallPrompt';
-import { MobileSimulator } from './components/MobileSimulator';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -63,7 +62,6 @@ import TestAffiliateRoute from './components/TestAffiliateRoute';
 import './index.css';
 
 function App() {
-  const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
   const { isInstallable, promptInstall } = usePWA();
 
   return (
@@ -77,24 +75,17 @@ function App() {
           onInstall={promptInstall}
         />
         
-        {/* Mobile Simulator */}
-        <MobileSimulator 
-          isOpen={isSimulatorOpen}
-          onClose={() => setIsSimulatorOpen(false)}
-        />
-        
-        {/* Pass simulator handler to routes that need it */}
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<HomePage onOpenSimulator={() => setIsSimulatorOpen(true)} />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
-          <Route path="/quienes-somos" element={<QuienesSomosPage onOpenSimulator={() => setIsSimulatorOpen(true)} />} />
-          <Route path="/comunicados" element={<ComunicadosPage onOpenSimulator={() => setIsSimulatorOpen(true)} />} />
-          <Route path="/comunicados/:id" element={<ComunicadoDetailPage onOpenSimulator={() => setIsSimulatorOpen(true)} />} />
-          <Route path="/encuestas" element={<EncuestasPage onOpenSimulator={() => setIsSimulatorOpen(true)} />} />
-          <Route path="/newsletter" element={<NewsletterPage onOpenSimulator={() => setIsSimulatorOpen(true)} />} />
+          <Route path="/quienes-somos" element={<QuienesSomosPage />} />
+          <Route path="/comunicados" element={<ComunicadosPage />} />
+          <Route path="/comunicados/:id" element={<ComunicadoDetailPage />} />
+          <Route path="/encuestas" element={<EncuestasPage />} />
+          <Route path="/newsletter" element={<NewsletterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
 
@@ -104,7 +95,7 @@ function App() {
             path="/citas"
             element={
               <PrivateRoute>
-                <CitasPage onOpenSimulator={() => setIsSimulatorOpen(true)} />
+                <CitasPage />
               </PrivateRoute>
             }
           />
@@ -112,7 +103,7 @@ function App() {
             path="/documentos"
             element={
               <PrivateRoute>
-                <DocumentosPage onOpenSimulator={() => setIsSimulatorOpen(true)} />
+                <DocumentosPage />
               </PrivateRoute>
             }
           />
@@ -162,7 +153,7 @@ function App() {
             path="/admin/dashboard"
             element={
               <AdminRoute>
-                <AdminDashboard onOpenSimulator={() => setIsSimulatorOpen(true)} />
+                <AdminDashboard />
               </AdminRoute>
             }
           />
@@ -170,7 +161,7 @@ function App() {
             path="/admin/notificaciones"
             element={
               <AdminRoute>
-                <AdminNotificaciones onOpenSimulator={() => setIsSimulatorOpen(true)} />
+                <AdminNotificaciones />
               </AdminRoute>
             }
           />
