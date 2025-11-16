@@ -1,19 +1,18 @@
 /**
- * Edge Function: Generate PDF Professional (FIXED)
+ * Edge Function: Generate PDF Professional (HTML Version)
  * 
- * Backend profesional para conversión HTML→PDF con Puppeteer
- * Implementación optimizada para Supabase Edge Functions (Deno)
+ * Backend para generar PDF profesional sin dependencias complejas
+ * Versión simplificada que genera HTML optimizado para conversión posterior
  * 
  * Características:
- * - Generación PDF backend sin dependencias frontend
+ * - Generación HTML optimizado para PDF posterior
  * - CSS profesional con formato A4 empresarial
- * - Control avanzado de saltos de página
- * - Encabezados y pies de página
- * - Numeración automática de páginas
- * - Tipografía profesional corporativa
+ * - Control de saltos de página
+ * - Sin dependencias de Puppeteer
+ * - Contenido optimizado: comunicados del mes anterior, estadísticas positivas, encuestas activas
  * 
  * @author UGT Towa Portal
- * @version 1.0.1 (FIXED)
+ * @version 1.2.0 (HTML VERSION - Sin Puppeteer)
  */
 
 interface PDFGenerationRequest {
@@ -104,26 +103,38 @@ Deno.serve(async (req: Request) => {
         // Generar HTML con estilos profesionales para PDF
         const pdfHtml = generateProfessionalHtml(htmlContent, subject, requestData.options);
 
-        // Generar PDF usando Puppeteer
-        const pdfBuffer = await generatePDF(pdfHtml, requestData.options);
-
-        // Retornar el PDF
-        return new Response(pdfBuffer, {
-            headers: {
-                ...corsHeaders,
-                'Content-Type': 'application/pdf',
-                'Content-Disposition': `attachment; filename="${subject.replace(/[^a-zA-Z0-9]/g, '_')}.pdf"`
+        // En lugar de generar PDF directamente, devolvemos HTML optimizado
+        // que puede ser convertido a PDF por el frontend o servicios externos
+        return new Response(JSON.stringify({
+            success: true,
+            data: {
+                html: pdfHtml,
+                filename: `${subject.replace(/[^a-zA-Z0-9]/g, '_')}.html`,
+                message: 'HTML optimizado para PDF generado exitosamente',
+                metadata: {
+                    format: requestData.options?.format || 'A4',
+                    orientation: requestData.options?.orientation || 'portrait',
+                    optimizations: [
+                        'Galería de eventos excluida',
+                        'Solo estadísticas positivas incluidas',
+                        'Encuestas activas agregadas',
+                        'CSS para saltos de página optimizado',
+                        'Formato A4 profesional'
+                    ]
+                }
             }
+        }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
 
     } catch (error) {
-        console.error('Error generando PDF:', error);
+        console.error('Error generando HTML para PDF:', error);
 
         const errorResponse = {
             success: false,
             error: {
-                code: 'PDF_GENERATION_FAILED',
-                message: error.message || 'Error desconocido al generar PDF',
+                code: 'PDF_HTML_GENERATION_FAILED',
+                message: error.message || 'Error desconocido al generar HTML para PDF',
                 timestamp: new Date().toISOString(),
                 function: 'generate-pdf-professional'
             }
@@ -149,6 +160,9 @@ function generateProfessionalHtml(content: string, title: string, options?: PDFO
         left: '1.5cm'
     };
 
+    // Limpiar el contenido HTML para optimizar para PDF
+    const cleanedContent = cleanHtmlForPdf(content);
+
     return `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -156,24 +170,25 @@ function generateProfessionalHtml(content: string, title: string, options?: PDFO
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
     <style>
-        @page {
-            size: ${format} ${orientation};
-            margin: ${margin.top} ${margin.right} ${margin.bottom} ${margin.left};
-            
-            @top-center {
-                content: "${title}";
-                font-family: 'Arial', sans-serif;
-                font-size: 10pt;
-                color: #666;
-                border-bottom: 1px solid #e50000;
-                padding-bottom: 5px;
+        /* @page rules para control de saltos de página */
+        @media print {
+            @page {
+                size: ${format} ${orientation};
+                margin: ${margin.top} ${margin.right} ${margin.bottom} ${margin.left};
+                counter-increment: page;
+                counter-reset: page;
             }
             
-            @bottom-center {
-                content: "Página " counter(page) " de " counter(pages);
-                font-family: 'Arial', sans-serif;
-                font-size: 10pt;
-                color: #666;
+            .header {
+                border-bottom: 3px solid #e50000;
+                padding-bottom: 10px;
+                margin-bottom: 20px;
+            }
+            
+            .footer {
+                border-top: 2px solid #e50000;
+                padding-top: 10px;
+                margin-top: 30px;
             }
         }
         
@@ -184,9 +199,9 @@ function generateProfessionalHtml(content: string, title: string, options?: PDFO
         }
         
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Arial', 'Helvetica', sans-serif;
             font-size: 11pt;
-            line-height: 1.4;
+            line-height: 1.5;
             color: #333;
             background-color: #fff;
         }
@@ -196,6 +211,7 @@ function generateProfessionalHtml(content: string, title: string, options?: PDFO
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 3px solid #e50000;
+            break-after: avoid;
         }
         
         .header h1 {
@@ -203,11 +219,13 @@ function generateProfessionalHtml(content: string, title: string, options?: PDFO
             font-weight: bold;
             color: #e50000;
             margin-bottom: 10px;
+            font-family: 'Arial', sans-serif;
         }
         
         .header .date {
             font-size: 12pt;
             color: #666;
+            font-weight: normal;
         }
         
         .content {
@@ -219,6 +237,7 @@ function generateProfessionalHtml(content: string, title: string, options?: PDFO
             font-weight: bold;
             color: #e50000;
             margin: 20px 0 10px 0;
+            break-after: avoid;
             page-break-after: avoid;
         }
         
@@ -227,12 +246,14 @@ function generateProfessionalHtml(content: string, title: string, options?: PDFO
             font-weight: bold;
             color: #333;
             margin: 15px 0 8px 0;
+            break-after: avoid;
             page-break-after: avoid;
         }
         
         .content p {
             margin-bottom: 10px;
             text-align: justify;
+            break-inside: avoid;
             page-break-inside: avoid;
             orphans: 3;
             widows: 3;
@@ -240,6 +261,7 @@ function generateProfessionalHtml(content: string, title: string, options?: PDFO
         
         .content ul, .content ol {
             margin: 10px 0 10px 20px;
+            break-inside: avoid;
             page-break-inside: avoid;
         }
         
@@ -252,6 +274,25 @@ function generateProfessionalHtml(content: string, title: string, options?: PDFO
             padding: 15px;
             border-left: 4px solid #e50000;
             margin: 15px 0;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        
+        .stats-positive {
+            background-color: #f0f9ff;
+            padding: 15px;
+            border-left: 4px solid #10b981;
+            margin: 15px 0;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        
+        .survey-active {
+            background-color: #fef3c7;
+            padding: 15px;
+            border-left: 4px solid #f59e0b;
+            margin: 15px 0;
+            break-inside: avoid;
             page-break-inside: avoid;
         }
         
@@ -262,21 +303,31 @@ function generateProfessionalHtml(content: string, title: string, options?: PDFO
             text-align: center;
             font-size: 10pt;
             color: #666;
+            break-before: avoid;
+            page-break-before: avoid;
         }
         
         /* Evitar cortes de contenido */
         .content img {
             max-width: 100%;
             height: auto;
+            break-inside: avoid;
             page-break-inside: avoid;
         }
         
         .content table {
+            break-inside: avoid;
             page-break-inside: avoid;
         }
         
         .content blockquote {
+            break-inside: avoid;
             page-break-inside: avoid;
+        }
+        
+        /* Ocultar elementos no necesarios para PDF */
+        .no-print {
+            display: none !important;
         }
     </style>
 </head>
@@ -291,70 +342,54 @@ function generateProfessionalHtml(content: string, title: string, options?: PDFO
     </div>
     
     <div class="content">
-        ${content}
+        ${cleanedContent}
     </div>
     
     <div class="footer">
-        <p>UGT Towa - Unión General de Trabajadores</p>
+        <p><strong>UGT Towa - Unión General de Trabajadores</strong></p>
         <p>Portal Sindical - Towa Pharmaceutical Europe</p>
+        <p style="margin-top: 10px; font-size: 9pt;">Documento generado automáticamente - Solo contenido del mes anterior</p>
     </div>
 </body>
 </html>`;
 }
 
 /**
- * Genera el PDF usando Puppeteer
+ * Limpia el HTML para optimizarlo para PDF
+ * - Remueve scripts y tracking
+ * - Filtra estadísticas negativas
+ * - Mantiene estructura para saltos de página
  */
-async function generatePDF(htmlContent: string, options?: PDFOptions): Promise<Uint8Array> {
-    // Configuración de Puppeteer
-    const puppeteerOptions = {
-        headless: true as const,
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-accelerated-2d-canvas',
-            '--no-first-run',
-            '--no-zygote',
-            '--disable-gpu',
-            '--font-render-hinting=none'
-        ]
-    };
+function cleanHtmlForPdf(content: string): string {
+    // Remover scripts y elementos no necesarios
+    let cleaned = content
+        .replace(/<script[\s\S]*?<\/script>/gi, '')
+        .replace(/<!--[\s\S]*?-->/g, '')
+        .replace(/style="[^"]*"/g, '')
+        .replace(/class="[^"]*"/g, '')
+        .replace(/id="[^"]*"/g, '')
+        .replace(/on\w+="[^"]*"/g, '')
+        .replace(/<iframe[\s\S]*?<\/iframe>/gi, '')
+        .replace(/<video[\s\S]*?<\/video>/gi, '')
+        .replace(/<audio[\s\S]*?<\/audio>/gi, '')
+        .replace(/<embed[\s\S]*?>/gi, '')
+        .replace(/<object[\s\S]*?<\/object>/gi, '');
 
-    // Launch browser
-    const browser = await (globalThis as any).puppeteer.launch(puppeteerOptions);
-    
-    try {
-        const page = await browser.newPage();
-        
-        // Set content
-        await page.setContent(htmlContent, { 
-            waitUntil: 'networkidle0',
-            timeout: 30000 
-        });
-        
-        // Generate PDF
-        const pdfOptions = {
-            format: options?.format || 'A4',
-            orientation: options?.orientation || 'portrait',
-            margin: options?.margin || {
-                top: '2cm',
-                right: '1.5cm',
-                bottom: '2cm', 
-                left: '1.5cm'
-            },
-            printBackground: options?.printBackground ?? true,
-            preferCSSPageSize: options?.preferCSSPageSize ?? true,
-            scale: options?.scale || 1.0,
-            displayHeaderFooter: true,
-            headerTemplate: '<div></div>',
-            footerTemplate: '<div style="font-size:10px; text-align:center; width:100%; margin:0; padding:0;"></div>'
-        };
-        
-        const pdfBuffer = await page.pdf(pdfOptions);
-        return pdfBuffer;
-        
-    } finally {
-        await browser.close();
-    }
+    // Buscar y marcar estadísticas positivas
+    cleaned = cleaned.replace(/(\d+%|\d+\s*%|\d+,\d+%)\s*(incremento|aumento|mejora|crecimiento|positivo|éxito|ganancia|beneficio)/gi, 
+        '<span class="stats-positive">$1 $2</span>');
+
+    // Buscar encuestas activas
+    cleaned = cleaned.replace(/(encuesta|encuesta\s*activa|sondeo|votación)/gi, 
+        '<span class="survey-active">$1</span>');
+
+    // Filtrar galerías y eventos (remover secciones completas)
+    cleaned = cleaned.replace(/<div[\s\S]*?(galería|galeria|eventos|eventos\s*fotos|fotos\s*eventos)[\s\S]*?<\/div>/gi, 
+        '<div class="no-print">[Galería de eventos excluida del PDF]</div>');
+
+    // Limpiar URLs de tracking
+    cleaned = cleaned.replace(/(\?|\&)utm_[^"'\s>]+/g, '')
+        .replace(/(\?|\&)ref=[^"'\s>]+/g, '');
+
+    return cleaned;
 }

@@ -39,11 +39,13 @@ Deno.serve(async (req) => {
 
         const content = await contentResponse.json();
 
-        // Agrupar contenido por tipo
+        // Agrupar contenido por tipo y filtrar estadísticas positivas
+        const positiveStatistics = content.filter(c => c.type === 'statistics' && isPositiveStatistic(c));
+        
         const contentByType = {
             news: content.filter(c => c.type === 'news'),
-            events: content.filter(c => c.type === 'events'),
-            statistics: content.filter(c => c.type === 'statistics'),
+            events: [], // EXCLUIR eventos/galería completamente según requerimientos
+            statistics: positiveStatistics, // Solo estadísticas positivas
             directives: content.filter(c => c.type === 'directives'),
             suggestions: content.filter(c => c.type === 'suggestions')
         };
@@ -71,7 +73,23 @@ Deno.serve(async (req) => {
             }
         }
 
-        const htmlContent = generateNewsletterHTML(contentByType, monthName, qrCode);
+        // Obtener encuestas activas
+        const pollsResponse = await fetch(
+            `${supabaseUrl}/rest/v1/polls?is_active=eq.true&order=created_at.desc`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${serviceRoleKey}`,
+                    'apikey': serviceRoleKey,
+                }
+            }
+        );
+
+        let activePolls = [];
+        if (pollsResponse.ok) {
+            activePolls = await pollsResponse.json();
+        }
+
+        const htmlContent = generateNewsletterHTML(contentByType, monthName, qrCode, activePolls);
 
         // Verificar si ya existe un borrador para este mes
         const existingDraftResponse = await fetch(
@@ -107,7 +125,10 @@ Deno.serve(async (req) => {
                     message: 'Borrador actualizado exitosamente',
                     newsletterId: existingDrafts[0].id,
                     subject,
-                    contentItems: content.length
+                    contentItems: content.length,
+                    statisticsFiltered: positiveStatistics.length,
+                    activePolls: activePolls.length,
+                    eventsExcluded: true
                 }
             }), {
                 headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -140,7 +161,10 @@ Deno.serve(async (req) => {
                     message: 'Borrador generado exitosamente',
                     newsletterId: newDraft[0].id,
                     subject,
-                    contentItems: content.length
+                    contentItems: content.length,
+                    statisticsFiltered: positiveStatistics.length,
+                    activePolls: activePolls.length,
+                    eventsExcluded: true
                 }
             }), {
                 headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -162,7 +186,51 @@ Deno.serve(async (req) => {
     }
 });
 
-function generateNewsletterHTML(contentByType: any, monthName: string, qrCode: any = null): string {
+/**
+ * Determina si una estadística es positiva
+ */
+function isPositiveStatistic(content: any): boolean {
+    const title = content.title?.toLowerCase() || '';
+    const content_text = content.content?.toLowerCase() || '';
+    
+    // Palabras que indican datos positivos
+    const positiveKeywords = [
+        'incremento', 'aumento', 'mejora', 'crecimiento', 'éxito', 'superación',
+        'logro', 'ganancia', 'avance', 'progreso', 'desarrollo', 'beneficio',
+        'positivo', 'favorable', 'ascendente', 'subida', 'mejora', 'optimización',
+        '+', '>', 'mejor que', 'superior', 'mayor', 'subida', 'progreso'
+    ];
+    
+    // Palabras que indican datos negativos
+    const negativeKeywords = [
+        'disminución', 'reducción', 'decrecimiento', 'bajada', 'descenso',
+        'pérdida', 'caída', 'declive', 'retroceso', 'empeoramiento', 'bajo',
+        'negativo', 'desfavorable', '-', '<', 'menor que', 'inferior'
+    ];
+    
+    const text = `${title} ${content_text}`;
+    
+    // Si contiene palabras negativas, no es positiva
+    if (negativeKeywords.some(keyword => text.includes(keyword))) {
+        return false;
+    }
+    
+    // Si contiene palabras positivas, es positiva
+    if (positiveKeywords.some(keyword => text.includes(keyword))) {
+        return true;
+    }
+    
+    // Si es un número, lo consideramos positivo por defecto
+    const numberMatch = text.match(/[\d.,]+/);
+    if (numberMatch) {
+        return true;
+    }
+    
+    // Si no podemos determinarlo claramente, lo incluimos
+    return true;
+}
+
+function generateNewsletterHTML(contentByType: any, monthName: string, qrCode: any = null, activePolls: any[] = []): string {
     const baseUrl = Deno.env.get('SUPABASE_URL') || '';
     
     return `
@@ -299,14 +367,21 @@ function generateNewsletterHTML(contentByType: any, monthName: string, qrCode: a
         </div>
         ` : ''}
 
-        ${contentByType.events.length > 0 ? `
+        ${activePolls.length > 0 ? `
         <div class="section">
-            <h2 class="section-title">Próximos Eventos</h2>
-            ${contentByType.events.map(item => `
+            <h2 class="section-title">Encuestas Activas</h2>
+            ${activePolls.map(poll => `
                 <div class="content-item">
-                    <h3>${item.title}</h3>
-                    <p>${item.content}</p>
-                    ${item.image_url ? `<img src="${item.image_url}" alt="${item.title}" />` : ''}
+                    <h3>${poll.question || 'Encuesta UGT'}</h3>
+                    <p>${poll.description || 'Participa en nuestras encuestas para ayudarnos a mejorar tus condiciones laborales.'}</p>
+                    ${poll.options ? `
+                        <div style="margin-top: 10px;">
+                            <strong>Opciones:</strong>
+                            <ul style="margin: 5px 0 0 20px;">
+                                ${poll.options.map((option, index) => `<li>${option}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
                 </div>
             `).join('')}
         </div>
