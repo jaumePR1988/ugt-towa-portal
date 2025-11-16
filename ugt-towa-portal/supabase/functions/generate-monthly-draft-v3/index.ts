@@ -1,3 +1,24 @@
+// Helper: Obtener rango del mes anterior
+function getPreviousMonthRange() {
+    const now = new Date();
+    
+    // Calcular mes anterior
+    const previousMonth = now.getMonth() === 0 ? 11 : now.getMonth() - 1;
+    const year = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
+    
+    // Primer día del mes anterior a las 00:00:00
+    const firstDay = new Date(year, previousMonth, 1, 0, 0, 0).toISOString();
+    
+    // Último día del mes anterior a las 23:59:59
+    const lastDayDate = new Date(year, previousMonth + 1, 0, 23, 59, 59);
+    const lastDay = lastDayDate.toISOString();
+    
+    // Nombre del mes en español
+    const monthName = lastDayDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+    
+    return { firstDay, lastDay, monthName };
+}
+
 Deno.serve(async (req) => {
     const corsHeaders = {
         'Access-Control-Allow-Origin': '*',
@@ -44,9 +65,13 @@ Deno.serve(async (req) => {
             }
         }
 
+        // CORRECCIÓN: Filtrar SOLO mes anterior, no mes actual
+        const { firstDay, lastDay, monthName } = getPreviousMonthRange();
+        const firstDayOfMonth = firstDay;
+        const lastDayOfMonth = lastDay;
+        
+        // Fecha actual para metadatos
         const now = new Date();
-        const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-        const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
 
         // Obtener contenido publicado del newsletter_content
         const contentResponse = await fetch(
@@ -126,8 +151,7 @@ Deno.serve(async (req) => {
             };
         }
 
-        // Generar HTML del newsletter
-        const monthName = now.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+        // Generar HTML del newsletter usando el nombre del mes anterior
         const title = `Newsletter UGT Towa - ${monthName.charAt(0).toUpperCase() + monthName.slice(1)}`;
 
         // Obtener QR code activo

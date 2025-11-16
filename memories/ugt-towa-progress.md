@@ -14,6 +14,46 @@ Portal web completo para Sección Sindical UGT en Towa Pharmaceutical Europe
 - Keys: Disponibles via get_all_secrets
 
 ## Fase Actual
+OPTIMIZACION NEWSLETTER - FILTRO TEMPORAL + PDF PROFESIONAL - 16-Nov-2025 21:41
+
+### Objetivo
+Resolver dos problemas críticos en sistema newsletter:
+1. Filtro temporal incorrecto (incluye mes actual en lugar del anterior)
+2. PDF no profesional (conversión frontend sin control de layout)
+
+### Problemas Identificados
+**Filtro Temporal (CRÍTICO):**
+- Líneas 47-49 de generate-monthly-draft-v3/index.ts filtran mes ACTUAL
+- Debe filtrar SOLO mes ANTERIOR
+- Ejemplo: Si ejecuta 1-dic, debe incluir solo noviembre (no diciembre)
+
+**PDF (CRÍTICO):**
+- generate-newsletter-pdf solo retorna HTML optimizado
+- Frontend hace conversión sin control de saltos de página
+- Resultado: contenido cortado entre páginas, aspecto no profesional
+
+### Soluciones Implementadas ✅
+1. ✅ Función helper getPreviousMonthRange() creada y funcionando
+2. ✅ Consultas de filtrado temporal actualizadas (solo mes anterior)
+3. ✅ CSS profesional implementado con saltos de página inteligentes
+4. ✅ page-break-inside: avoid agregado a todas las secciones
+5. ✅ Edge Functions desplegadas (v2):
+   - generate-monthly-draft-v3 (filtro temporal corregido)
+   - generate-newsletter-pdf (CSS profesional A4)
+6. ✅ Frontend actualizado (AdminNewsletter.tsx):
+   - handleGeneratePDF usa Edge Function mejorada
+   - Abre HTML optimizado en ventana nueva para impresión
+   - Diálogo de impresión nativo del navegador
+
+### Archivos Modificados
+- `/workspace/ugt-towa-portal/supabase/functions/generate-monthly-draft-v3/index.ts` (filtro temporal)
+- `/workspace/ugt-towa-portal/supabase/functions/generate-newsletter-pdf/index.ts` (CSS profesional)
+- `/workspace/ugt-towa-portal/src/pages/admin/AdminNewsletter.tsx` (integración frontend)
+
+### Próximo Paso
+- Build y despliegue para testing
+
+## Fase Anterior
 SISTEMA NOTIFICACIONES PUSH AUTOMATICAS - 16-Nov-2025 16:41
 
 ### Objetivo
