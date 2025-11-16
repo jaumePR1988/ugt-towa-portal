@@ -1680,18 +1680,21 @@ export default function AdminCitas() {
                       </button>
                     </div>
 
-                    {apt.user && (
-                      <div className="bg-blue-50 p-4 rounded-lg mb-4">
-                        <p className="text-xs text-blue-600 font-semibold mb-2">RESERVADO POR</p>
-                        <div className="flex items-center gap-2">
-                          <User className="h-5 w-5 text-blue-600" />
-                          <div>
-                            <p className="font-semibold text-gray-900">{apt.user.full_name || 'Sin nombre'}</p>
-                            <p className="text-sm text-gray-600">{apt.user.email}</p>
+                    {(() => {
+                      const user = users.find(u => u.id === apt.user_id);
+                      return user && (
+                        <div className="bg-blue-50 p-4 rounded-lg mb-4">
+                          <p className="text-xs text-blue-600 font-semibold mb-2">RESERVADO POR</p>
+                          <div className="flex items-center gap-2">
+                            <User className="h-5 w-5 text-blue-600" />
+                            <div>
+                              <p className="font-semibold text-gray-900">{user.full_name || 'Sin nombre'}</p>
+                              <p className="text-sm text-gray-600">{user.email}</p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )}
+                      );
+                    })()}
 
                     {apt.comments && (
                       <div className="bg-gray-50 p-4 rounded-lg mb-4">

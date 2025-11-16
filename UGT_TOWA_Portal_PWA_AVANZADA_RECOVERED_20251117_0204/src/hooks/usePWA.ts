@@ -1,6 +1,24 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
+// Tipos para eventos PWA
+interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: string[];
+  readonly userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed';
+    platform: string;
+  }>;
+  prompt(): Promise<void>;
+}
+
+// Extensión del tipo Window para incluir eventos PWA
+declare global {
+  interface WindowEventMap {
+    beforeinstallprompt: BeforeInstallPromptEvent;
+    appinstalled: Event;
+  }
+}
+
 interface PWAState {
   isInstalled: boolean;
   isInstallable: boolean;
@@ -18,7 +36,7 @@ export const usePWA = () => {
     isSubscribed: false
   });
 
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
     // Verificar si ya esta instalada
@@ -213,6 +231,7 @@ export const usePWA = () => {
 
   return {
     ...pwaState,
+    deferredPrompt,
     promptInstall,
     updateServiceWorker,
     requestNotificationPermission,
