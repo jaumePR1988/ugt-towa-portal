@@ -2,8 +2,8 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { Toaster } from 'sonner';
-import { usePWA } from './hooks/usePWA';
-import { PWAInstallPrompt } from './components/PWAInstallPrompt';
+import { usePWA_Inteligente as usePWA } from './hooks/usePWA_Inteligente';
+import { PWAInstallPrompt } from './components/PWAInstallPrompt_Inteligente';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -62,7 +62,7 @@ import TestAffiliateRoute from './components/TestAffiliateRoute';
 import './index.css';
 
 function App() {
-  const { isInstallable, promptInstall } = usePWA();
+  const { state, install } = usePWA();
 
   return (
     <BrowserRouter>
@@ -71,8 +71,7 @@ function App() {
         
         {/* PWA Install Prompt */}
         <PWAInstallPrompt 
-          isInstallable={isInstallable}
-          onInstall={promptInstall}
+          onInstall={install}
         />
         
         <Routes>
