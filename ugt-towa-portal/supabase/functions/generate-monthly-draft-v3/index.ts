@@ -260,7 +260,7 @@ Deno.serve(async (req) => {
                             <p><strong>Estado:</strong> Borrador (pendiente de revisión)</p>
                             <p><strong>ID:</strong> ${newsletterId}</p>
                             <p>Puedes revisar y editar el newsletter en el panel de administración:</p>
-                            <p><a href="${supabaseUrl.replace('supabase.co', 'space.minimax.io')}/admin/newsletter">Ir al Panel de Newsletter</a></p>
+                            <p><a href="https://x83tsow2k2b8.space.minimax.io/admin/newsletter">Ir al Panel de Newsletter</a></p>
                             <hr />
                             <p style="color: #666; font-size: 12px;">Este email fue generado automáticamente por el sistema de newsletter de UGT Towa.</p>
                         `
