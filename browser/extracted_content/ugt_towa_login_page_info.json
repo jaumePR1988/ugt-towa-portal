@@ -1,0 +1,32 @@
+📄 Extracted from page: UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical
+URL: https://ugt.towa.cat/login
+
+Extracted content:
+```json
+{
+  "title": "UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical",
+  "url": "https://ugt.towa.cat/login",
+  "summary": "This page serves as the login portal for UGT Towa Pharmaceutical, prompting users to authenticate with an email and password to access the sindical platform. It promotes a mobile application for enhanced access and notifications. While links to various sections like 'Citas' (Appointments) are visible in the navigation and footer, the primary function of this page is to enforce authentication. There is no visible option to access any portal features, including 'Citas', without first logging in or registering an account.",
+  "key_points": [
+    "The page is a login portal for UGT Towa - Portal Sindical.",
+    "Authentication is mandatory to access the portal's content and features, requiring an email and password to 'Iniciar Sesión' (Log In).",
+    "Users without an account can register via a provided link.",
+    "A mobile application is encouraged for quick access, automatic notifications, and offline functionality.",
+    "The portal includes sections for 'Citas' (Appointments), 'Comunicados' (Announcements), 'Encuestas' (Surveys), and 'Newsletter', all of which are presumed to require login.",
+    "Contact information (email: jpedragosa@towapharmaceutical.com, phone: 629 931 957) is available.",
+    "Information about UGT Towa's mission (defense of labor rights and worker welfare) is briefly mentioned.",
+    "There is no direct way to access appointments or other portal content without logging in or registering from this page."
+  ],
+  "relevant_links": [
+    "https://ugt.towa.cat/",
+    "https://ugt.towa.cat/quienes-somos",
+    "https://ugt.towa.cat/comunicados",
+    "https://ugt.towa.cat/citas",
+    "https://ugt.towa.cat/encuestas",
+    "https://ugt.towa.cat/newsletter",
+    "https://ugt.towa.cat/login",
+    "https://ugt.towa.cat/register"
+  ],
+  "file_name": "ugt_towa_login_page_info.json"
+}
+```
