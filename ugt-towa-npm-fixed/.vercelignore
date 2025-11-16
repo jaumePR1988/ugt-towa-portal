@@ -1,0 +1,66 @@
+# Excluir archivos de pnpm para forzar uso de npm
+pnpm-lock.yaml
+.pnpm-store
+--store-dir
+
+# Excluir archivos innecesarios para el deploy
+*.log
+*.tmp
+.DS_Store
+.vscode/
+.git/
+.node_repl_history
+.eslintcache
+.nyc_output
+.parcel-cache
+.stylelintcache
+
+# Excluir backups y archivos temporales
+*.backup
+*.bak
+*~
+*#
+
+# Excluir archivos de desarrollo
+coverage/
+.nyc_output/
+.coverage
+.nyc_output
+.htmlcov/
+.lcov
+coverage.lcov
+
+# Excluir node_modules (se genera automáticamente)
+node_modules/
+
+# Excluir archivos de configuración local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Excluir archivos específicos de la carpeta temporal
+/tmp/
+tmp/
+
+# Excluir carpetas de cache comunes
+.cache/
+.npm/
+.yarn/
+.grunt
+.jspm_packages/
+.web_modules/
+.sass-cache/
+.idea/
+.vscode/
+
+# Excluir archivos de build temporales
+.vite/
+.vite-temp/
+build/Release/
+dist.temp/
+out.temp/
+
+# Excluir archivos de debugging
+.livereload/
+.debug/
