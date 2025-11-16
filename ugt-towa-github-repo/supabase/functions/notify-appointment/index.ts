@@ -85,7 +85,7 @@ Deno.serve(async (req) => {
           <li><strong>Hora:</strong> ${timeStr}</li>
         </ul>
         <p>Te esperamos. Si necesitas cancelar o reprogramar, puedes hacerlo desde el portal.</p>
-        <p><a href="https://dfxmdsy1r55k.space.minimax.io/citas">Ver mis citas</a></p>
+        <p><a href="https://x83tsow2k2b8.space.minimax.io/citas">Ver mis citas</a></p>
         <br>
         <p>Saludos cordiales,<br>UGT Towa Pharmaceutical Europe</p>
       `;
@@ -99,7 +99,7 @@ Deno.serve(async (req) => {
           <li><strong>Fecha:</strong> ${dateStr}</li>
           <li><strong>Hora:</strong> ${timeStr}</li>
         </ul>
-        <p><a href="https://dfxmdsy1r55k.space.minimax.io/admin/citas">Ver todas las citas</a></p>
+        <p><a href="https://x83tsow2k2b8.space.minimax.io/admin/citas">Ver todas las citas</a></p>
         <br>
         <p>Sistema de Gestión UGT Towa</p>
       `;
@@ -115,7 +115,7 @@ Deno.serve(async (req) => {
           <li><strong>Hora:</strong> ${timeStr}</li>
         </ul>
         <p>Puedes reservar una nueva cita cuando lo necesites.</p>
-        <p><a href="https://dfxmdsy1r55k.space.minimax.io/citas">Reservar nueva cita</a></p>
+        <p><a href="https://x83tsow2k2b8.space.minimax.io/citas">Reservar nueva cita</a></p>
         <br>
         <p>Saludos cordiales,<br>UGT Towa Pharmaceutical Europe</p>
       `;
@@ -129,7 +129,7 @@ Deno.serve(async (req) => {
           <li><strong>Fecha:</strong> ${dateStr}</li>
           <li><strong>Hora:</strong> ${timeStr}</li>
         </ul>
-        <p><a href="https://dfxmdsy1r55k.space.minimax.io/admin/citas">Ver todas las citas</a></p>
+        <p><a href="https://x83tsow2k2b8.space.minimax.io/admin/citas">Ver todas las citas</a></p>
         <br>
         <p>Sistema de Gestión UGT Towa</p>
       `;

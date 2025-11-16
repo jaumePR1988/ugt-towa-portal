@@ -7,7 +7,7 @@ import {
   AlignLeft, 
   AlignCenter, 
   AlignRight,
-  Type
+  Palette
 } from 'lucide-react';
 
 interface SimpleTextEditorProps {
@@ -60,7 +60,12 @@ export default function SimpleTextEditor({
   // Manejar cambios en el editor
   const handleInput = () => {
     if (editorRef.current) {
-      const content = editorRef.current.innerHTML;
+      let content = editorRef.current.innerHTML;
+      
+      // Limpiar y normalizar HTML
+      content = content.replace(/<div>/g, '<p>').replace(/<\/div>/g, '</p>');
+      content = content.replace(/<br><br>/g, '<br>');
+      
       onChange(content);
       updateCharCount();
     }
@@ -68,8 +73,13 @@ export default function SimpleTextEditor({
 
   // Ejecutar comando de formato
   const executeCommand = (command: string, value: string | null = null) => {
-    document.execCommand(command, false, value || undefined);
     editorRef.current?.focus();
+    document.execCommand(command, false, value || undefined);
+    
+    // Usar setTimeout para asegurar que el DOM se actualice antes de capturar HTML
+    setTimeout(() => {
+      handleInput(); // Actualizar contenido después del comando
+    }, 0);
   };
 
   // Aplicar negrita
@@ -127,13 +137,13 @@ export default function SimpleTextEditor({
   return (
     <div className="simple-text-editor border border-gray-300 rounded-lg overflow-hidden bg-white">
       {/* Toolbar */}
-      <div className="bg-gray-50 border-b border-gray-300 p-2 flex flex-wrap gap-1">
+      <div className="bg-gray-50 border-b border-gray-300 p-3 flex flex-wrap gap-2">
         {/* Negrita */}
         <button
           type="button"
           onClick={applyBold}
           disabled={disabled}
-          className="p-2 hover:bg-gray-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-2 hover:bg-gray-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 bg-white"
           title="Negrita (Ctrl+B)"
         >
           <Bold className="h-5 w-5" />
@@ -144,34 +154,36 @@ export default function SimpleTextEditor({
           type="button"
           onClick={applyItalic}
           disabled={disabled}
-          className="p-2 hover:bg-gray-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-2 hover:bg-gray-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 bg-white"
           title="Cursiva (Ctrl+I)"
         >
           <Italic className="h-5 w-5" />
         </button>
 
-        <div className="w-px h-8 bg-gray-300 mx-1"></div>
+        <div className="w-px h-10 bg-gray-400"></div>
 
-        {/* Selector de color */}
+        {/* Selector de color - MEJORADO */}
         <div className="relative">
           <button
             type="button"
             onClick={() => setShowColorPicker(!showColorPicker)}
             disabled={disabled}
-            className="p-2 hover:bg-gray-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-2 hover:bg-gray-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 bg-white flex items-center gap-2"
             title="Color de texto"
           >
-            <Type className="h-5 w-5" />
+            <Palette className="h-5 w-5" />
+            <span className="text-sm font-medium">Color</span>
           </button>
           {showColorPicker && (
-            <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg p-2 z-10">
-              <div className="grid grid-cols-3 gap-2">
+            <div className="absolute top-full left-0 mt-1 bg-white border-2 border-gray-400 rounded-lg shadow-xl p-3 z-20">
+              <div className="mb-2 text-xs font-semibold text-gray-700">Selecciona un color:</div>
+              <div className="grid grid-cols-3 gap-2 mb-2">
                 {COLORS.map(color => (
                   <button
                     key={color.value}
                     type="button"
                     onClick={() => applyColor(color.value)}
-                    className="w-8 h-8 rounded border-2 border-gray-300 hover:border-gray-500 transition-colors"
+                    className="w-10 h-10 rounded-md border-2 border-gray-400 hover:border-red-600 hover:scale-110 transition-all"
                     style={{ backgroundColor: color.value }}
                     title={color.name}
                   />
@@ -180,7 +192,7 @@ export default function SimpleTextEditor({
               <button
                 type="button"
                 onClick={() => setShowColorPicker(false)}
-                className="mt-2 w-full px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded"
+                className="w-full px-2 py-1.5 text-sm bg-gray-200 hover:bg-gray-300 rounded font-medium"
               >
                 Cerrar
               </button>
@@ -188,27 +200,28 @@ export default function SimpleTextEditor({
           )}
         </div>
 
-        <div className="w-px h-8 bg-gray-300 mx-1"></div>
+        <div className="w-px h-10 bg-gray-400"></div>
 
-        {/* Lista con viñetas */}
+        {/* Lista con viñetas - MEJORADO */}
         <button
           type="button"
           onClick={applyBulletList}
           disabled={disabled}
-          className="p-2 hover:bg-gray-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-2 hover:bg-gray-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 bg-white flex items-center gap-2"
           title="Lista con viñetas"
         >
           <List className="h-5 w-5" />
+          <span className="text-sm font-medium">Lista</span>
         </button>
 
-        <div className="w-px h-8 bg-gray-300 mx-1"></div>
+        <div className="w-px h-10 bg-gray-400"></div>
 
         {/* Alineación */}
         <button
           type="button"
           onClick={() => applyAlignment('left')}
           disabled={disabled}
-          className="p-2 hover:bg-gray-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-2 hover:bg-gray-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 bg-white"
           title="Alinear a la izquierda"
         >
           <AlignLeft className="h-5 w-5" />
@@ -217,7 +230,7 @@ export default function SimpleTextEditor({
           type="button"
           onClick={() => applyAlignment('center')}
           disabled={disabled}
-          className="p-2 hover:bg-gray-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-2 hover:bg-gray-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 bg-white"
           title="Alinear al centro"
         >
           <AlignCenter className="h-5 w-5" />
@@ -226,13 +239,13 @@ export default function SimpleTextEditor({
           type="button"
           onClick={() => applyAlignment('right')}
           disabled={disabled}
-          className="p-2 hover:bg-gray-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-2 hover:bg-gray-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 bg-white"
           title="Alinear a la derecha"
         >
           <AlignRight className="h-5 w-5" />
         </button>
 
-        <div className="w-px h-8 bg-gray-300 mx-1"></div>
+        <div className="w-px h-10 bg-gray-400"></div>
 
         {/* Enlace */}
         <div className="relative">
@@ -240,14 +253,15 @@ export default function SimpleTextEditor({
             type="button"
             onClick={() => setShowLinkDialog(!showLinkDialog)}
             disabled={disabled}
-            className="p-2 hover:bg-gray-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-2 hover:bg-gray-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 bg-white flex items-center gap-2"
             title="Insertar enlace"
           >
             <LinkIcon className="h-5 w-5" />
+            <span className="text-sm font-medium">Enlace</span>
           </button>
           {showLinkDialog && (
-            <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg p-3 z-10 w-72">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="absolute top-full left-0 mt-1 bg-white border-2 border-gray-400 rounded-lg shadow-xl p-4 z-20 w-80">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
                 URL del enlace:
               </label>
               <input
@@ -255,13 +269,13 @@ export default function SimpleTextEditor({
                 value={linkUrl}
                 onChange={(e) => setLinkUrl(e.target.value)}
                 placeholder="https://ejemplo.com"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm mb-2"
+                className="w-full px-3 py-2 border-2 border-gray-300 rounded-md text-sm mb-3"
               />
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={insertLink}
-                  className="flex-1 px-3 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+                  className="flex-1 px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded hover:bg-red-700"
                 >
                   Insertar
                 </button>
@@ -271,7 +285,7 @@ export default function SimpleTextEditor({
                     setShowLinkDialog(false);
                     setLinkUrl('');
                   }}
-                  className="flex-1 px-3 py-1.5 bg-gray-100 text-gray-700 text-sm rounded hover:bg-gray-200"
+                  className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 text-sm font-semibold rounded hover:bg-gray-300"
                 >
                   Cancelar
                 </button>
@@ -287,7 +301,7 @@ export default function SimpleTextEditor({
         contentEditable={!disabled}
         onInput={handleInput}
         onKeyDown={handleKeyDown}
-        className="p-4 outline-none overflow-y-auto"
+        className="p-4 outline-none overflow-y-auto focus:bg-blue-50/30 transition-colors"
         style={{ 
           minHeight: `${minHeight}px`,
           maxHeight: '600px'
@@ -296,11 +310,11 @@ export default function SimpleTextEditor({
       />
 
       {/* Footer con contador */}
-      <div className="bg-gray-50 border-t border-gray-300 px-4 py-2 text-sm text-gray-600 flex justify-between items-center">
+      <div className="bg-gray-50 border-t border-gray-300 px-4 py-2.5 text-sm text-gray-600 flex justify-between items-center">
         <div className="text-xs">
-          <span className="font-medium">Consejos:</span> Usa Ctrl+B para negrita, Ctrl+I para cursiva
+          <span className="font-semibold">Consejos:</span> Usa <kbd className="px-1.5 py-0.5 bg-gray-200 rounded">Ctrl+B</kbd> para negrita, <kbd className="px-1.5 py-0.5 bg-gray-200 rounded">Ctrl+I</kbd> para cursiva
         </div>
-        <div className="text-xs font-medium">
+        <div className="text-sm font-semibold text-red-600">
           {charCount} caracteres
         </div>
       </div>
@@ -319,35 +333,55 @@ export default function SimpleTextEditor({
           color: #374151;
         }
         
-        .simple-text-editor [contenteditable] strong {
-          font-weight: 600;
+        .simple-text-editor [contenteditable] strong,
+        .simple-text-editor [contenteditable] b {
+          font-weight: 700 !important;
         }
         
-        .simple-text-editor [contenteditable] em {
-          font-style: italic;
+        .simple-text-editor [contenteditable] em,
+        .simple-text-editor [contenteditable] i {
+          font-style: italic !important;
         }
         
         .simple-text-editor [contenteditable] ul {
-          list-style-type: disc;
-          padding-left: 2rem;
-          margin: 1rem 0;
+          list-style-type: disc !important;
+          padding-left: 2rem !important;
+          margin: 1rem 0 !important;
         }
         
         .simple-text-editor [contenteditable] li {
-          margin: 0.5rem 0;
+          margin: 0.5rem 0 !important;
+          display: list-item !important;
         }
         
         .simple-text-editor [contenteditable] a {
-          color: #DC2626;
-          text-decoration: underline;
+          color: #DC2626 !important;
+          text-decoration: underline !important;
         }
         
         .simple-text-editor [contenteditable] a:hover {
-          color: #991B1B;
+          color: #991B1B !important;
+        }
+        
+        .simple-text-editor [contenteditable] [style*="text-align: center"] {
+          text-align: center !important;
+        }
+        
+        .simple-text-editor [contenteditable] [style*="text-align: right"] {
+          text-align: right !important;
+        }
+        
+        .simple-text-editor [contenteditable] [style*="text-align: left"] {
+          text-align: left !important;
         }
         
         .simple-text-editor [contenteditable]:focus {
           outline: none;
+        }
+
+        /* Asegurar que los estilos se preserven en el HTML generado */
+        .simple-text-editor [contenteditable] * {
+          color: inherit;
         }
       `}</style>
     </div>

@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import ShareButtons from '@/components/ShareButtons';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase, Communique, Comment as CommentType, CommentReaction, CommentReply } from '@/lib/supabase';
-import { Calendar, MessageSquare, ThumbsUp, ThumbsDown, Trash2, Reply } from 'lucide-react';
+import { Calendar, MessageSquare, ThumbsUp, ThumbsDown, Trash2, Reply, FileText, Download, Paperclip } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { toast } from 'sonner';
+
 
 export default function ComunicadoDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -294,7 +296,15 @@ export default function ComunicadoDetailPage() {
                 </span>
               )}
             </div>
-            <div className="prose max-w-none">
+            
+            {/* Botones de compartir en redes sociales */}
+            <ShareButtons 
+              url={window.location.href}
+              title={communique.title}
+              description={communique.content.replace(/<[^>]*>/g, '').substring(0, 150)}
+            />
+            
+            <div className="prose max-w-none mt-6">
               {communique.image_url && (
                 <img 
                   src={communique.image_url} 
@@ -302,8 +312,56 @@ export default function ComunicadoDetailPage() {
                   className="w-full h-auto rounded-lg mb-6"
                 />
               )}
-              <p className="text-gray-700 whitespace-pre-line">{communique.content}</p>
+              <div 
+                className="prose prose-lg max-w-none text-gray-700"
+                dangerouslySetInnerHTML={{ __html: communique.content }}
+              />
             </div>
+
+            {communique.attachments && communique.attachments.length > 0 && (
+              <div className="mt-8 p-6 bg-gray-50 rounded-lg border-2 border-gray-200">
+                <div className="flex items-center mb-4">
+                  <Paperclip className="h-5 w-5 text-red-600 mr-2" />
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Archivos Adjuntos ({communique.attachments.length})
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {communique.attachments.map((attachment: any, index: number) => {
+                    const isImage = attachment.fileType?.startsWith('image/');
+                    const isPDF = attachment.fileType === 'application/pdf';
+                    const fileSize = attachment.fileSize ? 
+                      (attachment.fileSize < 1024 ? `${attachment.fileSize} B` :
+                       attachment.fileSize < 1024 * 1024 ? `${(attachment.fileSize / 1024).toFixed(1)} KB` :
+                       `${(attachment.fileSize / (1024 * 1024)).toFixed(1)} MB`) : '';
+
+                    return (
+                      <a
+                        key={index}
+                        href={attachment.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 p-4 bg-white rounded-lg border border-gray-300 hover:border-red-500 hover:shadow-md transition group"
+                      >
+                        <FileText className="h-8 w-8 text-red-600 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-gray-900 truncate group-hover:text-red-600">
+                            {attachment.fileName}
+                          </p>
+                          {fileSize && (
+                            <p className="text-sm text-gray-500">{fileSize}</p>
+                          )}
+                          <p className="text-xs text-gray-400 mt-1">
+                            {isImage ? 'Imagen' : isPDF ? 'Documento PDF' : 'Documento'}
+                          </p>
+                        </div>
+                        <Download className="h-5 w-5 text-red-600 flex-shrink-0 opacity-0 group-hover:opacity-100 transition" />
+                      </a>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </article>
 
           <div className="bg-white rounded-lg shadow-md p-8">

@@ -7,6 +7,24 @@ import { FileText, Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
+// Función para extraer texto plano del HTML y truncarlo de manera segura
+function getTextPreview(html: string, maxLength: number = 200): string {
+  // Crear un elemento temporal para parsear el HTML
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+  
+  // Obtener solo el texto sin etiquetas HTML
+  const text = temp.textContent || temp.innerText || '';
+  
+  // Truncar el texto si es muy largo
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength).trim() + '...';
+  }
+  
+  return text;
+}
+
+
 export default function ComunicadosPage() {
   const [communiques, setCommuniques] = useState<Communique[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -121,7 +139,9 @@ export default function ComunicadosPage() {
                       </span>
                     )}
                   </div>
-                  <p className="text-gray-600 mb-4 line-clamp-3">{com.content.substring(0, 200)}...</p>
+                  <p className="text-gray-600 mb-4 line-clamp-3">
+                    {getTextPreview(com.content, 200)}
+                  </p>
                   <div className="flex items-center text-sm text-gray-500">
                     <Calendar className="h-4 w-4 mr-2" />
                     <span>{format(new Date(com.created_at), "d 'de' MMMM, yyyy", { locale: es })}</span>

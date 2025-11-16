@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { Toaster } from 'sonner';
+import { usePWA_Inteligente as usePWA } from './hooks/usePWA_Inteligente';
+import { PWAInstallPrompt } from './components/PWAInstallPrompt_Inteligente';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -36,17 +38,19 @@ import AdminCategoriasDocumentos from './pages/admin/AdminCategoriasDocumentos';
 import AdminQR from './pages/admin/AdminQR';
 import AdminGaleria from './pages/admin/AdminGaleria';
 import AdminAfiliados from './pages/admin/AdminAfiliados';
+import AdminAdministradores from './pages/admin/AdminAdministradores';
 import AdminDocumentosSindicales from './pages/admin/AdminDocumentosSindicales';
 
 import AdminBeneficiosUGT from './pages/admin/AdminBeneficiosUGT';
 import AdminNewsletter from './pages/admin/AdminNewsletter';
+import AdminNotificaciones from './pages/admin/AdminNotificaciones';
 
 // Affiliate Pages
 import AffiliateDashboard from './pages/affiliates/AffiliateDashboard';
 import TestAffiliateDashboard from './pages/affiliates/TestAffiliateDashboard';
 import BibliotecaPage from './pages/affiliates/BibliotecaPage';
 import TestBibliotecaPage from './pages/affiliates/TestBibliotecaPage';
-
+import EncuestasAfiliadosPage from './pages/affiliates/EncuestasAfiliadosPage';
 import BeneficiosPage from './pages/affiliates/BeneficiosPage';
 
 // Components
@@ -58,10 +62,18 @@ import TestAffiliateRoute from './components/TestAffiliateRoute';
 import './index.css';
 
 function App() {
+  const { state, install } = usePWA();
+
   return (
     <BrowserRouter>
       <AuthProvider>
         <Toaster position="top-right" richColors />
+        
+        {/* PWA Install Prompt */}
+        <PWAInstallPrompt 
+          onInstall={install}
+        />
+        
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
@@ -97,6 +109,10 @@ function App() {
           
           {/* Affiliate Routes */}
           <Route
+            path="/afiliados"
+            element={<Navigate to="/afiliados/dashboard" replace />}
+          />
+          <Route
             path="/afiliados/dashboard"
             element={
               <TestAffiliateRoute>
@@ -109,6 +125,15 @@ function App() {
             element={
               <TestAffiliateRoute>
                 <TestBibliotecaPage />
+              </TestAffiliateRoute>
+            }
+          />
+
+          <Route
+            path="/afiliados/encuestas"
+            element={
+              <TestAffiliateRoute>
+                <EncuestasAfiliadosPage />
               </TestAffiliateRoute>
             }
           />
@@ -128,6 +153,14 @@ function App() {
             element={
               <AdminRoute>
                 <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/notificaciones"
+            element={
+              <AdminRoute>
+                <AdminNotificaciones />
               </AdminRoute>
             }
           />
@@ -241,6 +274,14 @@ function App() {
             element={
               <AdminRoute>
                 <AdminAfiliados />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/administradores"
+            element={
+              <AdminRoute>
+                <AdminAdministradores />
               </AdminRoute>
             }
           />

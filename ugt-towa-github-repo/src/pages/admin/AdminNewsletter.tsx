@@ -100,6 +100,11 @@ export default function AdminNewsletter() {
 
   // Subscribers
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
+  
+  // Estados para eliminar suscriptores
+  const [deleteSubscriberId, setDeleteSubscriberId] = useState<string | null>(null);
+  const [showDeleteSubscriberModal, setShowDeleteSubscriberModal] = useState<boolean>(false);
+  const [deletingSubscriber, setDeletingSubscriber] = useState<boolean>(false);
 
   useEffect(() => {
     loadDashboardStats();
@@ -240,7 +245,7 @@ export default function AdminNewsletter() {
       const { data, error } = await supabase
         .from('newsletter_subscribers')
         .select('*')
-        .order('subscribed_at', { ascending: false });
+        .order('subscribed_at', { ascending: false});
 
       if (error) throw error;
       setSubscribers(data || []);
@@ -248,6 +253,36 @@ export default function AdminNewsletter() {
       console.error('Error loading subscribers:', error);
     }
   };
+
+  function confirmDeleteSubscriber(id: string) {
+    setDeleteSubscriberId(id);
+    setShowDeleteSubscriberModal(true);
+  }
+
+  async function deleteSubscriber() {
+    if (!deleteSubscriberId) return;
+    
+    setDeletingSubscriber(true);
+    try {
+      const { error } = await supabase
+        .from('newsletter_subscribers')
+        .delete()
+        .eq('id', deleteSubscriberId);
+
+      if (error) throw error;
+
+      toast.success('Suscriptor eliminado correctamente');
+      setShowDeleteSubscriberModal(false);
+      setDeleteSubscriberId(null);
+      loadSubscribers();
+      loadDashboardStats();
+    } catch (error) {
+      console.error('Error al eliminar suscriptor:', error);
+      toast.error('Error al eliminar el suscriptor');
+    } finally {
+      setDeletingSubscriber(false);
+    }
+  }
 
   const loadConfig = async () => {
     try {
@@ -547,12 +582,12 @@ export default function AdminNewsletter() {
   };
 
   const handleGeneratePDF = async (newsletter: NewsletterEdition) => {
-    console.log('=== INICIANDO GENERACIÓN DE PDF MEJORADA ===');
+    console.log('=== GENERANDO PDF PROFESIONAL ===');
     console.log('Newsletter ID:', newsletter.id);
     console.log('Newsletter Title:', newsletter.title);
     
     setLoading(true);
-    toast.info('Generando PDF optimizado...');
+    toast.info('Generando vista optimizada para PDF...');
 
     try {
       // CARGAR EL CONTENIDO MÁS RECIENTE
@@ -575,140 +610,43 @@ export default function AdminNewsletter() {
 
       console.log('Contenido HTML cargado, longitud:', htmlContent.length);
       
-      // Crear HTML optimizado para PDF
-      const optimizedHtml = createProfessionalNewsletterHTML(newsletter.title, htmlContent);
-      
-      console.log('HTML optimizado creado');
-      
-      // Crear elemento temporal para renderizar
-      const tempDiv = document.createElement('div');
-      tempDiv.id = 'pdf-temp-container';
-      tempDiv.innerHTML = optimizedHtml;
-      tempDiv.style.position = 'absolute';
-      tempDiv.style.left = '-9999px';
-      tempDiv.style.top = '0';
-      tempDiv.style.width = '800px';
-      tempDiv.style.minHeight = '1100px';
-      tempDiv.style.background = 'white';
-      tempDiv.style.padding = '40px';
-      tempDiv.style.fontFamily = 'Georgia, serif';
-      tempDiv.style.color = '#2c3e50';
-      tempDiv.style.lineHeight = '1.6';
-      tempDiv.style.boxSizing = 'content-box';
-      
-      document.body.appendChild(tempDiv);
-      console.log('Elemento temporal agregado al DOM');
-
-      // Esperar renderizado completo
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Forzar renderizado de elementos complejos como códigos QR
-      const qrElements = tempDiv.querySelectorAll('canvas, img');
-      console.log('Elementos encontrados para renderizado:', qrElements.length);
-      
-      // Esperar un poco más para códigos QR
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      console.log('Generando canvas mejorado...');
-      const canvas = await html2canvas(tempDiv, {
-        scale: 2.5,
-        useCORS: true,
-        logging: true,
-        backgroundColor: '#ffffff',
-        width: 800,
-        height: tempDiv.scrollHeight,
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: 800,
-        allowTaint: true
+      // Llamar a la Edge Function para obtener HTML optimizado para PDF
+      const { data, error } = await supabase.functions.invoke('generate-newsletter-pdf', {
+        body: { newsletterId: newsletter.id }
       });
 
-      console.log('Canvas generado:', canvas.width, 'x', canvas.height);
-
-      if (canvas.width === 0 || canvas.height === 0) {
-        throw new Error('Canvas vacío generado');
+      if (error) {
+        console.error('Error llamando a Edge Function:', error);
+        throw error;
       }
 
-      // Crear PDF con configuración optimizada
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-        compress: true,
-        putOnlyUsedFonts: true
-      });
-
-      const imgData = canvas.toDataURL('image/png', 0.95);
-      const pageWidth = 210; // A4 width in mm
-      const pageHeight = 297; // A4 height in mm
-      const margin = 15; // Margen optimizado
-      const availableWidth = pageWidth - (2 * margin);
-      const availableHeight = pageHeight - (2 * margin);
+      const optimizedHtml = data?.data?.htmlContent;
       
-      console.log('Calculando dimensiones del PDF...');
-      
-      // Calcular dimensiones manteniendo proporción
-      const imgAspectRatio = canvas.width / canvas.height;
-      const scaledHeight = availableWidth / imgAspectRatio;
-      
-      console.log('Aspect ratio:', imgAspectRatio);
-      console.log('Scaled height:', scaledHeight, 'mm');
-      
-      if (scaledHeight <= availableHeight) {
-        // Contenido cabe en una página
-        console.log('Agregando imagen en una página');
-        pdf.addImage(imgData, 'PNG', margin, margin, availableWidth, scaledHeight);
-      } else {
-        // Contenido requiere múltiples páginas - lógica mejorada
-        console.log('Dividiendo en múltiples páginas');
-        
-        // Calcular cuántas páginas necesitamos
-        const pagesNeeded = Math.ceil(scaledHeight / availableHeight);
-        console.log('Páginas necesarias:', pagesNeeded);
-        
-        // Calcular la altura de cada porción
-        const portionHeight = canvas.height / pagesNeeded;
-        const scaledPortionHeight = scaledHeight / pagesNeeded;
-        
-        for (let page = 0; page < pagesNeeded; page++) {
-          if (page > 0) {
-            pdf.addPage();
-          }
-          
-          console.log(`Procesando página ${page + 1}/${pagesNeeded}`);
-          
-          // Crear un canvas temporal para esta porción
-          const tempCanvas = document.createElement('canvas');
-          tempCanvas.width = canvas.width;
-          tempCanvas.height = portionHeight;
-          const ctx = tempCanvas.getContext('2d');
-          
-          // Copiar la porción correspondiente
-          ctx?.drawImage(
-            canvas,
-            0, portionHeight * page,
-            canvas.width, portionHeight,
-            0, 0,
-            canvas.width, portionHeight
-          );
-          
-          // Convertir a imagen y agregar al PDF
-          const portionImgData = tempCanvas.toDataURL('image/png', 0.95);
-          pdf.addImage(portionImgData, 'PNG', margin, margin, availableWidth, scaledPortionHeight);
-          
-          // Limpiar
-          tempCanvas.remove();
-        }
+      if (!optimizedHtml) {
+        throw new Error('No se recibió HTML optimizado del servidor');
       }
 
-      // Descargar
-      const fileName = `Newsletter-UGT-Towa-${new Date().toISOString().split('T')[0]}.pdf`;
-      pdf.save(fileName);
+      console.log('HTML profesional recibido del servidor');
       
-      console.log('PDF descargado:', fileName);
+      // Abrir en nueva ventana para impresión
+      const printWindow = window.open('', '_blank');
+      
+      if (!printWindow) {
+        throw new Error('Por favor, permite las ventanas emergentes para generar el PDF');
+      }
 
-      // Limpiar
-      document.body.removeChild(tempDiv);
+      printWindow.document.write(optimizedHtml);
+      printWindow.document.close();
+
+      // Esperar que se cargue el contenido
+      printWindow.onload = function() {
+        console.log('Contenido cargado en ventana de impresión');
+        
+        // Abrir diálogo de impresión automáticamente
+        setTimeout(() => {
+          printWindow.print();
+        }, 500);
+      };
 
       // Actualizar base de datos
       const { error: updateError } = await supabase
@@ -722,7 +660,7 @@ export default function AdminNewsletter() {
         console.error('Error actualizando stats:', updateError);
       }
 
-      toast.success('PDF generado y descargado exitosamente');
+      toast.success('Vista PDF abierta. Use Ctrl+P o Cmd+P para guardar como PDF');
       loadNewsletters();
       loadDashboardStats();
 
@@ -1078,10 +1016,11 @@ export default function AdminNewsletter() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {subscribers.slice(0, 5).map((sub) => (
+                    {subscribers.slice(0, 10).map((sub) => (
                       <tr key={sub.id}>
                         <td className="px-6 py-4 text-sm text-gray-900">{sub.email}</td>
                         <td className="px-6 py-4 text-sm text-gray-900">{sub.name || '-'}</td>
@@ -1094,6 +1033,16 @@ export default function AdminNewsletter() {
                           ) : (
                             <span className="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">Inactivo</span>
                           )}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-right">
+                          <button
+                            onClick={() => confirmDeleteSubscriber(sub.id)}
+                            className="inline-flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-xs font-medium"
+                            aria-label="Eliminar suscriptor"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                            <span>Eliminar</span>
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -1615,6 +1564,55 @@ export default function AdminNewsletter() {
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                 >
                   Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal de confirmación para eliminar suscriptor */}
+        {showDeleteSubscriberModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+              <div className="flex items-center mb-4">
+                <div className="flex-shrink-0 w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                  <Trash2 className="h-6 w-6 text-red-600" />
+                </div>
+                <div className="ml-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Confirmar Eliminación</h3>
+                  <p className="text-sm text-gray-500">Esta acción no se puede deshacer</p>
+                </div>
+              </div>
+              <p className="text-gray-700 mb-6">
+                Estás a punto de eliminar este suscriptor. Se eliminará permanentemente de la base de datos y no recibirá más newsletters.
+              </p>
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={() => {
+                    setShowDeleteSubscriberModal(false);
+                    setDeleteSubscriberId(null);
+                  }}
+                  disabled={deletingSubscriber}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium disabled:opacity-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={deleteSubscriber}
+                  disabled={deletingSubscriber}
+                  className="flex items-center gap-2 bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 font-medium disabled:bg-red-400 disabled:cursor-not-allowed transition-colors"
+                >
+                  {deletingSubscriber ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <span>Eliminando...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="h-4 w-4" />
+                      <span>Eliminar Suscriptor</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>

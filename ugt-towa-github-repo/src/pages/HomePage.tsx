@@ -4,13 +4,30 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ImageGallery from '@/components/ImageGallery';
 import { supabase, Communique, Survey } from '@/lib/supabase';
-import { Calendar, FileText, Vote, MessageSquare, QrCode } from 'lucide-react';
-import { format } from 'date-fns';
+import { Calendar, FileText, Vote, MessageSquare, QrCode, Clock } from 'lucide-react';
+import { format, differenceInDays } from 'date-fns';
 import { es } from 'date-fns/locale';
+
+// Función para extraer texto plano del HTML y truncarlo de manera segura
+function getTextPreview(html: string, maxLength: number = 200): string {
+  // Crear un elemento temporal para parsear el HTML
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+  
+  // Obtener solo el texto sin etiquetas HTML
+  const text = temp.textContent || temp.innerText || '';
+  
+  // Truncar el texto si es muy largo
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength).trim() + '...';
+  }
+  
+  return text;
+}
 
 export default function HomePage() {
   const [communiques, setCommuniques] = useState<Communique[]>([]);
-  const [activeSurvey, setActiveSurvey] = useState<Survey | null>(null);
+  const [activeSurveys, setActiveSurveys] = useState<Survey[]>([]);
   const [qrCode, setQrCode] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -29,15 +46,15 @@ export default function HomePage() {
         .limit(3);
       if (comData) setCommuniques(comData as any);
 
-      // Cargar encuesta activa
-      const { data: surveyData } = await supabase
+      // Cargar TODAS las encuestas activas (solo públicas) con fecha_fin vigente
+      const { data: surveysData } = await supabase
         .from('surveys')
         .select('*')
         .eq('is_active', true)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      if (surveyData) setActiveSurvey(surveyData);
+        .eq('tipo', 'publica')
+        .gte('fecha_fin', new Date().toISOString())
+        .order('fecha_fin', { ascending: true });
+      if (surveysData) setActiveSurveys(surveysData);
 
       // Cargar QR code activo
       const { data: qrData } = await supabase
@@ -105,7 +122,49 @@ export default function HomePage() {
       <ImageGallery />
 
       <div className="container mx-auto px-4 py-12 dark:bg-gray-900 transition-colors">
-
+        {/* Encuestas Activas - Sección destacada */}
+        {activeSurveys.length > 0 && (
+          <div className="mb-12">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center">
+                <Vote className="h-6 w-6 text-red-600 mr-2" />
+                <h2 className="text-2xl font-bold text-gray-900">Encuestas Activas</h2>
+              </div>
+              <Link to="/encuestas" className="text-red-600 hover:text-red-700 font-medium">
+                Ver todas
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {activeSurveys.map((survey) => {
+                const daysRemaining = differenceInDays(new Date(survey.fecha_fin), new Date());
+                return (
+                  <div key={survey.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{survey.question}</h3>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Clock className="h-4 w-4 mr-1" />
+                        <span className="font-medium">
+                          {daysRemaining === 0 ? 'Último día' : 
+                           daysRemaining === 1 ? '1 día restante' : 
+                           `${daysRemaining} días restantes`}
+                        </span>
+                      </div>
+                      <span className="px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">
+                        Activa
+                      </span>
+                    </div>
+                    <Link
+                      to="/encuestas"
+                      className="block w-full text-center px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition"
+                    >
+                      Participar Ahora
+                    </Link>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Últimos Comunicados */}
@@ -146,7 +205,7 @@ export default function HomePage() {
                           <div>
                             <h3 className="text-lg font-semibold text-gray-900 mb-2">{com.title}</h3>
                             <p className="text-gray-600 line-clamp-2">
-                              {com.content.substring(0, 150)}...
+                              {getTextPreview(com.content, 180)}
                             </p>
                           </div>
                           <div className="flex items-center mt-3 text-sm text-gray-500">
@@ -168,7 +227,7 @@ export default function HomePage() {
                         <div className="flex-1">
                           <h3 className="text-lg font-semibold text-gray-900 mb-2">{com.title}</h3>
                           <p className="text-gray-600 line-clamp-2">
-                            {com.content.substring(0, 150)}...
+                            {getTextPreview(com.content, 180)}
                           </p>
                           <div className="flex items-center mt-3 text-sm text-gray-500">
                             <span>{format(new Date(com.created_at), "d 'de' MMMM, yyyy", { locale: es })}</span>
@@ -191,25 +250,8 @@ export default function HomePage() {
             )}
           </div>
 
-          {/* Encuesta Activa */}
+          {/* Accesos Rápidos */}
           <div>
-            {activeSurvey && (
-              <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-                <div className="flex items-center mb-4">
-                  <Vote className="h-6 w-6 text-red-600 mr-2" />
-                  <h2 className="text-xl font-bold text-gray-900">Encuesta Activa</h2>
-                </div>
-                <p className="text-gray-700 mb-4 font-medium">{activeSurvey.question}</p>
-                <Link
-                  to="/encuestas"
-                  className="block w-full text-center px-4 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition"
-                >
-                  Participar
-                </Link>
-              </div>
-            )}
-
-            {/* Accesos Rápidos */}
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Accesos Rápidos</h2>
               <div className="space-y-3">

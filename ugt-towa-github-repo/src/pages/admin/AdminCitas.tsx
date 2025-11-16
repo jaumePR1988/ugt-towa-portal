@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import NotificationSetup from '@/components/NotificationSetup';
 import { supabase, Appointment } from '@/lib/supabase';
 import { toast } from 'sonner';
-import { Bell, CheckCircle, XCircle, Calendar, Clock, Filter, TrendingUp, AlertCircle, Search, User, RefreshCcw, BarChart3, Users, Target, Activity, Settings, Plus, Minus, Edit3, Save, X, Download, FileText, FileSpreadsheet, CalendarDays, Clock3, TrendingDown, Mail } from 'lucide-react';
+import { Bell, CheckCircle, XCircle, Calendar, Clock, Filter, TrendingUp, AlertCircle, Search, User, RefreshCcw, BarChart3, Users, Target, Activity, Settings, Plus, Minus, Edit3, Save, X, Download, FileText, FileSpreadsheet, CalendarDays, Clock3, TrendingDown, Mail, Trash2 } from 'lucide-react';
 import { DayPicker, DateRange } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { format, parseISO, isWithinInterval, startOfDay, endOfDay, getHours, subDays, eachDayOfInterval, startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
@@ -229,6 +230,11 @@ export default function AdminCitas() {
   const [newAdminEmail, setNewAdminEmail] = useState<string>('');
   const [showAddAdmin, setShowAddAdmin] = useState<boolean>(false);
 
+  // Estados para eliminar citas
+  const [deleteAppointmentId, setDeleteAppointmentId] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [deleting, setDeleting] = useState<boolean>(false);
+
   // Estados para exportación y reportes
   const [showExportModal, setShowExportModal] = useState<boolean>(false);
   const [reportFilters, setReportFilters] = useState<ReportFilters>({
@@ -268,8 +274,11 @@ export default function AdminCitas() {
   }, []);
 
   async function loadAppointments() {
-    const { data } = await supabase.from('appointments').select('*').order('start_time');
-    if (data) setAppointments(data);
+    const { data } = await supabase
+      .from('appointments')
+      .select('*, user:profiles(id, full_name, email)')
+      .order('start_time');
+    if (data) setAppointments(data as any);
   }
 
   async function loadNotifications() {
@@ -1104,6 +1113,38 @@ export default function AdminCitas() {
     }
   }
 
+  function confirmDeleteAppointment(id: string) {
+    setDeleteAppointmentId(id);
+    setShowDeleteModal(true);
+  }
+
+  async function deleteAppointment() {
+    if (!deleteAppointmentId) return;
+    
+    setDeleting(true);
+    try {
+      const { error } = await supabase
+        .from('appointments')
+        .delete()
+        .eq('id', deleteAppointmentId);
+
+      if (error) throw error;
+
+      toast.success('Cita eliminada correctamente');
+      setShowDeleteModal(false);
+      setDeleteAppointmentId(null);
+      loadAppointments();
+      loadNotifications();
+      calculateStats();
+      loadAdvancedStats();
+    } catch (error) {
+      console.error('Error al eliminar cita:', error);
+      toast.error('Error al eliminar la cita');
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   async function markAsRead(id: string) {
     const { error } = await supabase.from('notifications').update({ read: true }).eq('id', id);
     if (error) toast.error('Error al marcar como leída');
@@ -1275,6 +1316,9 @@ export default function AdminCitas() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Gestión de Citas</h1>
         </div>
+
+        {/* Configuración de Notificaciones */}
+        <NotificationSetup userId={user?.id || ''} role={user?.role || ''} className="mb-8" />
 
         {/* Dashboard de Estadísticas */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -1598,51 +1642,102 @@ export default function AdminCitas() {
               </button>
             </div>
 
-            <div className="bg-white rounded-lg shadow overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipo</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
-                  {filteredAppointments.map(apt => (
-                    <tr key={apt.id}>
-                      <td className="px-6 py-4">{new Date(apt.start_time).toLocaleString('es-ES')}</td>
-                      <td className="px-6 py-4">{apt.delegate_type}</td>
-                      <td className="px-6 py-4">
-                        <span className={`px-2 py-1 text-xs rounded-full ${
-                          apt.status === 'confirmed' ? 'bg-green-100 text-green-800' :
-                          apt.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                          apt.status === 'completed' ? 'bg-gray-100 text-gray-800' :
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
-                          {apt.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <select 
-                          value={apt.status} 
-                          onChange={e => updateStatus(apt.id, e.target.value)} 
-                          className="p-1 border rounded text-sm"
-                        >
-                          <option value="pending">Pendiente</option>
-                          <option value="confirmed">Confirmada</option>
-                          <option value="cancelled">Cancelada</option>
-                          <option value="completed">Completada</option>
-                        </select>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {filteredAppointments.length === 0 && (
+            <div className="bg-white rounded-lg shadow space-y-4 p-4">
+              {filteredAppointments.length === 0 ? (
                 <div className="text-center py-12 text-gray-500">
                   {appointments.length === 0 ? 'No hay citas registradas' : 'No se encontraron citas con los filtros aplicados'}
                 </div>
+              ) : (
+                filteredAppointments.map(apt => (
+                  <div key={apt.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 flex-1">
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">Fecha y Hora</p>
+                          <p className="font-semibold">{new Date(apt.start_time).toLocaleString('es-ES')}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">Tipo de Delegado</p>
+                          <p className="font-semibold capitalize">{apt.delegate_type}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">Estado</p>
+                          <select 
+                            value={apt.status} 
+                            onChange={e => updateStatus(apt.id, e.target.value)} 
+                            className="px-3 py-1 border border-gray-300 rounded-md text-sm font-semibold"
+                          >
+                            <option value="pending">Pendiente</option>
+                            <option value="confirmed">Confirmada</option>
+                            <option value="cancelled">Cancelada</option>
+                            <option value="completed">Completada</option>
+                          </select>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => confirmDeleteAppointment(apt.id)}
+                        className="ml-4 flex items-center space-x-1 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex-shrink-0"
+                        aria-label="Eliminar cita"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        <span className="text-sm font-medium">Eliminar</span>
+                      </button>
+                    </div>
+
+                    {apt.user && (
+                      <div className="bg-blue-50 p-4 rounded-lg mb-4">
+                        <p className="text-xs text-blue-600 font-semibold mb-2">RESERVADO POR</p>
+                        <div className="flex items-center gap-2">
+                          <User className="h-5 w-5 text-blue-600" />
+                          <div>
+                            <p className="font-semibold text-gray-900">{apt.user.full_name || 'Sin nombre'}</p>
+                            <p className="text-sm text-gray-600">{apt.user.email}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {apt.comments && (
+                      <div className="bg-gray-50 p-4 rounded-lg mb-4">
+                        <p className="text-xs text-gray-600 font-semibold mb-2">COMENTARIOS</p>
+                        <p className="text-sm text-gray-700">{apt.comments}</p>
+                      </div>
+                    )}
+
+                    {apt.questions && (
+                      <div className="bg-yellow-50 p-4 rounded-lg mb-4">
+                        <p className="text-xs text-yellow-700 font-semibold mb-2">PREGUNTAS / TEMAS A TRATAR</p>
+                        <p className="text-sm text-gray-700">{apt.questions}</p>
+                      </div>
+                    )}
+
+                    {apt.documents && apt.documents.length > 0 && (
+                      <div className="bg-green-50 p-4 rounded-lg">
+                        <p className="text-xs text-green-700 font-semibold mb-3">DOCUMENTOS ADJUNTOS ({apt.documents.length})</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                          {apt.documents.map((doc: any, idx: number) => (
+                            <a
+                              key={idx}
+                              href={doc.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-2 p-2 bg-white rounded border border-green-200 hover:bg-green-100 transition text-sm"
+                            >
+                              <FileText className="h-4 w-4 text-green-600 flex-shrink-0" />
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium text-gray-900 truncate">{doc.fileName}</p>
+                                <p className="text-xs text-gray-500">
+                                  {(doc.fileSize / 1024).toFixed(1)} KB
+                                </p>
+                              </div>
+                              <Download className="h-4 w-4 text-green-600 flex-shrink-0" />
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))
               )}
             </div>
           </div>
@@ -2875,6 +2970,55 @@ export default function AdminCitas() {
                   <Download className="w-4 h-4" />
                 )}
                 {exporting ? 'Generando...' : 'Exportar'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de confirmación para eliminar cita */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <div className="flex items-center mb-4">
+              <div className="flex-shrink-0 w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                <Trash2 className="h-6 w-6 text-red-600" />
+              </div>
+              <div className="ml-4">
+                <h3 className="text-lg font-semibold text-gray-900">Confirmar Eliminación</h3>
+                <p className="text-sm text-gray-500">Esta acción no se puede deshacer</p>
+              </div>
+            </div>
+            <p className="text-gray-700 mb-6">
+              Estás a punto de eliminar esta cita. Se eliminará permanentemente de la base de datos junto con todas las notificaciones asociadas.
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setDeleteAppointmentId(null);
+                }}
+                disabled={deleting}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={deleteAppointment}
+                disabled={deleting}
+                className="flex items-center gap-2 bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 font-medium disabled:bg-red-400 disabled:cursor-not-allowed transition-colors"
+              >
+                {deleting ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <span>Eliminando...</span>
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="h-4 w-4" />
+                    <span>Eliminar Cita</span>
+                  </>
+                )}
               </button>
             </div>
           </div>
