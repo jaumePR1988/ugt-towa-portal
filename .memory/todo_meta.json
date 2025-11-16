@@ -31,10 +31,10 @@
       },
       "5": {
         "id": "5",
-        "content": "Verificar deploy en Vercel y funcionalidad PWA",
-        "details": "1. Monitorear el proceso de build en Vercel. 2. Verificar que el deploy se complete exitosamente. 3. Probar funcionalidades PWA avanzadas. 4. Validar sistema de citas y edge functions",
-        "status": "pending",
-        "priority": "medium"
+        "content": "Resolver deployments en cola pendientes en Vercel",
+        "details": "1. Cancelar deployments problemáticos en cola. 2. Verificar si hay archivos pnpm restantes en el repositorio. 3. Hacer deploy limpio y único. 4. Monitorear que no se creen múltiples deployments simultáneamente.",
+        "status": "in_progress",
+        "priority": "high"
       }
     }
   }
