@@ -3,37 +3,37 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Implementar Centro de Anuncios Centralizado",
-        "details": "Desarrollar sistema de anuncios con categorías (Urgente, Informativo, Evento), editor rich text, sistema de lectura marcado, historial. Incluye: tabla announcements, UI admin, notificaciones, estadísticas de lectura.",
+        "content": "Diseñar sistema de notificaciones push para administradores",
+        "details": "Planificar arquitectura completa: eventos de citas (crear/eliminar/modificar), suscripciones push, backend automático, interfaz admin",
         "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Desarrollar Directorio de Contactos UGT",
-        "details": "Crear agenda searchable de afiliados con filtros por departamento, turno, rol. Funcionalidades: búsqueda en tiempo real, contactos favoritos, estado online, integración con usuarios existentes de Supabase.",
+        "content": "Implementar backend de notificaciones con Supabase",
+        "details": "Edge functions para envío automático, triggers de BD para eventos, gestión de suscripciones, lógica de envío push",
         "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Implementar Sistema de Perfiles de Usuario y Segmentación Básica",
-        "details": "Crear base de datos extendida con atributos del usuario (departamento, turno, antigüedad, rol), reglas de segmentación visuales, motor de contenido dinámico por reglas. Incluye: UI visual para reglas, sistema de logging, preview testing.",
+        "content": "Desarrollar interfaz de gestión de notificaciones admin",
+        "details": "Página admin para activar/desactivar notificaciones, ver historial, configurar preferencias, solicitar permisos push",
         "status": "pending",
         "priority": "high"
       },
       "4": {
         "id": "4",
-        "content": "Desarrollar Chat Sindical Básico",
-        "details": "Sistema de mensajería simple entre afiliados y delegados. Funcionalidades: chat directo usuario-a-usuario, grupos por departamento/turno, notificaciones de mensajes, lista de conversaciones activas. Backend con WebSocket/Supabase realtime.",
+        "content": "Integrar sistema de eventos de citas en tiempo real",
+        "details": "Detectar creación/eliminación/modificación de citas, trigger automático de notificaciones, validación de permisos admin",
         "status": "pending",
-        "priority": "medium"
+        "priority": "high"
       },
       "5": {
         "id": "5",
-        "content": "Generar paquete ZIP del proyecto UGT-TOWA actual",
-        "details": "✅ COMPLETADO: ZIP creado exitosamente\n- Archivo: UGT_TOWA_Portal_v2.0_con_Gestion_Logos_20251116.zip\n- Tamaño: 3.4MB\n- Incluye: Sistema completo de gestión de logos para notificaciones push\n- AdminNotificaciones.tsx extendido con funcionalidades de logos\n- Edge function upload-notification-logo\n- Todas las funcionalidades operativas actuales\n- URL producción: https://g29h1jllulem.space.minimax.io",
-        "status": "completed",
+        "content": "Testing y verificación del sistema completo",
+        "details": "Probar notificaciones push en móvil/desktop, verificar triggers automáticos, validar permisos, testing de eventos",
+        "status": "pending",
         "priority": "medium"
       }
     }
