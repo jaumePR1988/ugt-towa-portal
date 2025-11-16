@@ -3,22 +3,43 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Arreglar prompt PWA molesto en página principal",
-        "details": "1. Eliminar mensaje fijo de 'instalar app' que aparece en página principal. 2. Mantener solo el popup de abajo. 3. Arreglar funcionalidad de instalación PWA que no funciona.",
+        "content": "Extraer y preparar ZIP con mejoras de notificaciones",
+        "details": "1. Extraer UGT_TOWA_NOTIFICACIONES_Y_PWA_COMPLETAS_20251117_0544.zip. 2. Verificar contenido del directorio extraído. 3. Preparar estructura para deploy.",
         "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Reparar sistema de citas que no permite registro",
-        "details": "1. Diagnosticar error en el formulario de citas. 2. Verificar campos requeridos (appointment_date, appointment_time). 3. Probar creación de cita en la nueva versión deployada.",
+        "content": "Configurar variables de entorno con claves VAPID de prueba",
+        "details": "1. Configurar VITE_VAPID_PUBLIC_KEY=BEl62iUYgUivxIkv69yViEuiBIa40HI80NQDcdMhI0v5C5D5tV6C5bC9nJ6dS8vQ1lK9mN2pR6sF5tV3wL9hY6dJ8vS4pQ2mN8. 2. Verificar credenciales Supabase existentes. 3. Crear archivo .env.local para deploy local.",
         "status": "completed",
-        "priority": "critical"
+        "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Testing completo de la aplicación deployada",
-        "details": "1. Verificar página principal sin prompt molesto. 2. Probar flujo completo de crear cita. 3. Verificar PWA installation prompt de abajo funciona. 4. Confirmar edge functions están operativas.",
+        "content": "Deploy a repositorio GitHub",
+        "details": "1. Clonar repositorio https://github.com/jaumePR1988/ugt-towa-portal.git. 2. Reemplazar contenido con versión mejorada. 3. Hacer commit y push de todos los cambios.",
+        "status": "pending",
+        "priority": "high"
+      },
+      "4": {
+        "id": "4",
+        "content": "Configurar proyecto en Vercel",
+        "details": "1. Conectar repositorio GitHub a Vercel. 2. Configurar variables de entorno en Vercel (VAPID key, Supabase credentials). 3. Deploy automático. 4. Verificar que el proyecto se construye correctamente.",
+        "status": "pending",
+        "priority": "high"
+      },
+      "5": {
+        "id": "5",
+        "content": "Configurar Edge Functions en Supabase",
+        "details": "1. Deployar edge functions para notificaciones. 2. Configurar canal de notificaciones en tiempo real. 3. Verificar conectividad con el frontend deployado.",
+        "status": "completed",
+        "priority": "high"
+      },
+      "6": {
+        "id": "6",
+        "content": "Testing completo del sistema de notificaciones",
+        "details": "1. Verificar que el service worker se registra correctamente. 2. Probar solicitudes de permisos de notificación. 3. Confirmar que las notificaciones push funcionan. 4. Verificar funcionalidad PWA e instalación.",
         "status": "pending",
         "priority": "medium"
       }
