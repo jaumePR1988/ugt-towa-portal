@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instalar App UGT Towa - Solución Rápida</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+        
+        .header {
+            text-align: center;
+            background: #e50000;
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(229, 0, 0, 0.2);
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .solution-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #e50000;
+        }
+        
+        .solution-card h2 {
+            color: #e50000;
+            margin-top: 0;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .method-number {
+            background: #e50000;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .btn {
+            background: #e50000;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 5px 10px 0;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background: #cc0000;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(229, 0, 0, 0.3);
+        }
+        
+        .btn.secondary {
+            background: #6c757d;
+        }
+        
+        .btn.secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn.success {
+            background: #28a745;
+        }
+        
+        .btn.success:hover {
+            background: #218838;
+        }
+        
+        .steps {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .step-number {
+            background: #e50000;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .step-desc {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .device-specific {
+            display: none;
+        }
+        
+        .device-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .device-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .device-tab.active {
+            background: #e50000;
+            color: white;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+        
+        .alert.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .alert.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        
+        .copy-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+            float: right;
+        }
+        
+        .copy-btn:hover {
+            background: #5a6268;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .device-tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📱 Instalar Portal UGT Towa</h1>
+        <p>Solución para usuarios que rechazaron el popup</p>
+    </div>
+
+    <!-- Método 1: Enlace Directo -->
+    <div class="solution-card">
+        <h2><span class="method-number">1</span> Método Más Fácil</h2>
+        <p>Usa este enlace especial que fuerza la instalación:</p>
+        <a href="https://9ya0vtpov5ir.space.minimax.io?forcePWA=true" class="btn" target="_blank">
+            🚀 Abrir con Instalación Forzada
+        </a>
+        <div class="alert info">
+            <strong>💡 Funciona en:</strong> Chrome (Android), Safari (iOS), Chrome/Edge (Desktop)
+        </div>
+    </div>
+
+    <!-- Método 2: Página Dedicada -->
+    <div class="solution-card">
+        <h2><span class="method-number">2</span> Página de Instalación Completa</h2>
+        <p>Página dedicada con instrucciones paso a paso:</p>
+        <a href="INSTALACION_MANUAL_PWA.html" class="btn success" target="_blank">
+            📋 Abrir Guía Completa
+        </a>
+        <div class="alert info">
+            <strong>✨ Incluye:</strong> Detección automática de dispositivo, instrucciones específicas, múltiples métodos
+        </div>
+    </div>
+
+    <!-- Método 3: Consola del Navegador -->
+    <div class="solution-card">
+        <h2><span class="method-number">3</span> Método Técnico (Consola)</h2>
+        <p>Para usuarios que saben usar las herramientas del desarrollador:</p>
+        
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyCode()">📋 Copiar</button>
+            <pre id="codeBlock">localStorage.removeItem('pwa-install-dismissed');
+localStorage.removeItem('beforeinstallprompt');
+window.location.reload();</pre>
+        </div>
+        
+        <div class="steps">
+            <strong>Pasos a seguir:</strong>
+            <ol style="margin-left: 20px; margin-top: 10px;">
+                <li>Abre <strong>F12</strong> (Herramientas del desarrollador)</li>
+                <li>Ve a la pestaña <strong>Console</strong></li>
+                <li>Pega el código de arriba y presiona <strong>Enter</strong></li>
+                <li>La página se recargará y aparecerá el popup</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Instrucciones por Dispositivo -->
+    <div class="solution-card">
+        <h2><span class="method-number">4</span> Instalación Manual por Dispositivo</h2>
+        
+        <div class="device-tabs">
+            <button class="device-tab active" onclick="showDevice('android')">🤖 Android</button>
+            <button class="device-tab" onclick="showDevice('ios')">🍎 iPhone/iPad</button>
+            <button class="device-tab" onclick="showDevice('desktop')">💻 Computadora</button>
+        </div>
+
+        <!-- ANDROID -->
+        <div id="android" class="device-specific">
+            <div class="steps">
+                <h3>📱 Android - Chrome</h3>
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Abrir Chrome</div>
+                        <div class="step-desc">Ve a: <strong>https://9ya0vtpov5ir.space.minimax.io</strong></div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Menú de Chrome</div>
+                        <div class="step-desc">Toca los 3 puntos (⋮) en la esquina superior derecha</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Añadir a inicio</div>
+                        <div class="step-desc">Selecciona "Añadir a pantalla de inicio" o "Install app"</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-title">Confirmar</div>
+                        <div class="step-desc">Toca "Instalar" - ¡listo!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- iOS -->
+        <div id="ios" class="device-specific" style="display: none;">
+            <div class="steps">
+                <h3>🍎 iPhone/iPad - Safari</h3>
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Abrir Safari</div>
+                        <div class="step-desc">Ve a: <strong>https://9ya0vtpov5ir.space.minimax.io</strong></div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Botón Compartir</div>
+                        <div class="step-desc">Toca el botón cuadrado con flecha hacia arriba (📤)</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Añadir a inicio</div>
+                        <div class="step-desc">Desplázate y toca "Añadir a pantalla de inicio"</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-title">Personalizar</div>
+                        <div class="step-desc">Cambia nombre a "UGT Towa" y toca "Añadir"</div>
+                    </div>
+                </div>
+            </div>
+            <div class="alert warning">
+                <strong>⚠️ Importante:</strong> Solo funciona con Safari, NO con Chrome en iOS
+            </div>
+        </div>
+
+        <!-- DESKTOP -->
+        <div id="desktop" class="device-specific" style="display: none;">
+            <div class="steps">
+                <h3>💻 Computadora - Chrome/Edge</h3>
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Abrir Navegador</div>
+                        <div class="step-desc">Ve a: <strong>https://9ya0vtpov5ir.space.minimax.io</strong></div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Buscar Icono +</div>
+                        <div class="step-desc">Busca el icono de instalación (+) en la barra de direcciones</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Menú Browser</div>
+                        <div class="step-desc">O ve a Menú (⋮) → "Instalar Portal UGT Towa..."</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-title">Instalar</div>
+                        <div class="step-desc">Toca "Instalar" - aparecerá como app independiente</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Método 4: Bookmarklet -->
+    <div class="solution-card">
+        <h2><span class="method-number">5</span> Marcador Especial (Bookmarklet)</h2>
+        <p>Crea un marcador en tu navegador con este código:</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyBookmark()">📋 Copiar</button>
+            <pre id="bookmarkBlock">javascript:(function(){localStorage.removeItem('pwa-install-dismissed');localStorage.removeItem('beforeinstallprompt');window.location.href='https://9ya0vtpov5ir.space.minimax.io?forcePWA=true';})();</pre>
+        </div>
+        <div class="alert info">
+            <strong>💡 Uso:</strong> Guarda este código como marcador, luego haz clic en él desde cualquier página del portal UGT Towa
+        </div>
+    </div>
+
+    <div class="footer">
+        <p><strong>¿Sigues teniendo problemas?</strong></p>
+        <p>Usa el <a href="https://9ya0vtpov5ir.space.minimax.io/INSTALACION_MANUAL_PWA.html" style="color: #e50000;">enlace de ayuda completa</a> o contacta con soporte.</p>
+        <p><small>Portal UGT Towa - Versión 2.1 - Actualizado: 16 Nov 2025</small></p>
+    </div>
+
+    <script>
+        function showDevice(device) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.device-specific').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Remover clase active de todas las tabs
+            document.querySelectorAll('.device-tab').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Mostrar sección seleccionada
+            document.getElementById(device).style.display = 'block';
+            document.querySelector(`[onclick="showDevice('${device}')"]`).classList.add('active');
+        }
+
+        function copyCode() {
+            const code = document.getElementById('codeBlock').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('✅ Código copiado al portapapeles');
+            });
+        }
+
+        function copyBookmark() {
+            const bookmark = document.getElementById('bookmarkBlock').textContent;
+            navigator.clipboard.writeText(bookmark).then(() => {
+                alert('✅ Bookmarklet copiado al portapapeles');
+            });
+        }
+
+        // Mostrar Android por defecto
+        document.addEventListener('DOMContentLoaded', function() {
+            showDevice('android');
+        });
+    </script>
+</body>
+</html>
