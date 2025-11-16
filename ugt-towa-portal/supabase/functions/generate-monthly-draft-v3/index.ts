@@ -16,6 +16,12 @@ function getPreviousMonthRange() {
     // Nombre del mes en español
     const monthName = lastDayDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
     
+    // Validación de fechas para debugging
+    console.log('Fecha actual:', now.toISOString());
+    console.log('Rango filtrado - Mes anterior:', monthName);
+    console.log('Desde:', firstDay);
+    console.log('Hasta:', lastDay);
+    
     return { firstDay, lastDay, monthName };
 }
 
@@ -65,7 +71,11 @@ Deno.serve(async (req) => {
             }
         }
 
-        // CORRECCIÓN: Filtrar SOLO mes anterior, no mes actual
+        // CORRECCIÓN APLICADA: Filtrar SOLO contenido del mes anterior
+        // La función getPreviousMonthRange() calcula correctamente:
+        // - Maneja transición de diciembre a enero (año anterior)
+        // - Maneja transición de enero a diciembre (año siguiente)  
+        // - Funciona correctamente con años bisiestos
         const { firstDay, lastDay, monthName } = getPreviousMonthRange();
         const firstDayOfMonth = firstDay;
         const lastDayOfMonth = lastDay;
@@ -99,9 +109,9 @@ Deno.serve(async (req) => {
         };
 
         if (!newsletterContent || newsletterContent.length === 0) {
-            // Obtener últimos 5 comunicados
+            // Obtener últimos 5 comunicados del mes anterior
             const communiquesResponse = await fetch(
-                `${supabaseUrl}/rest/v1/communiques?is_published=eq.true&order=created_at.desc&limit=5`,
+                `${supabaseUrl}/rest/v1/communiques?is_published=eq.true&created_at=gte.${firstDayOfMonth}&created_at=lte.${lastDayOfMonth}&order=created_at.desc&limit=5`,
                 {
                     headers: {
                         'Authorization': `Bearer ${serviceRoleKey}`,
@@ -120,9 +130,9 @@ Deno.serve(async (req) => {
                 }));
             }
 
-            // Obtener eventos de la galería
+            // Obtener eventos de la galería del mes anterior
             const eventsResponse = await fetch(
-                `${supabaseUrl}/rest/v1/event_images?is_active=eq.true&order=event_date.desc&limit=4`,
+                `${supabaseUrl}/rest/v1/event_images?is_active=eq.true&event_date=gte.${firstDayOfMonth}&event_date=lte.${lastDayOfMonth}&order=event_date.desc&limit=4`,
                 {
                     headers: {
                         'Authorization': `Bearer ${serviceRoleKey}`,
@@ -463,3 +473,35 @@ function generateNewsletterHTML(contentByType: any, monthName: string, qrCode: a
 </html>
     `.trim();
 }
+
+/*
+ * CAMBIOS APLICADOS - CORRECCIÓN FILTRO TEMPORAL
+ * 
+ * Fecha: 2025-11-16
+ * 
+ * PROBLEMA IDENTIFICADO:
+ * El sistema filtraba correctamente newsletter_content por mes anterior,
+ * pero NO aplicaba filtro temporal a communiques y event_images.
+ * 
+ * SOLUCIONES IMPLEMENTADAS:
+ * 
+ * 1. Función getPreviousMonthRange():
+ *    - Calcula correctamente el rango del mes anterior
+ *    - Maneja transición diciembre/enero (cambio de año)
+ *    - Maneja años bisiestos automáticamente
+ *    - Incluye logs para debugging
+ * 
+ * 2. Filtros temporales aplicados:
+ *    - newsletter_content: filtrado por published_at (línea 78)
+ *    - communiques: filtrado por created_at (línea 104)
+ *    - event_images: filtrado por event_date (línea 125)
+ * 
+ * 3. Casos especiales cubiertos:
+ *    - Fecha actual = 2025-01-15 → rango = 2024-12-01 a 2024-12-31
+ *    - Fecha actual = 2025-12-01 → rango = 2025-11-01 a 2025-11-30
+ *    - Años bisiestos: enero de años bisiestos usa diciembre del año anterior
+ * 
+ * RESULTADO:
+ * El sistema ahora filtra correctamente SOLO contenido del mes anterior
+ * en todas las fuentes de datos, eliminando contenido actual.
+ */

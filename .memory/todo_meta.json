@@ -5,14 +5,14 @@
         "id": "1",
         "content": "Optimizar filtro temporal de newsletter - Solo mes anterior",
         "details": "1. Modificar Edge Function generate-monthly-draft-v3 para filtrar solo contenido del mes anterior al actual. 2. Si se ejecuta el 1 de diciembre, solo incluir contenido de noviembre. 3. Actualizar lógica de fechas en base de datos. 4. Crear función helper para calcular rango de fechas correcto.",
-        "status": "in_progress",
+        "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
         "content": "Implementar PDF backend real con layout profesional",
         "details": "1. Crear Edge Function Puppeteer para conversión HTML a PDF backend. 2. Implementar CSS profesional para saltos de página. 3. Configurar encabezados y pies de página. 4. Evitar cortes de contenido entre páginas. 5. Optimizar para formato A4 profesional.",
-        "status": "in_progress",
+        "status": "completed",
         "priority": "high"
       },
       "3": {
