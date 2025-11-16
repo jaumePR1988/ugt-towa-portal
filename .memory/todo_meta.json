@@ -5,7 +5,7 @@
         "id": "1",
         "content": "Diseñar sistema de notificaciones push para administradores",
         "details": "Planificar arquitectura completa: eventos de citas (crear/eliminar/modificar), suscripciones push, backend automático, interfaz admin",
-        "status": "pending",
+        "status": "in_progress",
         "priority": "high"
       },
       "2": {
