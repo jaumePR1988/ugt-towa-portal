@@ -3,31 +3,38 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Optimizar filtro temporal de newsletter - Solo mes anterior",
-        "details": "1. Modificar Edge Function generate-monthly-draft-v3 para filtrar solo contenido del mes anterior al actual. 2. Si se ejecuta el 1 de diciembre, solo incluir contenido de noviembre. 3. Actualizar lógica de fechas en base de datos. 4. Crear función helper para calcular rango de fechas correcto.",
-        "status": "completed",
+        "content": "Diagnosticar problemas del portal desplegado",
+        "details": "Analizar el estado actual del portal para identificar: 1) Error persistente en citas ('record new has no field date'), 2) Popup que no se puede cerrar, 3) PWA installation fallando",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Implementar PDF backend real con layout profesional",
-        "details": "1. Crear Edge Function Puppeteer para conversión HTML a PDF backend. 2. Implementar CSS profesional para saltos de página. 3. Configurar encabezados y pies de página. 4. Evitar cortes de contenido entre páginas. 5. Optimizar para formato A4 profesional.",
-        "status": "completed",
+        "content": "Corregir error de citas en frontend",
+        "details": "El fix de base de datos se aplicó pero el código frontend aún tiene el error. Necesita actualización para usar los campos correctos de la tabla appointments",
+        "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Crear sistema de plantillas dinámicas visual",
-        "details": "1. Diseñar plantillas profesionales con CSS moderno. 2. Sistema de preview en tiempo real. 3. Editor visual para personalización. 4. Templates responsivos para móvil y escritorio. 5. Guardado automático de preferencias.",
+        "content": "Eliminar completamente el popup superior",
+        "details": "El popup sigue apareciendo y no se puede cerrar. Necesita eliminación completa del componente o fix del botón de cerrar",
         "status": "pending",
-        "priority": "medium"
+        "priority": "high"
       },
       "4": {
         "id": "4",
-        "content": "Mejorar automatización y scheduling",
-        "details": "1. Cron job optimizado para primer día del mes. 2. Notificaciones automáticas de generación. 3. Sistema de validación previa. 4. Backup automático de borradores. 5. Logs detallados del proceso.",
+        "content": "Solucionar instalación PWA",
+        "details": "El botón de instalación PWA no funciona. Revisar manifest.json, service worker y lógica de instalación",
         "status": "pending",
         "priority": "medium"
+      },
+      "5": {
+        "id": "5",
+        "content": "Desplegar versión corregida",
+        "details": "Crear nuevo ZIP con todas las correcciones y guiar en el despliegue actualizado",
+        "status": "pending",
+        "priority": "high"
       }
     }
   }
