@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Bell, Send, TestTube, Check, X, Smartphone, Upload, Image as ImageIcon, Trash2, CheckCircle } from 'lucide-react';
+import { Bell, Send, TestTube, Check, X, Smartphone, Upload, Image as ImageIcon, Trash2, CheckCircle, Settings, History, Calendar, Mail, Phone, User } from 'lucide-react';
 import { toast } from 'sonner';
-import { supabase } from '@/lib/supabase';
+import { supabase, NotificationPreference, PushNotificationHistory } from '@/lib/supabase';
 
 interface NotificationLogo {
   id: string;
@@ -19,6 +19,8 @@ interface NotificationLogo {
 
 export default function AdminNotificaciones() {
   const navigate = useNavigate();
+  
+  // Estados existentes para notificaciones manuales
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
   const [url, setUrl] = useState('/');
@@ -28,7 +30,7 @@ export default function AdminNotificaciones() {
     lastSent: null as string | null
   });
 
-  // Estados para gestión de logos
+  // Estados existentes para gestión de logos
   const [logos, setLogos] = useState<NotificationLogo[]>([]);
   const [activeLogo, setActiveLogo] = useState<NotificationLogo | null>(null);
   const [isLoadingLogos, setIsLoadingLogos] = useState(true);
@@ -38,10 +40,142 @@ export default function AdminNotificaciones() {
   const [isUploading, setIsUploading] = useState(false);
   const [showLogoManagement, setShowLogoManagement] = useState(false);
 
+  // Estados para pestañas
+  const [activeTab, setActiveTab] = useState<'manual' | 'auto' | 'history'>('manual');
+
+  // Estados para configuración automática
+  const [preferences, setPreferences] = useState<NotificationPreference[]>([]);
+  const [isLoadingPreferences, setIsLoadingPreferences] = useState(true);
+  const [isSavingPreferences, setIsSavingPreferences] = useState(false);
+
+  // Estados para historial
+  const [history, setHistory] = useState<PushNotificationHistory[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+  const [historyFilter, setHistoryFilter] = useState<'all' | 'success' | 'error'>('all');
+
   useEffect(() => {
     loadStats();
     loadLogos();
-  }, []);
+    if (activeTab === 'auto') {
+      loadPreferences();
+    } else if (activeTab === 'history') {
+      loadHistory();
+    }
+  }, [activeTab]);
+
+  // Función para cargar preferencias de notificaciones automáticas
+  const loadPreferences = async () => {
+    try {
+      setIsLoadingPreferences(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('admin_notification_preferences')
+        .select('*')
+        .eq('admin_id', user.id);
+
+      if (error) throw error;
+
+      // Si no hay preferencias, crear valores por defecto
+      if (!data || data.length === 0) {
+        const defaultPreferences = [
+          {
+            admin_id: user.id,
+            event_type: 'appointment_created',
+            enabled: true,
+            title_template: 'Nueva Cita Creada',
+            message_template: 'Nueva cita de {user_name} para {appointment_type} el {date} a las {time}'
+          },
+          {
+            admin_id: user.id,
+            event_type: 'appointment_cancelled',
+            enabled: true,
+            title_template: 'Cita Cancelada',
+            message_template: 'Cita de {user_name} cancelada del {date} a las {time} - {appointment_type}'
+          },
+          {
+            admin_id: user.id,
+            event_type: 'appointment_updated',
+            enabled: true,
+            title_template: 'Cita Modificada',
+            message_template: 'Cita de {user_name} modificada para {appointment_type} el {date} a las {time}'
+          },
+          {
+            admin_id: user.id,
+            event_type: 'appointment_status_changed',
+            enabled: false,
+            title_template: 'Estado de Cita Actualizado',
+            message_template: 'Cita de {user_name} cambió a estado: {status}'
+          }
+        ];
+
+        const { data: insertedData, error: insertError } = await supabase
+          .from('admin_notification_preferences')
+          .insert(defaultPreferences)
+          .select();
+
+        if (insertError) throw insertError;
+        setPreferences(insertedData || []);
+      } else {
+        setPreferences(data);
+      }
+    } catch (error) {
+      console.error('Error cargando preferencias:', error);
+      toast.error('Error al cargar preferencias de notificaciones');
+    } finally {
+      setIsLoadingPreferences(false);
+    }
+  };
+
+  // Función para cargar historial de notificaciones
+  const loadHistory = async () => {
+    try {
+      setIsLoadingHistory(true);
+      const { data, error } = await supabase
+        .from('push_notification_history')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100);
+
+      if (error) throw error;
+      setHistory(data || []);
+    } catch (error) {
+      console.error('Error cargando historial:', error);
+      toast.error('Error al cargar historial de notificaciones');
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
+
+  // Función para guardar preferencias
+  const savePreferences = async () => {
+    try {
+      setIsSavingPreferences(true);
+      const { error } = await supabase
+        .from('admin_notification_preferences')
+        .upsert(preferences, { 
+          onConflict: 'admin_id,event_type' 
+        });
+
+      if (error) throw error;
+      toast.success('Preferencias guardadas correctamente');
+    } catch (error) {
+      console.error('Error guardando preferencias:', error);
+      toast.error('Error al guardar preferencias');
+    } finally {
+      setIsSavingPreferences(false);
+    }
+  };
+
+  // Función para actualizar una preferencia específica
+  const updatePreference = (index: number, field: keyof NotificationPreference, value: any) => {
+    setPreferences(prev => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [field]: value };
+      return updated;
+    });
+  };
 
   const loadLogos = async () => {
     try {
@@ -311,12 +445,39 @@ export default function AdminNotificaciones() {
     setUrl(msg.url);
   };
 
+  // Funciones auxiliares para el historial
+  const getEventTypeLabel = (eventType: string) => {
+    const labels: { [key: string]: string } = {
+      'appointment_created': 'Cita Creada',
+      'appointment_cancelled': 'Cita Cancelada', 
+      'appointment_updated': 'Cita Modificada',
+      'appointment_status_changed': 'Estado Cambiado',
+      'manual': 'Envío Manual'
+    };
+    return labels[eventType] || eventType;
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'success':
+        return 'text-green-600 bg-green-50 border-green-200';
+      case 'error':
+        return 'text-red-600 bg-red-50 border-red-200';
+      default:
+        return 'text-gray-600 bg-gray-50 border-gray-200';
+    }
+  };
+
+  const filteredHistory = history.filter(item => 
+    historyFilter === 'all' || item.status === historyFilter
+  );
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
+        {/* Header con navegación por pestañas */}
         <div className="mb-8">
           <button
             onClick={() => navigate('/admin/dashboard')}
@@ -325,18 +486,60 @@ export default function AdminNotificaciones() {
             ← Volver al Dashboard
           </button>
           
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center gap-3 mb-4">
             <Bell className="w-8 h-8 text-red-600" />
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Notificaciones Push
+              Sistema de Notificaciones Push
             </h1>
           </div>
-          <p className="text-gray-600 dark:text-gray-400">
-            Envía notificaciones a los usuarios que tienen instalada la aplicación PWA
+          
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            Gestiona notificaciones automáticas y manuales para administradores
           </p>
+
+          {/* Navegación por pestañas */}
+          <div className="border-b border-gray-200 dark:border-gray-700">
+            <nav className="flex space-x-8">
+              <button
+                onClick={() => setActiveTab('manual')}
+                className={`flex items-center gap-2 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'manual'
+                    ? 'border-red-500 text-red-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <Send className="w-4 h-4" />
+                Manual
+              </button>
+              <button
+                onClick={() => setActiveTab('auto')}
+                className={`flex items-center gap-2 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'auto'
+                    ? 'border-red-500 text-red-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <Settings className="w-4 h-4" />
+                Configuración Automática
+              </button>
+              <button
+                onClick={() => setActiveTab('history')}
+                className={`flex items-center gap-2 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'history'
+                    ? 'border-red-500 text-red-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <History className="w-4 h-4" />
+                Historial
+              </button>
+            </nav>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Contenido dinámico basado en la pestaña activa */}
+        {activeTab === 'manual' && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Panel principal */}
           <div className="lg:col-span-2 space-y-6">
             {/* Formulario de envío */}
@@ -713,6 +916,203 @@ export default function AdminNotificaciones() {
             </div>
           </div>
         </div>
+        )}
+
+        {/* Pestaña de Configuración Automática */}
+        {activeTab === 'auto' && (
+          <div className="space-y-6">
+            {/* Información del sistema */}
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+              <h3 className="font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center gap-2">
+                <Settings className="w-5 h-5" />
+                Configuración de Notificaciones Automáticas
+              </h3>
+              <p className="text-blue-800 dark:text-blue-300 text-sm mb-3">
+                El sistema enviará notificaciones push automáticamente cuando ocurran los siguientes eventos de citas.
+              </p>
+              <div className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-3">
+                <p className="text-xs text-blue-700 dark:text-blue-300">
+                  <strong>Variables disponibles:</strong> {'{user_name}'}, {'{appointment_type}'}, {'{date}'}, {'{time}'}, {'{status}'}
+                </p>
+              </div>
+            </div>
+
+            {isLoadingPreferences ? (
+              <div className="flex justify-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-2 border-red-600 border-t-transparent" />
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {preferences.map((preference, index) => (
+                  <div key={`${preference.admin_id}-${preference.event_type}`} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-3 h-3 rounded-full ${preference.enabled ? 'bg-green-500' : 'bg-gray-300'}`} />
+                        <h4 className="font-semibold text-gray-900 dark:text-white">
+                          {getEventTypeLabel(preference.event_type)}
+                        </h4>
+                      </div>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={preference.enabled}
+                          onChange={(e) => updatePreference(index, 'enabled', e.target.checked)}
+                          className="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 focus:ring-2"
+                        />
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                          {preference.enabled ? 'Activado' : 'Desactivado'}
+                        </span>
+                      </label>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Título de la notificación
+                        </label>
+                        <input
+                          type="text"
+                          value={preference.title_template || ''}
+                          onChange={(e) => updatePreference(index, 'title_template', e.target.value)}
+                          placeholder="Ej: Nueva Cita Creada"
+                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                          disabled={!preference.enabled}
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Mensaje de la notificación
+                        </label>
+                        <textarea
+                          value={preference.message_template || ''}
+                          onChange={(e) => updatePreference(index, 'message_template', e.target.value)}
+                          placeholder="Ej: Nueva cita de {user_name} para {appointment_type}"
+                          rows={3}
+                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
+                          disabled={!preference.enabled}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {/* Botón guardar */}
+                <div className="flex justify-end pt-4">
+                  <button
+                    onClick={savePreferences}
+                    disabled={isSavingPreferences}
+                    className="flex items-center gap-2 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  >
+                    {isSavingPreferences ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                        Guardando...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="w-4 h-4" />
+                        Guardar Configuración
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Pestaña de Historial */}
+        {activeTab === 'history' && (
+          <div className="space-y-6">
+            {/* Filtros del historial */}
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <History className="w-6 h-6 text-red-600" />
+                Historial de Notificaciones ({filteredHistory.length})
+              </h3>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600 dark:text-gray-400">Filtrar:</span>
+                <select
+                  value={historyFilter}
+                  onChange={(e) => setHistoryFilter(e.target.value as 'all' | 'success' | 'error')}
+                  className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                >
+                  <option value="all">Todas</option>
+                  <option value="success">Exitosas</option>
+                  <option value="error">Con Error</option>
+                </select>
+              </div>
+            </div>
+
+            {isLoadingHistory ? (
+              <div className="flex justify-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-2 border-red-600 border-t-transparent" />
+              </div>
+            ) : filteredHistory.length === 0 ? (
+              <div className="text-center py-12">
+                <History className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                  No hay notificaciones en el historial
+                </h3>
+                <p className="text-gray-500 dark:text-gray-400">
+                  {historyFilter === 'all' 
+                    ? 'Aún no se han enviado notificaciones push'
+                    : `No hay notificaciones ${historyFilter === 'success' ? 'exitosas' : 'con error'}`
+                  }
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredHistory.map((item) => (
+                  <div key={item.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(item.status)}`}>
+                            {item.status === 'success' ? 'Enviada' : 'Error'}
+                          </span>
+                          <span className="text-sm text-gray-500 dark:text-gray-400">
+                            {getEventTypeLabel(item.event_type)}
+                          </span>
+                        </div>
+                        <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
+                          {item.title}
+                        </h4>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">
+                          {item.message}
+                        </p>
+                        {item.error_message && (
+                          <p className="text-red-600 text-sm bg-red-50 dark:bg-red-900/20 p-2 rounded">
+                            Error: {item.error_message}
+                          </p>
+                        )}
+                      </div>
+                      <div className="text-right text-sm text-gray-500 dark:text-gray-400 flex-shrink-0 ml-4">
+                        <div className="flex items-center gap-1 mb-1">
+                          <Calendar className="w-3 h-3" />
+                          {new Date(item.created_at).toLocaleDateString('es-ES')}
+                        </div>
+                        <div>
+                          {new Date(item.created_at).toLocaleTimeString('es-ES', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </div>
+                        {item.recipients_count !== null && (
+                          <div className="flex items-center gap-1 mt-1">
+                            <User className="w-3 h-3" />
+                            {item.recipients_count} usuarios
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <Footer />

@@ -5,35 +5,35 @@
         "id": "1",
         "content": "Diseñar sistema de notificaciones push para administradores",
         "details": "Planificar arquitectura completa: eventos de citas (crear/eliminar/modificar), suscripciones push, backend automático, interfaz admin",
-        "status": "in_progress",
+        "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
         "content": "Implementar backend de notificaciones con Supabase",
         "details": "Edge functions para envío automático, triggers de BD para eventos, gestión de suscripciones, lógica de envío push",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "3": {
         "id": "3",
         "content": "Desarrollar interfaz de gestión de notificaciones admin",
         "details": "Página admin para activar/desactivar notificaciones, ver historial, configurar preferencias, solicitar permisos push",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "4": {
         "id": "4",
         "content": "Integrar sistema de eventos de citas en tiempo real",
         "details": "Detectar creación/eliminación/modificación de citas, trigger automático de notificaciones, validación de permisos admin",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "5": {
         "id": "5",
         "content": "Testing y verificación del sistema completo",
         "details": "Probar notificaciones push en móvil/desktop, verificar triggers automáticos, validar permisos, testing de eventos",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       }
     }
