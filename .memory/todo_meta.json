@@ -3,38 +3,38 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Diagnosticar problemas del portal desplegado",
-        "details": "Analizar el estado actual del portal para identificar: 1) Error persistente en citas ('record new has no field date'), 2) Popup que no se puede cerrar, 3) PWA installation fallando",
+        "content": "Diagnóstico completo de deployments pendientes en Vercel",
+        "details": "1. Revisar logs de Vercel para identificar causa raíz. 2. Verificar configuración actual del proyecto. 3. Comprobar estado del repositorio GitHub. 4. Analizar configuración de vercel.json y package.json",
         "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Corregir error de citas en frontend",
-        "details": "El fix de base de datos se aplicó pero el código frontend aún tiene el error. Necesita actualización para usar los campos correctos de la tabla appointments",
+        "content": "Limpiar y preparar repositorio GitHub para deployment limpio",
+        "details": "1. Verificar estado actual del repositorio jaumePR1988/ugt-towa-portal. 2. Limpiar archivos problemáticos si existen. 3. Preparar subida de la versión final PWA avanzada",
         "status": "completed",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Eliminar completamente el popup superior",
-        "details": "El popup sigue apareciendo y no se puede cerrar. Necesita eliminación completa del componente o fix del botón de cerrar",
+        "content": "Configurar correctamente Vercel para usar npm exclusivamente",
+        "details": "1. Verificar que vercel.json force npm commands. 2. Asegurar .vercelignore esté configurado. 3. Configurar variables de entorno correctamente. 4. Verificar que no haya pnpm-lock.yaml",
         "status": "completed",
         "priority": "high"
       },
       "4": {
         "id": "4",
-        "content": "Solucionar instalación PWA",
-        "details": "El botón de instalación PWA no funciona. Revisar manifest.json, service worker y lógica de instalación",
+        "content": "Subir versión final PWA avanzada al repositorio",
+        "details": "1. Extraer UGT_TOWA_Portal_PWA_AVANZADA_RECOVERED_20251117_0204.zip. 2. Subir todos los archivos al repositorio GitHub. 3. Verificar que la subida sea correcta",
         "status": "completed",
         "priority": "medium"
       },
       "5": {
         "id": "5",
-        "content": "Desplegar versión corregida",
-        "details": "Crear nuevo ZIP con todas las correcciones y guiar en el despliegue actualizado",
-        "status": "completed",
-        "priority": "high"
+        "content": "Verificar deploy en Vercel y funcionalidad PWA",
+        "details": "1. Monitorear el proceso de build en Vercel. 2. Verificar que el deploy se complete exitosamente. 3. Probar funcionalidades PWA avanzadas. 4. Validar sistema de citas y edge functions",
+        "status": "pending",
+        "priority": "medium"
       }
     }
   }
