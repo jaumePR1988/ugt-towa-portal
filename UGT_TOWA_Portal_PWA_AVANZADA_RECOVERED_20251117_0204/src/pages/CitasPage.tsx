@@ -151,12 +151,12 @@ export default function CitasPage() {
           user_id: user.id,
           slot_id: selectedSlot.id,
           delegate_type: selectedType,
-          start_time: selectedSlot.start_time,
-          end_time: selectedSlot.end_time,
-          status: 'confirmed',
+          appointment_date: selectedSlot.appointment_date,
+          appointment_time: selectedSlot.start_time,
           comments: comments || null,
           questions: questions || null,
           documents: uploadedFiles.length > 0 ? uploadedFiles : null,
+          status: 'confirmed'
         }])
         .select()
         .single();

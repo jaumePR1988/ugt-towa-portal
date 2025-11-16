@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Download, Smartphone } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface PWAInstallPromptProps {
   onInstall?: () => void;
@@ -79,18 +80,22 @@ export const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = ({ onInstall })
 
   const handleInstall = async () => {
     if (isInstalled) {
-      console.log('[PWA] App ya está instalada');
+      toast.success('La aplicación ya está instalada');
       return;
     }
 
+    setInstallAttempts(prev => prev + 1);
+
     try {
       if (deferredPrompt) {
+        console.log('[PWA] Usando deferred prompt');
         deferredPrompt.prompt();
         
         const { outcome } = await deferredPrompt.userChoice;
         
         if (outcome === 'accepted') {
           console.log('[PWA] Usuario aceptó instalar');
+          toast.success('¡Aplicación instalada correctamente!');
           localStorage.setItem('pwa-install-success', 'true');
           setIsInstalled(true);
           setShowPrompt(false);
@@ -104,10 +109,12 @@ export const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = ({ onInstall })
         
         setDeferredPrompt(null);
       } else {
+        console.log('[PWA] No hay deferredPrompt, usando método manual');
         handleManualInstall();
       }
     } catch (error) {
       console.error('[PWA] Error en instalación:', error);
+      toast.error('Error al instalar la aplicación');
       handleManualInstall();
     }
   };
@@ -135,15 +142,17 @@ export const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = ({ onInstall })
   };
 
   const handleManualInstall = () => {
-    const url = new URL(window.location.href);
-    url.searchParams.set('forcePWA', 'true');
-    url.searchParams.set('t', Date.now().toString());
+    setInstallAttempts(prev => prev + 1);
+    toast.info('Para instalar la aplicación:', {
+      description: '📱 Safari (iPhone): Menú → "Añadir a pantalla de inicio"\n📱 Chrome (Android): Menú → "Instalar aplicación" o "Añadir a inicio"',
+      duration: 8000,
+    });
     
-    window.open(url.toString(), '_blank');
-    
-    setTimeout(() => {
-      alert('Se ha abierto una nueva ventana con la opción de instalación. Si no aparece el popup, usa: Menú del navegador → "Añadir a pantalla de inicio"');
-    }, 1000);
+    // También intentar con el prompt del navegador si está disponible
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      setDeferredPrompt(null);
+    }
   };
 
   if (isInstalled) {
@@ -236,32 +245,7 @@ export const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = ({ onInstall })
         </button>
       )}
 
-      {!showAlways && !isInstalled && (
-        <div className="fixed top-0 left-0 right-0 z-30 bg-gradient-to-r from-red-600 to-red-700 text-white p-2">
-          <div className="max-w-4xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm">
-              <Smartphone className="w-4 h-4" />
-              <span className="font-medium">📱 Instala la App UGT Towa</span>
-              <span className="hidden sm:inline">- Acceso rápido + notificaciones</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleInstall}
-                className="bg-white text-red-600 px-3 py-1 rounded text-xs font-medium hover:bg-gray-100 transition-colors"
-              >
-                Instalar
-              </button>
-              <button
-                onClick={handleUserReject}
-                className="text-red-200 hover:text-white p-1 transition-colors"
-                title="Rechazar"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Banner superior eliminado - solo popup de abajo */}
     </>
   );
 };
