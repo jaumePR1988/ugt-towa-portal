@@ -3,37 +3,30 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Diseñar sistema de notificaciones push para administradores",
-        "details": "Planificar arquitectura completa: eventos de citas (crear/eliminar/modificar), suscripciones push, backend automático, interfaz admin",
-        "status": "completed",
+        "content": "Optimizar filtro temporal de newsletter - Solo mes anterior",
+        "details": "1. Modificar Edge Function generate-monthly-draft-v3 para filtrar solo contenido del mes anterior al actual. 2. Si se ejecuta el 1 de diciembre, solo incluir contenido de noviembre. 3. Actualizar lógica de fechas en base de datos. 4. Crear función helper para calcular rango de fechas correcto.",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Implementar backend de notificaciones con Supabase",
-        "details": "Edge functions para envío automático, triggers de BD para eventos, gestión de suscripciones, lógica de envío push",
-        "status": "completed",
+        "content": "Implementar PDF backend real con layout profesional",
+        "details": "1. Crear Edge Function Puppeteer para conversión HTML a PDF backend. 2. Implementar CSS profesional para saltos de página. 3. Configurar encabezados y pies de página. 4. Evitar cortes de contenido entre páginas. 5. Optimizar para formato A4 profesional.",
+        "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Desarrollar interfaz de gestión de notificaciones admin",
-        "details": "Página admin para activar/desactivar notificaciones, ver historial, configurar preferencias, solicitar permisos push",
-        "status": "completed",
-        "priority": "high"
+        "content": "Crear sistema de plantillas dinámicas visual",
+        "details": "1. Diseñar plantillas profesionales con CSS moderno. 2. Sistema de preview en tiempo real. 3. Editor visual para personalización. 4. Templates responsivos para móvil y escritorio. 5. Guardado automático de preferencias.",
+        "status": "pending",
+        "priority": "medium"
       },
       "4": {
         "id": "4",
-        "content": "Integrar sistema de eventos de citas en tiempo real",
-        "details": "Detectar creación/eliminación/modificación de citas, trigger automático de notificaciones, validación de permisos admin",
-        "status": "completed",
-        "priority": "high"
-      },
-      "5": {
-        "id": "5",
-        "content": "Testing y verificación del sistema completo",
-        "details": "Probar notificaciones push en móvil/desktop, verificar triggers automáticos, validar permisos, testing de eventos",
-        "status": "completed",
+        "content": "Mejorar automatización y scheduling",
+        "details": "1. Cron job optimizado para primer día del mes. 2. Notificaciones automáticas de generación. 3. Sistema de validación previa. 4. Backup automático de borradores. 5. Logs detallados del proceso.",
+        "status": "pending",
         "priority": "medium"
       }
     }
