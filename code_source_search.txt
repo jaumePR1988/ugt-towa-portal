@@ -1,0 +1,68 @@
+118-  <!-- SCRIPT DEL APP -->
+119-<style>
+120:#minimax-floating-ball {
+121-  position: fixed;
+122-  bottom: 20px;
+--
+135-}
+136-
+137:#minimax-floating-ball:hover {
+138-  transform: translateY(-2px);
+139-  background: #383838;
+140-}
+141:.minimax-ball-content {
+142-  display: flex;
+143-  align-items: center;
+--
+145-}
+146-
+147:.minimax-logo-wave {
+148-  width: 26px;
+149-  height: 22px;
+--
+153-}
+154-
+155:.minimax-ball-text {
+156-  font-size: 12px;
+157-  font-weight: 500;
+--
+159-}
+160-
+161:.minimax-close-icon {
+162-  margin-left: 8px;
+163-  font-size: 16px;
+--
+173-}
+174-
+175:.minimax-close-icon:hover {
+176-  opacity: 1;
+177-}
+178-</style>
+179:<div id="minimax-floating-ball">
+180:  <div class="minimax-ball-content">
+181:    <div class="minimax-logo-wave"></div>
+182:    <span class="minimax-ball-text">Created by MiniMax Agent</span>
+183-  </div>
+184:  <div class="minimax-close-icon">×</div>
+185-</div>
+186-<script>
+187-// Initialize floating ball functionality
+188-function initFloatingBall() {
+189:  const ball = document.getElementById('minimax-floating-ball');
+190-  if (!ball) return;
+191-
+--
+200-
+201-  // Handle logo click
+202:  const ballContent = ball.querySelector('.minimax-ball-content');
+203-  ballContent.addEventListener('click', function (e) {
+204-    e.stopPropagation();
+205:    window.open('https://agent.minimax.io/', '_blank');
+206-    ball.style.transform = 'scale(0.95)';
+207-    setTimeout(() => {
+--
+211-
+212-  // Handle close button click
+213:  const closeIcon = ball.querySelector('.minimax-close-icon');
+214-  closeIcon.addEventListener('click', function (e) {
+215-    e.stopPropagation();
