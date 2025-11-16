@@ -5,35 +5,35 @@
         "id": "1",
         "content": "Diagnosticar problemas del portal desplegado",
         "details": "Analizar el estado actual del portal para identificar: 1) Error persistente en citas ('record new has no field date'), 2) Popup que no se puede cerrar, 3) PWA installation fallando",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
         "content": "Corregir error de citas en frontend",
         "details": "El fix de base de datos se aplicó pero el código frontend aún tiene el error. Necesita actualización para usar los campos correctos de la tabla appointments",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "3": {
         "id": "3",
         "content": "Eliminar completamente el popup superior",
         "details": "El popup sigue apareciendo y no se puede cerrar. Necesita eliminación completa del componente o fix del botón de cerrar",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "4": {
         "id": "4",
         "content": "Solucionar instalación PWA",
         "details": "El botón de instalación PWA no funciona. Revisar manifest.json, service worker y lógica de instalación",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       },
       "5": {
         "id": "5",
         "content": "Desplegar versión corregida",
         "details": "Crear nuevo ZIP con todas las correcciones y guiar en el despliegue actualizado",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       }
     }

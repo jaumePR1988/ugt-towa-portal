@@ -16,34 +16,50 @@ export const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = ({ onInstall })
   // Verificar si la app ya está instalada
   useEffect(() => {
     const checkInstallStatus = () => {
+      console.log('[PWA] Verificando estado de instalación inicial...');
+      
       // Verificar si está en modo standalone
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+      console.log('[PWA] Modo standalone:', isStandalone);
       
       // Verificar si hay instalado en localStorage
       const isInstallBlocked = localStorage.getItem('pwa-install-blocked') === 'true';
       const isInstallSuccess = localStorage.getItem('pwa-install-success') === 'true';
+      const wasRejected = localStorage.getItem('pwa-install-rejected') === 'true';
+      const dismissed = localStorage.getItem('pwa-install-dismissed') === 'true';
       
-      setIsInstalled(isStandalone || isInstallSuccess);
+      console.log('[PWA] Estados de instalación:', {
+        isInstallBlocked,
+        isInstallSuccess,
+        wasRejected,
+        dismissed
+      });
+      
+      const installed = isStandalone || isInstallSuccess;
+      setIsInstalled(installed);
       
       // Si ya está instalado, no mostrar prompt
-      if (isStandalone || isInstallSuccess) {
+      if (installed) {
+        console.log('[PWA] App ya está instalada, no mostrar prompt');
         setShowPrompt(false);
         return;
       }
       
+      console.log('[PWA] App no está instalada, evaluando si mostrar prompt...');
+      
       // Lógica inteligente para mostrar prompt
-      const wasRejected = localStorage.getItem('pwa-install-rejected') === 'true';
-      const dismissed = localStorage.getItem('pwa-install-dismissed') === 'true';
-      
-      // Siempre mostrar si nunca se instaló y no fue rechazado explícitamente
       if (!wasRejected && !dismissed) {
+        console.log('[PWA] Primera vez o instalable - mostrando prompt en 2 segundos');
         setTimeout(() => setShowPrompt(true), 2000);
-      }
-      
-      // Mostrar siempre si fue rechazado - popup inteligente
-      if (wasRejected) {
+      } else if (wasRejected) {
+        console.log('[PWA] Usuario rechazó antes - activando modo persistente');
         setShowAlways(true);
         setTimeout(() => setShowPrompt(true), 3000);
+      } else if (dismissed) {
+        console.log('[PWA] Usuario cerró antes - mostrando botón persistente');
+        setShowAlways(true);
+      } else {
+        console.log('[PWA] Estado inesperado, no mostrar nada');
       }
     };
 
@@ -87,39 +103,66 @@ export const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = ({ onInstall })
 
   // Función para manejar la instalación
   const handleInstall = async () => {
+    console.log('[PWA] Click en botón de instalación');
+    console.log('[PWA] Estado actual:', { 
+      isInstalled, 
+      showPrompt, 
+      showAlways, 
+      installAttempts,
+      hasDeferredPrompt: !!deferredPrompt 
+    });
+
     if (isInstalled) {
-      console.log('[PWA] App ya está instalada');
+      console.log('[PWA] App ya está instalada, no hacer nada');
       return;
     }
 
     try {
       if (deferredPrompt) {
-        // Mostrar el prompt nativo
-        deferredPrompt.prompt();
+        console.log('[PWA] Mostrando prompt nativo de instalación');
+        console.log('[PWA] deferredPrompt disponible:', deferredPrompt);
         
-        const { outcome } = await deferredPrompt.userChoice;
-        
-        if (outcome === 'accepted') {
-          console.log('[PWA] Usuario aceptó instalar');
-          localStorage.setItem('pwa-install-success', 'true');
-          setIsInstalled(true);
-          setShowPrompt(false);
-          setShowAlways(false);
+        try {
+          deferredPrompt.prompt();
+          console.log('[PWA] Prompt mostrado, esperando respuesta del usuario');
           
-          if (onInstall) onInstall();
-        } else if (outcome === 'dismissed') {
-          console.log('[PWA] Usuario cerró el prompt');
-          handleUserDismiss();
+          const { outcome } = await deferredPrompt.userChoice;
+          console.log('[PWA] Respuesta del usuario:', outcome);
+          
+          if (outcome === 'accepted') {
+            console.log('[PWA] Usuario aceptó instalar');
+            localStorage.setItem('pwa-install-success', 'true');
+            setIsInstalled(true);
+            setShowPrompt(false);
+            setShowAlways(false);
+            
+            if (onInstall) onInstall();
+          } else if (outcome === 'dismissed') {
+            console.log('[PWA] Usuario cerró el prompt');
+            handleUserDismiss();
+          }
+          
+          setDeferredPrompt(null);
+        } catch (promptError) {
+          console.error('[PWA] Error al mostrar prompt:', promptError);
+          console.log('[PWA] Ejecutando fallback debido a error en prompt');
+          handleManualInstall();
         }
-        
-        setDeferredPrompt(null);
       } else {
-        // Si no hay deferredPrompt, intentar instalación manual
+        console.log('[PWA] No hay deferredPrompt disponible');
+        console.log('[PWA] Motivos posibles:');
+        console.log('- App ya instalada');
+        console.log('- Navegador no soporta beforeinstallprompt');
+        console.log('- Prompt ya fue mostrado y descartado');
+        console.log('- Límite de intentos alcanzado');
+        console.log('Ejecutando instalación manual fallback...');
+        
         handleManualInstall();
       }
     } catch (error) {
-      console.error('[PWA] Error en instalación:', error);
-      // Fallback a instalación manual
+      console.error('[PWA] Error general en instalación:', error);
+      console.log('[PWA] Ejecutando fallback debido a error general');
+      
       handleManualInstall();
     }
   };
@@ -154,17 +197,37 @@ export const PWAInstallPrompt: React.FC<PWAInstallPromptProps> = ({ onInstall })
 
   // Instalación manual fallback
   const handleManualInstall = () => {
-    // Abrir en nueva ventana con parámetros de forzado
-    const url = new URL(window.location.href);
-    url.searchParams.set('forcePWA', 'true');
-    url.searchParams.set('t', Date.now().toString());
+    console.log('[PWA] Ejecutando instalación manual fallback');
     
-    window.open(url.toString(), '_blank');
-    
-    // Mostrar mensaje informativo
-    setTimeout(() => {
-      alert('Se ha abierto una nueva ventana con la opción de instalación. Si no aparece el popup, usa el método manual: Menú del navegador → "Añadir a pantalla de inicio"');
-    }, 1000);
+    try {
+      // Abrir en nueva ventana con parámetros de forzado
+      const url = new URL(window.location.href);
+      url.searchParams.set('forcePWA', 'true');
+      url.searchParams.set('t', Date.now().toString());
+      
+      console.log('[PWA] Abriendo nueva ventana:', url.toString());
+      window.open(url.toString(), '_blank');
+      
+      // Incrementar intentos
+      setInstallAttempts(prev => prev + 1);
+      
+      // Mostrar mensaje informativo con retraso
+      setTimeout(() => {
+        console.log('[PWA] Mostrando mensaje informativo de fallback');
+        alert('Se ha abierto una nueva ventana con la opción de instalación.\n\nSi no aparece el popup automáticamente, usa el método manual:\nMenú del navegador → "Añadir a pantalla de inicio"\n\nEn móviles: Compartir → Añadir a pantalla de inicio');
+      }, 1000);
+      
+      return true;
+    } catch (error) {
+      console.error('[PWA] Error en instalación manual:', error);
+      
+      // Mostrar mensaje de error con instrucciones
+      setTimeout(() => {
+        alert('No se pudo abrir la ventana de instalación automáticamente.\n\nPara instalar manualmente:\n1. Abre el menú del navegador\n2. Selecciona "Añadir a pantalla de inicio"\n3. Confirma la instalación');
+      }, 1000);
+      
+      return false;
+    }
   };
 
   // No mostrar si está instalado

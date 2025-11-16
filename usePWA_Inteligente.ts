@@ -39,20 +39,46 @@ export const usePWA = (): PWAReturn => {
     const installSuccess = localStorage.getItem('pwa-install-success') === 'true';
     const isInstalled = isStandalone || installSuccess;
     
+    console.log('[PWA] Detección de instalación:', { isStandalone, installSuccess, isInstalled });
+    
     // Verificar estado del usuario
     const installBlocked = localStorage.getItem('pwa-install-blocked') === 'true';
     const installRejected = localStorage.getItem('pwa-install-rejected') === 'true';
     const installDismissed = localStorage.getItem('pwa-install-dismissed') === 'true';
     
+    console.log('[PWA] Estado del usuario:', { installBlocked, installRejected, installDismissed });
+    
     // Contar intentos
     const attempts = parseInt(localStorage.getItem('pwa-install-attempts') || '0', 10);
+    console.log('[PWA] Intentos de instalación:', attempts);
     
     // Determinar choice del usuario
     let userChoice: PWAState['userChoice'] = null;
-    if (installBlocked) userChoice = 'dismissed';
-    else if (installRejected) userChoice = 'dismissed';
-    else if (installDismissed) userChoice = 'dismissed';
-    else if (isInstalled) userChoice = 'accepted';
+    if (installBlocked) {
+      userChoice = 'dismissed';
+      console.log('[PWA] Estado: Usuario bloqueó instalación');
+    } else if (installRejected) {
+      userChoice = 'dismissed';
+      console.log('[PWA] Estado: Usuario rechazó instalación');
+    } else if (installDismissed) {
+      userChoice = 'dismissed';
+      console.log('[PWA] Estado: Usuario cerró instalación');
+    } else if (isInstalled) {
+      userChoice = 'accepted';
+      console.log('[PWA] Estado: App instalada');
+    } else {
+      console.log('[PWA] Estado: Pendiente (no decisión tomada)');
+    }
+
+    // Determinar si es instalable
+    const shouldShowInstall = !isInstalled && !installBlocked && !installRejected;
+    
+    console.log('[PWA] Resultado final:', {
+      isInstalled,
+      userChoice,
+      installAttempts: attempts,
+      isInstallable: shouldShowInstall
+    });
 
     setState(prev => ({
       ...prev,
@@ -60,17 +86,8 @@ export const usePWA = (): PWAReturn => {
       userChoice,
       installAttempts: attempts,
       // Solo mostrar prompt si no está bloqueado y no está instalado
-      isInstallable: !isInstalled && !installBlocked && !installRejected
+      isInstallable: shouldShowInstall
     }));
-
-    console.log('[PWA] Estado inicial:', {
-      isInstalled,
-      installBlocked,
-      installRejected,
-      installDismissed,
-      attempts,
-      userChoice
-    });
   }, []);
 
   // Manejar evento beforeinstallprompt
@@ -107,6 +124,8 @@ export const usePWA = (): PWAReturn => {
   // Función de instalación
   const install = useCallback(async (): Promise<boolean> => {
     try {
+      console.log('[PWA] Iniciando instalación...');
+      
       setState(prev => ({
         ...prev,
         installAttempts: prev.installAttempts + 1
@@ -119,51 +138,77 @@ export const usePWA = (): PWAReturn => {
       if (deferredPrompt) {
         console.log('[PWA] Mostrando prompt nativo');
         
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        
-        if (outcome === 'accepted') {
-          console.log('[PWA] Instalación aceptada');
-          setState(prev => ({
-            ...prev,
-            isInstalled: true,
-            isInstallable: false,
-            userChoice: 'accepted'
-          }));
+        try {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
           
-          localStorage.setItem('pwa-install-success', 'true');
-          localStorage.removeItem('pwa-install-rejected');
-          localStorage.removeItem('pwa-install-dismissed');
-          localStorage.removeItem('pwa-install-blocked');
+          console.log('[PWA] Resultado de instalación:', outcome);
           
-          return true;
-        } else {
-          console.log('[PWA] Instalación rechazada');
-          handleDismiss(false);
-          return false;
+          if (outcome === 'accepted') {
+            console.log('[PWA] Instalación aceptada');
+            setState(prev => ({
+              ...prev,
+              isInstalled: true,
+              isInstallable: false,
+              userChoice: 'accepted'
+            }));
+            
+            localStorage.setItem('pwa-install-success', 'true');
+            localStorage.removeItem('pwa-install-rejected');
+            localStorage.removeItem('pwa-install-dismissed');
+            localStorage.removeItem('pwa-install-blocked');
+            
+            return true;
+          } else {
+            console.log('[PWA] Instalación rechazada');
+            dismiss(false);
+            return false;
+          }
+        } catch (promptError) {
+          console.error('[PWA] Error al mostrar prompt:', promptError);
+          // Fallback si el prompt falla
+          return handleManualInstall();
         }
       } else {
-        console.log('[PWA] No hay prompt disponible, intentando fallback');
+        console.log('[PWA] No hay deferredPrompt disponible');
+        console.log('[PWA] Estado actual:', {
+          isInstalled: state.isInstalled,
+          isInstallable: state.isInstallable,
+          installAttempts: currentAttempts
+        });
         
-        // Fallback: abrir con parámetros de forzado
-        const url = new URL(window.location.href);
-        url.searchParams.set('forcePWA', 'true');
-        url.searchParams.set('t', Date.now().toString());
-        
-        window.open(url.toString(), '_blank');
-        
-        // Mostrar mensaje informativo
-        setTimeout(() => {
-          alert('Se ha abierto una nueva ventana con opciones de instalación. Si no aparece el popup, usa: Menú del navegador → "Añadir a pantalla de inicio"');
-        }, 1000);
-        
-        return false;
+        // Fallback a instalación manual
+        return handleManualInstall();
       }
     } catch (error) {
-      console.error('[PWA] Error en instalación:', error);
+      console.error('[PWA] Error general en instalación:', error);
+      return handleManualInstall();
+    }
+  }, [deferredPrompt, state.isInstalled, state.isInstallable, dismiss]);
+
+  // Función de instalación manual fallback
+  const handleManualInstall = useCallback((): boolean => {
+    console.log('[PWA] Ejecutando instalación manual fallback');
+    
+    try {
+      // Abrir en nueva ventana con parámetros de forzado
+      const url = new URL(window.location.href);
+      url.searchParams.set('forcePWA', 'true');
+      url.searchParams.set('t', Date.now().toString());
+      
+      window.open(url.toString(), '_blank');
+      
+      // Mostrar mensaje informativo
+      setTimeout(() => {
+        alert('Se ha abierto una nueva ventana con la opción de instalación. Si no aparece el popup, usa el método manual: Menú del navegador → "Añadir a pantalla de inicio"');
+      }, 1000);
+      
+      return false;
+    } catch (error) {
+      console.error('[PWA] Error en instalación manual:', error);
       return false;
     }
-  }, [deferredPrompt]);
+  }, []);
 
   // Función de dismiss
   const dismiss = useCallback((permanent = false) => {
@@ -176,12 +221,18 @@ export const usePWA = (): PWAReturn => {
     }));
 
     if (permanent) {
+      console.log('[PWA] Marcando instalación como permanentemente rechazada');
       localStorage.setItem('pwa-install-blocked', 'true');
       localStorage.setItem('pwa-install-rejected', 'true');
+      localStorage.removeItem('pwa-install-dismissed');
     } else {
+      console.log('[PWA] Marcando instalación como temporalmente rechazada');
       localStorage.setItem('pwa-install-dismissed', 'true');
+      localStorage.removeItem('pwa-install-rejected');
+      localStorage.removeItem('pwa-install-blocked');
     }
     
+    // Limpiar deferredPrompt pero conservarlo para debug
     setDeferredPrompt(null);
   }, []);
 
@@ -199,13 +250,25 @@ export const usePWA = (): PWAReturn => {
       'beforeinstallprompt'
     ];
     
-    keys.forEach(key => localStorage.removeItem(key));
+    console.log('[PWA] Limpiando keys:', keys);
+    keys.forEach(key => {
+      localStorage.removeItem(key);
+      console.log(`[PWA] Limpiado: ${key}`);
+    });
+    
+    // Limpiar sessionStorage
     sessionStorage.clear();
+    console.log('[PWA] Limpiado sessionStorage');
+    
+    // Limpiar estado en memoria
+    setDeferredPrompt(null);
     
     // Re-inicializar
+    console.log('[PWA] Re-inicializando estado...');
     initializePWA();
     
-    // Disparar evento de forzado
+    // Disparar evento de forzado para debug
+    console.log('[PWA] Disparando evento beforeinstallprompt de debug');
     window.dispatchEvent(new Event('beforeinstallprompt'));
   }, [initializePWA]);
 
@@ -246,16 +309,19 @@ export const usePWA = (): PWAReturn => {
 
   // Event listeners
   useEffect(() => {
+    const handleOnline = () => setState(prev => ({ ...prev, isOffline: false }));
+    const handleOffline = () => setState(prev => ({ ...prev, isOffline: true }));
+    
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
-    window.addEventListener('online', () => setState(prev => ({ ...prev, isOffline: false })));
-    window.addEventListener('offline', () => setState(prev => ({ ...prev, isOffline: true })));
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
-      window.removeEventListener('online', () => setState(prev => ({ ...prev, isOffline: false })));
-      window.removeEventListener('offline', () => setState(prev => ({ ...prev, isOffline: true })));
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
     };
   }, [handleBeforeInstallPrompt, handleAppInstalled]);
 

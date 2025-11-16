@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ImageGallery from '@/components/ImageGallery';
+
 import { supabase, Communique, Survey } from '@/lib/supabase';
 import { Calendar, FileText, Vote, MessageSquare, QrCode, Clock } from 'lucide-react';
 import { format, differenceInDays } from 'date-fns';
@@ -325,6 +326,8 @@ export default function HomePage() {
       </div>
 
       <Footer />
+      
+      {/* El componente PWAInstallPrompt_Inteligente se maneja automáticamente desde App.tsx */}
     </div>
   );
 }

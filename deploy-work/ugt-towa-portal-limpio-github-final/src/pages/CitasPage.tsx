@@ -50,9 +50,9 @@ export default function CitasPage() {
   async function loadMyAppointments() {
     const { data } = await supabase
       .from('appointments')
-      .select('*, slot:appointment_slots(*)')
+      .select('*')
       .eq('user_id', user?.id)
-      .order('start_time', { ascending: false });
+      .order('appointment_date', { ascending: false });
     if (data) setMyAppointments(data as any);
   }
 
@@ -140,54 +140,109 @@ export default function CitasPage() {
   }
 
   async function handleConfirmBooking() {
-    if (!user || !selectedSlot) return;
+    if (!user || !selectedSlot) {
+      toast.error('Usuario no autenticado o slot no seleccionado');
+      return;
+    }
+
+    // Validaciones
+    if (!comments.trim() && !questions.trim() && uploadedFiles.length === 0) {
+      const shouldProceed = confirm('No has agregado comentarios, preguntas o documentos. ¿Deseas proceder de todas formas?');
+      if (!shouldProceed) return;
+    }
 
     setIsBooking(true);
 
     try {
+      // Extraer fecha y hora del slot
+      const startTime = new Date(selectedSlot.start_time);
+      const appointmentDate = startTime.toISOString().split('T')[0]; // YYYY-MM-DD
+      const appointmentTime = startTime.toTimeString().split(' ')[0]; // HH:MM:SS
+
+      // Validar que la fecha no sea en el pasado
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const selectedDate = new Date(appointmentDate);
+      
+      if (selectedDate < today) {
+        toast.error('No puedes reservar citas en fechas pasadas');
+        setIsBooking(false);
+        return;
+      }
+
+      // Verificar si el usuario ya tiene una cita para la misma fecha y hora
+      const { data: existingAppointment } = await supabase
+        .from('appointments')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('appointment_date', appointmentDate)
+        .eq('appointment_time', appointmentTime)
+        .eq('status', 'confirmed')
+        .single();
+
+      if (existingAppointment) {
+        toast.error('Ya tienes una cita confirmada para esta fecha y hora');
+        setIsBooking(false);
+        return;
+      }
+
       const { data: newAppointment, error } = await supabase
         .from('appointments')
         .insert([{
           user_id: user.id,
-          slot_id: selectedSlot.id,
           delegate_type: selectedType,
-          start_time: selectedSlot.start_time,
-          end_time: selectedSlot.end_time,
+          appointment_date: appointmentDate,
+          appointment_time: appointmentTime,
           status: 'confirmed',
-          comments: comments || null,
-          questions: questions || null,
-          documents: uploadedFiles.length > 0 ? uploadedFiles : null,
+          comments: comments.trim() || null,
+          questions: questions.trim() || null,
+          documents: uploadedFiles.length > 0 ? JSON.stringify(uploadedFiles) : '[]'::jsonb,
         }])
         .select()
         .single();
 
       if (error) {
-        if (error.message.includes('El horario seleccionado ya no está disponible')) {
-          toast.error('Este horario ya ha sido reservado por otra persona');
+        console.error('Error al insertar cita:', error);
+        
+        // Manejo específico de errores
+        if (error.message.includes('duplicate') || error.message.includes('único')) {
+          toast.error('Esta cita ya ha sido reservada. Por favor selecciona otro horario.');
+        } else if (error.message.includes('foreign key')) {
+          toast.error('Error de referencia. Por favor intenta nuevamente.');
+        } else if (error.message.includes('appointment_date')) {
+          toast.error('Error en la fecha de la cita. Por favor verifica los datos.');
         } else {
-          throw error;
+          toast.error('Error al reservar la cita: ' + (error.message || 'Error desconocido'));
         }
-      } else {
-        // Enviar notificación por email
-        try {
-          await supabase.functions.invoke('notify-appointment', {
-            body: {
-              appointmentId: newAppointment.id,
-              action: 'confirmed'
-            }
-          });
-        } catch (notifyError) {
-          console.error('Error al enviar notificación:', notifyError);
-        }
-
-        toast.success('Cita reservada correctamente. Recibirás una confirmación por email.');
-        closeBookingModal();
-        loadSlots();
-        loadMyAppointments();
+        return;
       }
+
+      if (!newAppointment) {
+        toast.error('No se recibió confirmación de la reserva');
+        setIsBooking(false);
+        return;
+      }
+
+      // Enviar notificación por email
+      try {
+        await supabase.functions.invoke('notify-appointment', {
+          body: {
+            appointmentId: newAppointment.id,
+            action: 'confirmed'
+          }
+        });
+      } catch (notifyError) {
+        console.error('Error al enviar notificación:', notifyError);
+        // No bloquear el proceso por error de notificación
+      }
+
+      toast.success('Cita reservada correctamente. Recibirás una confirmación por email.');
+      closeBookingModal();
+      loadSlots();
+      loadMyAppointments();
     } catch (error: any) {
       console.error('Error al reservar cita:', error);
-      toast.error('Error al reservar cita: ' + (error.message || 'Error desconocido'));
+      toast.error('Error inesperado al reservar cita. Por favor intenta nuevamente.');
     } finally {
       setIsBooking(false);
     }
@@ -229,9 +284,15 @@ export default function CitasPage() {
 
   function getSlotForTime(time: string): AppointmentSlot | undefined {
     return slots.find(s => {
-      const slotTime = new Date(s.start_time).getHours();
-      const targetHour = parseInt(time.split(':')[0]);
-      return slotTime === targetHour;
+      if (!s.start_time) return false;
+      try {
+        const slotTime = new Date(s.start_time).getHours();
+        const targetHour = parseInt(time.split(':')[0]);
+        return slotTime === targetHour;
+      } catch (error) {
+        console.error('Error parsing slot time:', s.start_time, error);
+        return false;
+      }
     });
   }
 
@@ -375,13 +436,13 @@ export default function CitasPage() {
                         <div className="flex items-center text-sm text-gray-600 mb-3">
                           <CalendarIcon className="h-4 w-4 mr-2" />
                           <span>
-                            {format(new Date(apt.start_time), "d 'de' MMM, yyyy", { locale: es })}
+                            {apt.appointment_date ? format(new Date(apt.appointment_date), "d 'de' MMM, yyyy", { locale: es }) : 'Fecha no disponible'}
                           </span>
                         </div>
                         <div className="flex items-center text-sm text-gray-600 mb-3">
                           <Clock className="h-4 w-4 mr-2" />
                           <span>
-                            {format(new Date(apt.start_time), 'HH:mm')} - {format(new Date(apt.end_time), 'HH:mm')}
+                            {apt.appointment_time ? apt.appointment_time.slice(0, 5) : 'Hora no disponible'}
                           </span>
                         </div>
                         <button
@@ -417,11 +478,26 @@ export default function CitasPage() {
               <div className="bg-gray-50 p-4 rounded-lg">
                 <p className="text-sm text-gray-600 mb-2">Horario seleccionado:</p>
                 <p className="text-lg font-semibold">
-                  {format(new Date(selectedSlot.start_time), "d 'de' MMMM, yyyy 'a las' HH:mm", { locale: es })}
+                  {selectedSlot && format(new Date(selectedSlot.start_time), "d 'de' MMMM, yyyy 'a las' HH:mm", { locale: es })}
                 </p>
                 <p className="text-sm text-gray-600 mt-1 capitalize">
                   Tipo: {selectedType}
                 </p>
+                {selectedSlot && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Duración: 1 hora
+                  </p>
+                )}
+              </div>
+
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <p className="text-sm text-blue-800 mb-1">📋 Información importante:</p>
+                <ul className="text-xs text-blue-700 space-y-1">
+                  <li>• Asegúrate de llegar 10 minutos antes de tu cita</li>
+                  <li>• Trae tu documento de identidad</li>
+                  <li>• Los documentos adjuntos son opcionales pero recomendados</li>
+                  <li>• Puedes cancelar la cita hasta 2 horas antes</li>
+                </ul>
               </div>
 
               <div>
@@ -430,11 +506,13 @@ export default function CitasPage() {
                 </label>
                 <textarea
                   value={comments}
-                  onChange={(e) => setComments(e.target.value)}
+                  onChange={(e) => setComments(e.target.value.slice(0, 500))} // Límite de 500 caracteres
                   placeholder="Comparte cualquier información adicional que consideres relevante..."
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
                   rows={3}
+                  maxLength={500}
                 />
+                <p className="text-xs text-gray-500 mt-1">{comments.length}/500 caracteres</p>
               </div>
 
               <div>
@@ -443,11 +521,13 @@ export default function CitasPage() {
                 </label>
                 <textarea
                   value={questions}
-                  onChange={(e) => setQuestions(e.target.value)}
+                  onChange={(e) => setQuestions(e.target.value.slice(0, 500))} // Límite de 500 caracteres
                   placeholder="¿Qué temas te gustaría abordar en la cita?"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
                   rows={3}
+                  maxLength={500}
                 />
+                <p className="text-xs text-gray-500 mt-1">{questions.length}/500 caracteres</p>
               </div>
 
               <div>
@@ -532,7 +612,9 @@ export default function CitasPage() {
                     Reservando...
                   </>
                 ) : (
-                  'Confirmar Reserva'
+                  <>
+                    ✅ Confirmar Reserva
+                  </>
                 )}
               </button>
             </div>
