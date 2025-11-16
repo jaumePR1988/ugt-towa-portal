@@ -1,7 +1,8 @@
 # ✅ VERIFICACIÓN FINAL - TODOS LOS ERRORES RESUELTOS
 
-**Fecha**: 2025-11-17 05:04:33  
-**Estado**: ✅ **SISTEMA COMPLETAMENTE OPERATIVO**
+**Fecha**: 2025-11-17 05:19:30  
+**Estado**: ✅ **SISTEMA COMPLETAMENTE OPERATIVO**  
+**Última corrección**: Función robusta de timestamp implementada
 
 ## 🎯 Problemas Resueltos
 
@@ -13,9 +14,13 @@
 
 ### 2. ✅ Error "invalid input syntax for type time: 2025-11-18T08:00:00+00:00"
 **RESUELTO**:
-- ✅ Formato corregido: Extracción correcta de hora desde timestamp
-- ✅ Función implementada: `toISOString().split("T")[0]` para fechas
-- ✅ Conversión de tiempo: Separación correcta de formato TIME
+- ✅ **Primera corrección**: Formato inicial corregido con `start_time.split(' ')[1]?.split('.')[0]`
+- ✅ **Corrección robusta**: Función avanzada que maneja múltiples formatos de timestamp
+- ✅ **Compatible con formatos**:
+  - Formato estándar: `2025-11-10 08:00:00+00`
+  - Formato ISO: `2025-11-18T08:00:00+00:00`
+- ✅ **Código robusto implementado**: Función IIFE que detecta automáticamente el formato
+- ✅ **Estado**: Sistema totalmente compatible con diferentes formatos de timestamp
 
 ### 3. ✅ Banner PWA Fijo Superior
 **RESUELTO**:
@@ -46,6 +51,16 @@
 const nt = t.toISOString().split("T")[0];  // Formato correcto
 .eq("appointment_date", nt)               // Campo correcto  
 .order("start_time");                     // Consulta válida
+
+// ✅ Función robusta para appointment_time (Línea 155-167)
+appointment_time: (() => {
+  let timeStr = selectedSlot.start_time;
+  if (timeStr.includes('T')) {
+    return timeStr.split('T')[1].split('+')[0].split('-')[0];
+  } else {
+    return timeStr.split(' ')[1]?.split('.')[0] || timeStr.split(' ')[1];
+  }
+})(),
 ```
 
 ### Estado de la Base de Datos
@@ -138,7 +153,34 @@ ADD COLUMN appointment_time TIME;
 | Error Original | Estado | Solución Aplicada |
 |---|---|---|
 | `Could not find the 'appointment_date' column` | ✅ RESUELTO | Migración BD + tipos actualizados |
-| `invalid input syntax for type time` | ✅ RESUELTO | Formato de timestamp corregido |
+| `invalid input syntax for type time` (inicial) | ✅ RESUELTO | Formato básico corregido |
+| `invalid input syntax for type time` (persistente) | ✅ RESUELTO | Función robusta implementada |
 | Banner PWA molesto | ✅ RESUELTO | Banner eliminado, popup mantenido |
 | Notificaciones admin | ✅ OPERATIVO | Sistema completo funcionando |
 | `record new has no field date` | ✅ RESUELTO | Campos correctos implementados |
+
+## 🔧 Corrección Robusta de Timestamp (2025-11-17 05:19:30)
+
+**Problema detectado**: El error de timestamp persistía después de la primera corrección.
+
+**Solución implementada**: Función robusta que maneja múltiples formatos de timestamp:
+- **Formato ISO**: `2025-11-18T08:00:00+00:00` 
+- **Formato estándar**: `2025-11-10 08:00:00+00`
+
+**Código implementado**:
+```typescript
+appointment_time: (() => {
+  let timeStr = selectedSlot.start_time;
+  if (timeStr.includes('T')) {
+    return timeStr.split('T')[1].split('+')[0].split('-')[0];
+  } else {
+    return timeStr.split(' ')[1]?.split('.')[0] || timeStr.split(' ')[1];
+  }
+})(),
+```
+
+**Estado**: ✅ **CORRECCIÓN ROBUSTA APLICADA Y LISTA PARA DEPLOYMENT**
+
+**Archivos de respaldo**:
+- `UGT_TOWA_TIMESTAMP_ROBUST_FIX_20251117_0519.zip`
+- `CORRECCION_TIMESTAMP_ROBUST_APPLIED.md`

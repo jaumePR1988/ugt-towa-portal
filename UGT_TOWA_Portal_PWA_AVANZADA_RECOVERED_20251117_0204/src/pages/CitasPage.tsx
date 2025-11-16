@@ -152,7 +152,17 @@ export default function CitasPage() {
           slot_id: selectedSlot.id,
           delegate_type: selectedType,
           appointment_date: selectedSlot.appointment_date,
-          appointment_time: selectedSlot.start_time.split(' ')[1]?.split('.')[0],
+          appointment_time: (() => {
+            // Extraer solo la hora de diferentes formatos de timestamp
+            let timeStr = selectedSlot.start_time;
+            if (timeStr.includes('T')) {
+              // Formato ISO: "2025-11-18T08:00:00+00:00"
+              return timeStr.split('T')[1].split('+')[0].split('-')[0];
+            } else {
+              // Formato estándar: "2025-11-10 08:00:00+00"
+              return timeStr.split(' ')[1]?.split('.')[0] || timeStr.split(' ')[1];
+            }
+          })(),
           comments: comments || null,
           questions: questions || null,
           documents: uploadedFiles.length > 0 ? uploadedFiles : null,
