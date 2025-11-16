@@ -19,14 +19,14 @@
         "id": "3",
         "content": "Deploy a repositorio GitHub",
         "details": "1. Clonar repositorio https://github.com/jaumePR1988/ugt-towa-portal.git. 2. Reemplazar contenido con versión mejorada. 3. Hacer commit y push de todos los cambios.",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "4": {
         "id": "4",
         "content": "Configurar proyecto en Vercel",
         "details": "1. Conectar repositorio GitHub a Vercel. 2. Configurar variables de entorno en Vercel (VAPID key, Supabase credentials). 3. Deploy automático. 4. Verificar que el proyecto se construye correctamente.",
-        "status": "pending",
+        "status": "in_progress",
         "priority": "high"
       },
       "5": {
