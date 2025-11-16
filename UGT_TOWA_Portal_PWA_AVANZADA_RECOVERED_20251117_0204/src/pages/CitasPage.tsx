@@ -152,7 +152,7 @@ export default function CitasPage() {
           slot_id: selectedSlot.id,
           delegate_type: selectedType,
           appointment_date: selectedSlot.appointment_date,
-          appointment_time: selectedSlot.start_time,
+          appointment_time: selectedSlot.start_time.split(' ')[1]?.split('.')[0],
           comments: comments || null,
           questions: questions || null,
           documents: uploadedFiles.length > 0 ? uploadedFiles : null,
