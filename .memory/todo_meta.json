@@ -3,17 +3,10 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Preparación de versión estable sin notificaciones",
-        "details": "Usuario decide cancelar implementación de notificaciones push. Mantener versión estable anterior del portal UGT Towa sin sistema de notificaciones. Verificar que todos los componentes básicos funcionen correctamente (citas, administración, mapas).",
-        "status": "completed",
+        "content": "Fix TypeScript compilation errors in UGT Towa portal",
+        "details": "1. Fix type mismatch in usePWA.ts line 78: Event vs BeforeInstallPromptEvent\n2. Fix undefined 'user' variable in AdminCitas.tsx line 1321\n3. Import and use useAuth hook to get current user data\n4. Test the fixes by running build locally\n5. Deploy updated code to resolve Vercel build failure",
+        "status": "pending",
         "priority": "high"
-      },
-      "2": {
-        "id": "2",
-        "content": "Deploy manual por parte del usuario",
-        "details": "El usuario hará el redeploy manual de la versión estable. No se requiere más asistencia automatizada. Usuario confirmó que prefiere manejar el deploy él mismo.",
-        "status": "cancelled",
-        "priority": "low"
       }
     }
   }
