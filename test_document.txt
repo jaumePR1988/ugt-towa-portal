@@ -1,0 +1,18 @@
+DOCUMENTO DE PRUEBA PARA UPLOAD
+
+Este es un documento de prueba creado para testear la funcionalidad de upload en el repositorio de documentos sindicales de UGT Towa.
+
+Fecha de creación: 18 de noviembre de 2025
+Propósito: Test de funcionalidad de upload de archivos
+Tipo de documento: Archivo de texto plano
+
+Contenido del documento:
+- Test de subida de archivos
+- Verificación de la interfaz de gestión documental
+- Prueba de metadata (título y descripción)
+- Validación de tipos de archivo permitidos
+
+Este documento debería poder ser subido exitosamente a través de la interfaz web de administración del portal sindical UGT Towa.
+
+---
+Fin del documento de prueba.
