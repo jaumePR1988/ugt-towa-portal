@@ -1,0 +1,13 @@
+TEST DOCUMENT - RLS POLICY VERIFICATION
+
+This is a test document created to verify the Row Level Security (RLS) policy fix for document uploads.
+
+Test Details:
+- Created: 2025-11-18 03:27:35
+- Purpose: Testing document upload functionality in admin panel
+- Expected: Successful upload with proper RLS enforcement
+
+Document Content:
+This document tests the upload functionality for union documents in the administrative interface. The RLS policy should allow authenticated users to upload documents while maintaining proper security controls.
+
+Content for testing purposes only.
