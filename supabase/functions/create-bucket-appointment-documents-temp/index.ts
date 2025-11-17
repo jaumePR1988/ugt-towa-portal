@@ -38,8 +38,8 @@ Deno.serve(async (req) => {
     };
 
     // Add optional configurations
-    bucketConfig.allowed_mime_types = ["application/pdf", "image/jpeg", "image/jpg", "image/png", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
-    bucketConfig.file_size_limit = 5242880;
+    bucketConfig.allowed_mime_types = ["image/*"];
+    bucketConfig.file_size_limit = 10485760;
 
     // Create bucket using Storage API
     const response = await fetch(storageUrl, {
@@ -111,8 +111,8 @@ Deno.serve(async (req) => {
         bucket: {
         name: 'appointment-documents',
         public: true,
-        allowed_mime_types: ["application/pdf", "image/jpeg", "image/jpg", "image/png", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"],
-        file_size_limit: 5242880,
+        allowed_mime_types: ["image/*"],
+        file_size_limit: 10485760,
         policies: policyResults
         }
     }), {
