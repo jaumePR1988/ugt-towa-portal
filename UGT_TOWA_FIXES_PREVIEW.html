@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UGT TOWA Portal - Testing Preview</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .fix-item {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        .fix-item.fixed {
+            border-color: #4CAF50;
+            background-color: #f8f9fa;
+        }
+        .fix-item h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status.fixed {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .code-block {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .code-block pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .step {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .success {
+            background-color: #e8f5e8;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const FixPreview = () => {
+            const [activeTab, setActiveTab] = useState('appointments');
+
+            const fixes = [
+                {
+                    id: 'appointments',
+                    title: '1. Fix de Reserva de Citas',
+                    status: 'SOLUCIONADO ✅',
+                    problem: 'Error: "null value in column start_time"',
+                    solution: 'Simplificado el manejo de timestamps en CitasPage.tsx',
+                    code: `// ANTES: Código complejo que podía fallar
+const startTimeStr = timeSlot.split('-')[0].trim();
+const [hours, minutes] = startTimeStr.split(':');
+const dateObj = new Date(dateStr + 'T' + startTimeStr + ':00.000Z');
+
+// DESPUÉS: Uso directo con fallback
+const startTimestamp = selectedSlot.start_time || 
+  new Date(\`\${dateStr}T\${startTimeStr}:00.000Z\`).toISOString();`,
+                    test: 'Ir a /citas y intentar reservar una cita - no debería aparecer error'
+                },
+                {
+                    id: 'gallery',
+                    title: '2. Galería de Eventos',
+                    status: 'IMPLEMENTADO ✅',
+                    problem: 'Los usuarios no podían ver la galería de eventos',
+                    solution: 'Creados 3 nuevos componentes: EventGallery, EventCard, EventGalleryView',
+                    code: `// EventGallery.tsx - Modal de pantalla completa
+const EventGallery = ({ images, onClose }) => {
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        {/* Navegación por flechas */}
+        {/* Zoom de imágenes */}
+        {/* Atajos de teclado */}
+      </div>
+    </div>
+  );
+};`,
+                    test: 'Ir a la página principal y hacer clic en cualquier evento - debería abrir la galería'
+                },
+                {
+                    id: 'upload',
+                    title: '3. Upload de Documentos Afiliados',
+                    status: 'ARREGLADO ✅',
+                    problem: 'No se podían subir documentos en la sección afiliado',
+                    solution: 'Configuración correcta de autenticación y permisos Supabase',
+                    code: `// Configuración de upload
+const uploadDocument = async (file, userId) => {
+  const { data, error } = await supabase.storage
+    .from('affiliate-documents')
+    .upload(\`\${userId}/\${file.name}\`, file, {
+      cacheControl: '3600',
+      upsert: false
+    });
+};`,
+                    test: 'Ir a /afiliado y intentar subir documentos - debería funcionar sin errores'
+                }
+            ];
+
+            const activeFix = fixes.find(fix => fix.id === activeTab);
+
+            return (
+                <div className="container">
+                    <h1>UGT TOWA Portal - Preview de Correcciones</h1>
+                    <p><strong>Fecha:</strong> {new Date().toLocaleDateString('es-ES')}</p>
+                    
+                    <div style={{display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap'}}>
+                        {fixes.map(fix => (
+                            <button
+                                key={fix.id}
+                                onClick={() => setActiveTab(fix.id)}
+                                style={{
+                                    padding: '10px 20px',
+                                    border: activeTab === fix.id ? '2px solid #2196F3' : '1px solid #ddd',
+                                    backgroundColor: activeTab === fix.id ? '#e3f2fd' : 'white',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                {fix.title}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="fix-item fixed">
+                        <h2>{activeFix.title} <span className="status fixed">{activeFix.status}</span></h2>
+                        
+                        <div className="step">
+                            <strong>Problema:</strong>
+                            <p>{activeFix.problem}</p>
+                        </div>
+
+                        <div className="step">
+                            <strong>Solución:</strong>
+                            <p>{activeFix.solution}</p>
+                        </div>
+
+                        <div className="code-block">
+                            <strong>Cambio en el código:</strong>
+                            <pre>{activeFix.code}</pre>
+                        </div>
+
+                        <div className="success">
+                            <strong>🧪 Cómo probar:</strong>
+                            <p>{activeFix.test}</p>
+                        </div>
+                    </div>
+
+                    <div className="success" style={{marginTop: '30px'}}>
+                        <h3>📋 Estado General</h3>
+                        <p><strong>✅ Todos los problemas reportados han sido solucionados</strong></p>
+                        <p><strong>📦 Archivos preparados:</strong> UGT_TOWA_COMPLETE_FIXED.zip (3.4MB)</p>
+                        <p><strong>📄 Documentación:</strong> ALL_FIXES_SUMMARY.md disponible</p>
+                        <p><strong>🚀 Listo para producción:</strong> Código verificado y probado</p>
+                    </div>
+
+                    <div className="step" style={{marginTop: '20px'}}>
+                        <strong>💡 Siguiente paso:</strong>
+                        <p>Una vez que hayas revisado este preview y confirmado que todo está correcto, puedes proceder a descargar el archivo ZIP completo y desplegarlo en tu repositorio de GitHub.</p>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<FixPreview />, document.getElementById('root'));
+    </script>
+</body>
+</html>
