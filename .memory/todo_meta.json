@@ -3,23 +3,16 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Verify Supabase configuration and test database",
-        "details": "1. Check if all tables exist in Supabase ✅\n2. Verify edge functions are deployed ✅\n3. Test storage buckets configuration ✅\n4. Verify RLS policies are active ✅\n5. Create test account ✅",
+        "content": "Fix appointment booking error",
+        "details": "1. Analyze CitasPage.tsx to find start_time issue ✅\n2. Fix null value constraint violation ✅\n3. Ensure proper data structure ✅\n4. Update insert to use start_time/end_time timestamps ✅",
         "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Deploy to Vercel from GitHub repository",
-        "details": "1. Connect GitHub repo to Vercel ✅\n2. Configure environment variables (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY) ✅\n3. Deploy and test - READY TO DEPLOY\n4. Verify appointments system functionality",
+        "content": "Remove PWA install popup",
+        "details": "1. Find PWA install prompt component ✅\n2. Remove or disable the popup ✅\n3. Update related hooks/components ✅\n4. Test no popup appears ✅",
         "status": "completed",
-        "priority": "high"
-      },
-      "3": {
-        "id": "3",
-        "content": "Create admin user and test complete system",
-        "details": "1. Register admin account\n2. Set admin role in database\n3. Test appointments booking\n4. Test admin management panel\n5. Verify email notifications",
-        "status": "pending",
         "priority": "medium"
       }
     }

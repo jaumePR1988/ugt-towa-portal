@@ -145,24 +145,41 @@ export default function CitasPage() {
     setIsBooking(true);
 
     try {
+      // Create proper timestamp from slot
+      const dateStr = selectedSlot.appointment_date;
+      const startTimeStr = (() => {
+        let timeStr = selectedSlot.start_time;
+        if (timeStr.includes('T')) {
+          // Formato ISO: "2025-11-18T08:00:00+00:00"
+          return timeStr.split('T')[1].split('+')[0].split('.')[0];
+        } else {
+          // Formato estándar: "2025-11-10 08:00:00+00"
+          return timeStr.split(' ')[1]?.split('.')[0] || '08:00:00';
+        }
+      })();
+      
+      const endTimeStr = (() => {
+        let timeStr = selectedSlot.end_time;
+        if (timeStr.includes('T')) {
+          // Formato ISO: "2025-11-18T09:00:00+00:00"
+          return timeStr.split('T')[1].split('+')[0].split('.')[0];
+        } else {
+          // Formato estándar: "2025-11-10 09:00:00+00"
+          return timeStr.split(' ')[1]?.split('.')[0] || '09:00:00';
+        }
+      })();
+
+      const startTimestamp = new Date(`${dateStr}T${startTimeStr}:00.000Z`).toISOString();
+      const endTimestamp = new Date(`${dateStr}T${endTimeStr}:00.000Z`).toISOString();
+
       const { data: newAppointment, error } = await supabase
         .from('appointments')
         .insert([{
           user_id: user.id,
           slot_id: selectedSlot.id,
           delegate_type: selectedType,
-          appointment_date: selectedSlot.appointment_date,
-          appointment_time: (() => {
-            // Extraer solo la hora de diferentes formatos de timestamp
-            let timeStr = selectedSlot.start_time;
-            if (timeStr.includes('T')) {
-              // Formato ISO: "2025-11-18T08:00:00+00:00"
-              return timeStr.split('T')[1].split('+')[0].split('-')[0];
-            } else {
-              // Formato estándar: "2025-11-10 08:00:00+00"
-              return timeStr.split(' ')[1]?.split('.')[0] || timeStr.split(' ')[1];
-            }
-          })(),
+          start_time: startTimestamp,
+          end_time: endTimestamp,
           comments: comments || null,
           questions: questions || null,
           documents: uploadedFiles.length > 0 ? uploadedFiles : null,
