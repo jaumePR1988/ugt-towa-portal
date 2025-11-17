@@ -3,10 +3,24 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Fix TypeScript compilation errors in UGT Towa portal",
-        "details": "1. Fix type mismatch in usePWA.ts line 78: Event vs BeforeInstallPromptEvent\n2. Fix undefined 'user' variable in AdminCitas.tsx line 1321\n3. Import and use useAuth hook to get current user data\n4. Test the fixes by running build locally\n5. Deploy updated code to resolve Vercel build failure",
-        "status": "completed",
+        "content": "Set up Supabase project and configure backend",
+        "details": "1. Create new Supabase project\n2. Apply database migrations in order\n3. Deploy edge functions\n4. Configure storage buckets\n5. Set up environment variables",
+        "status": "pending",
         "priority": "high"
+      },
+      "2": {
+        "id": "2",
+        "content": "Deploy to Vercel from GitHub repository",
+        "details": "1. Connect GitHub repo to Vercel\n2. Configure environment variables\n3. Deploy and test\n4. Verify appointments system functionality",
+        "status": "pending",
+        "priority": "high"
+      },
+      "3": {
+        "id": "3",
+        "content": "Create admin user and test complete system",
+        "details": "1. Register admin account\n2. Set admin role in database\n3. Test appointments booking\n4. Test admin management panel\n5. Verify email notifications",
+        "status": "pending",
+        "priority": "medium"
       }
     }
   }
