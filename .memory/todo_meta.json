@@ -3,16 +3,37 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Fix appointment booking error",
-        "details": "1. Analyze CitasPage.tsx to find start_time issue ✅\n2. Fix null value constraint violation ✅\n3. Ensure proper data structure ✅\n4. Update insert to use start_time/end_time timestamps ✅",
-        "status": "completed",
+        "content": "Apply fixes to GitHub repository",
+        "details": "✅ Fixed appointment booking start_time constraint error ✅ Removed PWA installation popup ✅ Committed changes locally (commit: 0fed185) ⏳ Push to GitHub (user needs to authenticate)",
+        "status": "in_progress",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Remove PWA install popup",
-        "details": "1. Find PWA install prompt component ✅\n2. Remove or disable the popup ✅\n3. Update related hooks/components ✅\n4. Test no popup appears ✅",
-        "status": "completed",
+        "content": "Redeploy to Vercel",
+        "details": "1. Configure environment variables in Vercel 2. Trigger automatic deployment from GitHub 3. Verify deployment success",
+        "status": "pending",
+        "priority": "high"
+      },
+      "3": {
+        "id": "3",
+        "content": "Test appointment booking functionality",
+        "details": "1. Test complete appointment booking flow 2. Verify no start_time constraint errors 3. Check confirmation messages work correctly 4. Test document upload during booking",
+        "status": "pending",
+        "priority": "high"
+      },
+      "4": {
+        "id": "4",
+        "content": "Verify PWA popup removal",
+        "details": "1. Load website on multiple browsers 2. Confirm no installation popup appears 3. Check PWA functionality remains intact",
+        "status": "pending",
+        "priority": "medium"
+      },
+      "5": {
+        "id": "5",
+        "content": "Create admin user and test admin interface",
+        "details": "1. Register test account 2. Update user role in database 3. Test admin dashboard functionality 4. Verify appointment management features",
+        "status": "pending",
         "priority": "medium"
       }
     }
