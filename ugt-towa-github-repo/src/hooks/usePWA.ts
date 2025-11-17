@@ -73,7 +73,7 @@ export const usePWA = () => {
     }
 
     // Capturar evento de instalacion
-    const handleBeforeInstallPrompt = (e: Event) => {
+    const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
       e.preventDefault();
       setDeferredPrompt(e);
       setPwaState(prev => ({ ...prev, isInstallable: true }));

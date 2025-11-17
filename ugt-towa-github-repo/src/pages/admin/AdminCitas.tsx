@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo, useRef } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import NotificationSetup from '@/components/NotificationSetup';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase, Appointment } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { Bell, CheckCircle, XCircle, Calendar, Clock, Filter, TrendingUp, AlertCircle, Search, User, RefreshCcw, BarChart3, Users, Target, Activity, Settings, Plus, Minus, Edit3, Save, X, Download, FileText, FileSpreadsheet, CalendarDays, Clock3, TrendingDown, Mail, Trash2 } from 'lucide-react';
@@ -205,6 +206,9 @@ export default function AdminCitas() {
   const [filterType, setFilterType] = useState<string>('all');
   const [filterRead, setFilterRead] = useState<string>('all');
   const [activeTab, setActiveTab] = useState<'appointments' | 'notifications' | 'stats' | 'config'>('appointments');
+  
+  // Authentication context
+  const { user, profile } = useAuth();
   
   // Estados para filtros avanzados
   const [users, setUsers] = useState<UserOption[]>([]);
@@ -1318,7 +1322,7 @@ export default function AdminCitas() {
         </div>
 
         {/* Configuración de Notificaciones */}
-        <NotificationSetup userId={user?.id || ''} role={user?.role || ''} className="mb-8" />
+        <NotificationSetup userId={user?.id || ''} role={profile?.role || ''} className="mb-8" />
 
         {/* Dashboard de Estadísticas */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
