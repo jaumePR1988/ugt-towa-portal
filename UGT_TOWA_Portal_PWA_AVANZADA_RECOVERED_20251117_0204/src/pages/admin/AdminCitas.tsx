@@ -3,6 +3,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import NotificationSetup from '@/components/NotificationSetup';
 import { supabase, Appointment } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { Bell, CheckCircle, XCircle, Calendar, Clock, Filter, TrendingUp, AlertCircle, Search, User, RefreshCcw, BarChart3, Users, Target, Activity, Settings, Plus, Minus, Edit3, Save, X, Download, FileText, FileSpreadsheet, CalendarDays, Clock3, TrendingDown, Mail, Trash2 } from 'lucide-react';
 import { DayPicker, DateRange } from 'react-day-picker';
@@ -199,6 +200,7 @@ interface ReportSummary {
 }
 
 export default function AdminCitas() {
+  const { user } = useAuth();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [stats, setStats] = useState<AppointmentStats>({ today: 0, upcoming: 0, pending: 0, completed: 0 });

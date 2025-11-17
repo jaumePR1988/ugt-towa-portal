@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Download, Smartphone, Chrome, Monitor, X, CheckCircle, AlertCircle } from 'lucide-react';
 import { usePWA } from '@/hooks/usePWA';
+import { toast } from 'sonner';
 
 interface PWAInstallGuideProps {
   isOpen: boolean;

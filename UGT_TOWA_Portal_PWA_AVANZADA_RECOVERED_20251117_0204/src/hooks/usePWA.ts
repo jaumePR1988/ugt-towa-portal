@@ -218,6 +218,8 @@ export const usePWA = () => {
     requestNotificationPermission,
     sendTestNotification,
     subscribeToPush,
-    checkSubscription
+    checkSubscription,
+    installPrompt: promptInstall,
+    deferredPrompt
   };
 };

@@ -152,6 +152,8 @@ export default function CitasPage() {
           slot_id: selectedSlot.id,
           delegate_type: selectedType,
           appointment_date: selectedSlot.appointment_date,
+          start_time: selectedSlot.start_time,
+          end_time: selectedSlot.end_time,
           appointment_time: (() => {
             // Extraer solo la hora de diferentes formatos de timestamp
             let timeStr = selectedSlot.start_time;

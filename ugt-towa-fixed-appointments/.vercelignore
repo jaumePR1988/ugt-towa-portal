@@ -1,0 +1,7 @@
+pnpm-lock.yaml
+.pnpm-store/
+node_modules/
+dist/
+*.log
+.DS_Store
+.git/
