@@ -11,7 +11,11 @@ interface EventImage {
   display_order: number;
 }
 
-export default function ImageGallery() {
+interface ImageGalleryProps {
+  onEventClick?: () => void;
+}
+
+export default function ImageGallery({ onEventClick }: ImageGalleryProps) {
   const [images, setImages] = useState<EventImage[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
@@ -81,7 +85,10 @@ export default function ImageGallery() {
 
         <div className="relative group">
           {/* Carrusel */}
-          <div className="relative h-64 md:h-80 overflow-hidden rounded-lg shadow-xl">
+          <div 
+            className="relative h-64 md:h-80 overflow-hidden rounded-lg shadow-xl cursor-pointer"
+            onClick={onEventClick}
+          >
             {images.map((image, index) => (
               <div
                 key={image.id}

@@ -15,6 +15,7 @@ import ComunicadosPage from './pages/ComunicadosPage';
 import ComunicadoDetailPage from './pages/ComunicadoDetailPage';
 import CitasPage from './pages/CitasPage';
 import EncuestasPage from './pages/EncuestasPage';
+import GaleriaEventosPage from './pages/GaleriaEventosPage';
 
 import DocumentosPage from './pages/DocumentosPage';
 import NewsletterPage from './pages/NewsletterPage';
@@ -85,6 +86,7 @@ function App() {
           <Route path="/comunicados/:id" element={<ComunicadoDetailPage />} />
           <Route path="/encuestas" element={<EncuestasPage />} />
           <Route path="/newsletter" element={<NewsletterPage />} />
+          <Route path="/galeria-eventos" element={<GaleriaEventosPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
 
