@@ -3,9 +3,9 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Set up Supabase project and configure backend",
-        "details": "1. Create new Supabase project\n2. Apply database migrations in order\n3. Deploy edge functions\n4. Configure storage buckets\n5. Set up environment variables",
-        "status": "pending",
+        "content": "Verify Supabase configuration and test database",
+        "details": "1. Check if all tables exist in Supabase\n2. Verify edge functions are deployed\n3. Test storage buckets configuration\n4. Verify RLS policies are active",
+        "status": "in_progress",
         "priority": "high"
       },
       "2": {
