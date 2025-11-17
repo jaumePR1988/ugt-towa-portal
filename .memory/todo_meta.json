@@ -3,45 +3,31 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Apply fixes to GitHub repository",
-        "details": "✅ Fixed appointment booking start_time constraint error ✅ Removed PWA installation popup ✅ Committed changes locally ✅ Created UGT_TOWA_FIXED_FILES.zip with all fixes ✅ Provided deploy instructions",
-        "status": "completed",
+        "content": "Fix appointment booking start_time constraint error",
+        "details": "CRITICAL: Fix 'null value in column start_time violates not-null constraint' error when booking appointments. Check CitasPage.tsx appointment booking logic and ensure proper timestamp generation.",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Create complete repository ZIP file",
-        "details": "✅ Created UGT_TOWA_COMPLETE_REPOSITORY.zip (3.4MB) ✅ Contains entire repository with fixes applied ✅ Excludes node_modules and .git for clean setup ✅ Includes complete deployment instructions",
-        "status": "completed",
-        "priority": "high"
+        "content": "Implement event gallery viewing functionality",
+        "details": "Users should be able to view event galleries when clicking on events on the main page. Create gallery view component and integrate with event data.",
+        "status": "pending",
+        "priority": "medium"
       },
       "3": {
         "id": "3",
-        "content": "Deploy repository to GitHub and Vercel",
-        "details": "1. Extract ZIP and setup project 2. Initialize git and push to GitHub 3. Deploy to Vercel with environment variables 4. Verify deployment success",
+        "content": "Fix affiliate section document upload",
+        "details": "Investigate and fix why users cannot add documents in the affiliate section. Check file upload components and permissions.",
         "status": "pending",
-        "priority": "HIGH"
+        "priority": "medium"
       },
       "4": {
         "id": "4",
-        "content": "Test appointment booking functionality",
-        "details": "1. Test complete appointment booking flow 2. Verify no start_time constraint errors 3. Check confirmation messages work correctly 4. Test document upload during booking",
+        "content": "Test all fixes and functionality",
+        "details": "1. Test appointment booking works without errors 2. Test event gallery viewing 3. Test affiliate document upload 4. Ensure no regressions",
         "status": "pending",
-        "priority": "HIGH"
-      },
-      "5": {
-        "id": "5",
-        "content": "Verify PWA popup removal",
-        "details": "1. Load website on multiple browsers 2. Confirm no installation popup appears 3. Check PWA functionality remains intact",
-        "status": "pending",
-        "priority": "medium"
-      },
-      "6": {
-        "id": "6",
-        "content": "Create admin user and test admin interface",
-        "details": "1. Register test account 2. Update user role in database 3. Test admin dashboard functionality 4. Verify appointment management features",
-        "status": "pending",
-        "priority": "medium"
+        "priority": "high"
       }
     }
   }
