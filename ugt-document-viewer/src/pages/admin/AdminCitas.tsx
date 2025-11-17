@@ -1318,7 +1318,7 @@ export default function AdminCitas() {
         </div>
 
         {/* Configuración de Notificaciones */}
-        <NotificationSetup userId={user?.id || ''} role={user?.role || ''} className="mb-8" />
+        <NotificationSetup userId={''} role={''} className="mb-8" />
 
         {/* Dashboard de Estadísticas */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">

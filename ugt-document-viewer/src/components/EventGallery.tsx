@@ -13,7 +13,7 @@ interface EventImage {
   display_order: number;
 }
 
-interface EventGroup {
+export interface EventGroup {
   eventTitle: string;
   eventDate: string | null;
   images: EventImage[];

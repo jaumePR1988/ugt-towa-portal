@@ -17,8 +17,8 @@
       },
       "3": {
         "id": "3",
-        "content": "Fix Affiliate Document Repository File Upload Functionality",
-        "details": "✅ RESOLVED: Successfully identified and fixed the file upload issue in the union document repository. Problem was that the upload-document Edge Function existed in code but was not deployed to Supabase. Deployed the Edge Function successfully and tested with proper PDF file format. Upload functionality is now fully operational without 400 errors.",
+        "content": "Implement click-to-view functionality for event galleries",
+        "details": "Users should be able to click on events in the gallery to open them in a fullscreen viewer with zoom controls, navigation, and download functionality.",
         "status": "completed",
         "priority": "high"
       },
