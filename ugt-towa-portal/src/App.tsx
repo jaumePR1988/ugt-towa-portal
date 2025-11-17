@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { Toaster } from 'sonner';
+// import { usePWA_Inteligente as usePWA } from './hooks/usePWA_Inteligente';
+// import { PWAInstallPrompt } from './components/PWAInstallPrompt_Inteligente';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -60,12 +62,18 @@ import TestAffiliateRoute from './components/TestAffiliateRoute';
 import './index.css';
 
 function App() {
+  // const { state, install } = usePWA();
+
   return (
     <BrowserRouter>
       <AuthProvider>
         <Toaster position="top-right" richColors />
-
-
+        
+        {/* PWA Install Prompt - Disabled */}
+        {/* <PWAInstallPrompt 
+          onInstall={install}
+        /> */}
+        
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />

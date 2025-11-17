@@ -36,13 +36,7 @@ export default function CitasPage() {
 
   async function loadSlots() {
     const dateStr = selectedDate.toISOString().split('T')[0];
-    
-    console.log('Loading slots for:', {
-      date: dateStr,
-      type: selectedType
-    });
-    
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('appointment_slots')
       .select('*')
       .eq('appointment_date', dateStr)
@@ -50,39 +44,15 @@ export default function CitasPage() {
       .eq('status', 'available')
       .order('start_time');
     
-    if (error) {
-      console.error('Error loading slots:', error);
-      setSlots([]);
-      return;
-    }
-    
-    console.log('Loaded slots:', data?.length || 0);
     if (data) setSlots(data);
-    else setSlots([]);
   }
 
   async function loadMyAppointments() {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('appointments')
-      .select(`
-        *,
-        slot:appointment_slots(
-          id,
-          delegate_type,
-          start_time,
-          end_time,
-          appointment_date,
-          status
-        )
-      `)
+      .select('*, slot:appointment_slots(*)')
       .eq('user_id', user?.id)
       .order('start_time', { ascending: false });
-    
-    if (error) {
-      console.error('Error loading appointments:', error);
-      return;
-    }
-    
     if (data) setMyAppointments(data as any);
   }
 
@@ -175,73 +145,73 @@ export default function CitasPage() {
     setIsBooking(true);
 
     try {
-      // Prepare appointment data with proper field mapping
-      const appointmentData = {
-        user_id: user.id,
-        slot_id: selectedSlot.id,
-        delegate_type: selectedType,
-        start_time: selectedSlot.start_time,
-        end_time: selectedSlot.end_time,
-        status: 'confirmed',
-        comments: comments?.trim() || null,
-        questions: questions?.trim() || null,
-        documents: uploadedFiles.length > 0 ? uploadedFiles : null
-      };
+      // Create proper timestamp from slot
+      const dateStr = selectedSlot.appointment_date;
+      const startTimeStr = (() => {
+        let timeStr = selectedSlot.start_time;
+        if (timeStr.includes('T')) {
+          // Formato ISO: "2025-11-18T08:00:00+00:00"
+          return timeStr.split('T')[1].split('+')[0].split('.')[0];
+        } else {
+          // Formato estándar: "2025-11-10 08:00:00+00"
+          return timeStr.split(' ')[1]?.split('.')[0] || '08:00:00';
+        }
+      })();
+      
+      const endTimeStr = (() => {
+        let timeStr = selectedSlot.end_time;
+        if (timeStr.includes('T')) {
+          // Formato ISO: "2025-11-18T09:00:00+00:00"
+          return timeStr.split('T')[1].split('+')[0].split('.')[0];
+        } else {
+          // Formato estándar: "2025-11-10 09:00:00+00"
+          return timeStr.split(' ')[1]?.split('.')[0] || '09:00:00';
+        }
+      })();
 
-      console.log('Inserting appointment data:', appointmentData);
+      const startTimestamp = new Date(`${dateStr}T${startTimeStr}:00.000Z`).toISOString();
+      const endTimestamp = new Date(`${dateStr}T${endTimeStr}:00.000Z`).toISOString();
 
       const { data: newAppointment, error } = await supabase
         .from('appointments')
-        .insert([appointmentData])
+        .insert([{
+          user_id: user.id,
+          slot_id: selectedSlot.id,
+          delegate_type: selectedType,
+          start_time: startTimestamp,
+          end_time: endTimestamp,
+          comments: comments || null,
+          questions: questions || null,
+          documents: uploadedFiles.length > 0 ? uploadedFiles : null,
+          status: 'confirmed'
+        }])
         .select()
         .single();
 
       if (error) {
-        console.error('Database error:', error);
-        
-        // Handle specific error cases
-        if (error.code === '23505') { // Unique violation
-          toast.error('Este horario ya ha sido reservado. Por favor, selecciona otro horario.');
-        } else if (error.message.includes('slot_id')) {
-          toast.error('Error con el horario seleccionado. Por favor, intenta nuevamente.');
+        if (error.message.includes('El horario seleccionado ya no está disponible')) {
+          toast.error('Este horario ya ha sido reservado por otra persona');
         } else {
-          toast.error('Error al reservar cita: ' + error.message);
+          throw error;
         }
-        return;
+      } else {
+        // Enviar notificación por email
+        try {
+          await supabase.functions.invoke('notify-appointment', {
+            body: {
+              appointmentId: newAppointment.id,
+              action: 'confirmed'
+            }
+          });
+        } catch (notifyError) {
+          console.error('Error al enviar notificación:', notifyError);
+        }
+
+        toast.success('Cita reservada correctamente. Recibirás una confirmación por email.');
+        closeBookingModal();
+        loadSlots();
+        loadMyAppointments();
       }
-
-      console.log('Appointment created successfully:', newAppointment);
-
-      // Update the appointment slot to occupied status
-      const { error: slotError } = await supabase
-        .from('appointment_slots')
-        .update({ status: 'occupied' })
-        .eq('id', selectedSlot.id);
-
-      if (slotError) {
-        console.error('Error updating slot status:', slotError);
-      }
-
-      // Enviar notificación por email
-      try {
-        await supabase.functions.invoke('notify-appointment', {
-          body: {
-            appointmentId: newAppointment.id,
-            action: 'confirmed'
-          }
-        });
-      } catch (notifyError) {
-        console.error('Error al enviar notificación:', notifyError);
-        // Don't show error to user for notification failures
-      }
-
-      toast.success('Cita reservada correctamente. Recibirás una confirmación por email.');
-      closeBookingModal();
-      
-      // Refresh data
-      await loadSlots();
-      await loadMyAppointments();
-      
     } catch (error: any) {
       console.error('Error al reservar cita:', error);
       toast.error('Error al reservar cita: ' + (error.message || 'Error desconocido'));
@@ -253,45 +223,12 @@ export default function CitasPage() {
   async function handleCancelAppointment(appointmentId: string) {
     if (!confirm('¿Estás seguro de que quieres cancelar esta cita?')) return;
 
-    try {
-      // Get the appointment to find the slot_id
-      const { data: appointment, error: fetchError } = await supabase
-        .from('appointments')
-        .select('slot_id')
-        .eq('id', appointmentId)
-        .single();
+    const { error } = await supabase
+      .from('appointments')
+      .update({ status: 'cancelled' })
+      .eq('id', appointmentId);
 
-      if (fetchError) {
-        console.error('Error fetching appointment:', fetchError);
-        toast.error('Error al obtener información de la cita');
-        return;
-      }
-
-      // Update appointment status
-      const { error } = await supabase
-        .from('appointments')
-        .update({ status: 'cancelled' })
-        .eq('id', appointmentId);
-
-      if (error) {
-        console.error('Error updating appointment:', error);
-        toast.error('Error al cancelar la cita');
-        return;
-      }
-
-      // Update the appointment slot back to available status
-      if (appointment?.slot_id) {
-        const { error: slotError } = await supabase
-          .from('appointment_slots')
-          .update({ status: 'available' })
-          .eq('id', appointment.slot_id);
-
-        if (slotError) {
-          console.error('Error updating slot status:', slotError);
-        }
-      }
-
-      // Send cancellation notification
+    if (!error) {
       try {
         await supabase.functions.invoke('notify-appointment', {
           body: {
@@ -303,14 +240,10 @@ export default function CitasPage() {
         console.error('Error al enviar notificación:', notifyError);
       }
 
-      toast.success('Cita cancelada correctamente.');
-      
-      // Refresh data
-      await loadSlots();
-      await loadMyAppointments();
-      
-    } catch (error) {
-      console.error('Error cancelling appointment:', error);
+      toast.success('Cita cancelada. Se ha enviado una notificación.');
+      loadSlots();
+      loadMyAppointments();
+    } else {
       toast.error('Error al cancelar la cita');
     }
   }
