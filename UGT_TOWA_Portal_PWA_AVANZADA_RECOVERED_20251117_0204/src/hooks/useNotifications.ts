@@ -184,7 +184,11 @@ export function useNotifications(userId?: string, role?: string) {
       icon: icon,
       badge: icon,
       tag: `appointment-${notification.appointment_id}`,
-      requireInteraction: true
+      requireInteraction: true,
+      actions: [
+        { action: 'view', title: 'Ver cita' },
+        { action: 'dismiss', title: 'Cerrar' }
+      ]
     });
 
     // También mostrar toast

@@ -8,23 +8,22 @@ interface PWAInstallGuideProps {
 }
 
 export default function PWAInstallGuide({ isOpen, onClose }: PWAInstallGuideProps) {
-  const { isInstallable, promptInstall, deferredPrompt } = usePWA();
+  const { isInstallable, installPrompt, deferredPrompt } = usePWA();
   const [installStep, setInstallStep] = useState<'detect' | 'chrome' | 'firefox' | 'safari'>('detect');
 
   if (!isOpen) return null;
 
   const handleInstallClick = async () => {
-    if (deferredPrompt) {
+    if (installPrompt && deferredPrompt) {
       try {
-        const success = await promptInstall();
-        if (success) {
-          // Usar alert como alternativa al toast
-          alert('¡App instalada exitosamente!');
+        await deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          toast.success('¡App instalada exitosamente!');
           onClose();
         }
       } catch (error) {
         console.error('Error installing PWA:', error);
-        alert('Error al instalar la app. Por favor, intenta manualmente.');
       }
     }
   };
@@ -142,7 +141,7 @@ export default function PWAInstallGuide({ isOpen, onClose }: PWAInstallGuideProp
           </div>
 
           <div className="flex flex-col space-y-3">
-            {deferredPrompt && isInstallable && (
+            {installPrompt && deferredPrompt && (
               <button
                 onClick={handleInstallClick}
                 className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"

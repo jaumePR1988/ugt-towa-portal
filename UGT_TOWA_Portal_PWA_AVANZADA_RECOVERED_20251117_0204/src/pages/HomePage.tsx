@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import EventGalleryView from '@/components/EventGalleryView';
+import ImageGallery from '@/components/ImageGallery';
 import { supabase, Communique, Survey } from '@/lib/supabase';
 import { Calendar, FileText, Vote, MessageSquare, QrCode, Clock } from 'lucide-react';
 import { format, differenceInDays } from 'date-fns';
@@ -119,7 +119,7 @@ export default function HomePage() {
       </div>
 
       {/* Galería de Eventos */}
-      <EventGalleryView />
+      <ImageGallery />
 
       <div className="container mx-auto px-4 py-12 dark:bg-gray-900 transition-colors">
         {/* Encuestas Activas - Sección destacada */}
