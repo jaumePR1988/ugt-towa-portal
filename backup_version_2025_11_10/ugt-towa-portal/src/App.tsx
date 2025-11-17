@@ -2,20 +2,24 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { Toaster } from 'sonner';
+import { usePWA_Inteligente as usePWA } from './hooks/usePWA_Inteligente';
+import { PWAInstallPrompt } from './components/PWAInstallPrompt_Inteligente';
 
 // Pages
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import ResetPasswordPage from './pages/ResetPasswordPage';
+
 import QuienesSomosPage from './pages/QuienesSomosPage';
 import ComunicadosPage from './pages/ComunicadosPage';
 import ComunicadoDetailPage from './pages/ComunicadoDetailPage';
 import CitasPage from './pages/CitasPage';
 import EncuestasPage from './pages/EncuestasPage';
-import NewsletterPage from './pages/NewsletterPage';
+
 import DocumentosPage from './pages/DocumentosPage';
+import NewsletterPage from './pages/NewsletterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -29,21 +33,24 @@ import AdminComentarios from './pages/admin/AdminComentarios';
 import AdminDocumentos from './pages/admin/AdminDocumentos';
 import AdminSugerencias from './pages/admin/AdminSugerencias';
 import AdminEncuestasAnalisis from './pages/admin/AdminEncuestasAnalisis';
-import AdminNewsletter from './pages/admin/AdminNewsletter';
+
 import AdminCategoriasDocumentos from './pages/admin/AdminCategoriasDocumentos';
 import AdminQR from './pages/admin/AdminQR';
 import AdminGaleria from './pages/admin/AdminGaleria';
 import AdminAfiliados from './pages/admin/AdminAfiliados';
+import AdminAdministradores from './pages/admin/AdminAdministradores';
 import AdminDocumentosSindicales from './pages/admin/AdminDocumentosSindicales';
 
 import AdminBeneficiosUGT from './pages/admin/AdminBeneficiosUGT';
+import AdminNewsletter from './pages/admin/AdminNewsletter';
+import AdminNotificaciones from './pages/admin/AdminNotificaciones';
 
 // Affiliate Pages
 import AffiliateDashboard from './pages/affiliates/AffiliateDashboard';
 import TestAffiliateDashboard from './pages/affiliates/TestAffiliateDashboard';
 import BibliotecaPage from './pages/affiliates/BibliotecaPage';
 import TestBibliotecaPage from './pages/affiliates/TestBibliotecaPage';
-
+import EncuestasAfiliadosPage from './pages/affiliates/EncuestasAfiliadosPage';
 import BeneficiosPage from './pages/affiliates/BeneficiosPage';
 
 // Components
@@ -55,22 +62,32 @@ import TestAffiliateRoute from './components/TestAffiliateRoute';
 import './index.css';
 
 function App() {
+  const { state, install } = usePWA();
+
   return (
     <BrowserRouter>
       <AuthProvider>
         <Toaster position="top-right" richColors />
+        
+        {/* PWA Install Prompt */}
+        <PWAInstallPrompt 
+          onInstall={install}
+        />
+        
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
+
           <Route path="/quienes-somos" element={<QuienesSomosPage />} />
           <Route path="/comunicados" element={<ComunicadosPage />} />
           <Route path="/comunicados/:id" element={<ComunicadoDetailPage />} />
           <Route path="/encuestas" element={<EncuestasPage />} />
           <Route path="/newsletter" element={<NewsletterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+
           
           {/* Protected Routes */}
           <Route
@@ -92,6 +109,10 @@ function App() {
           
           {/* Affiliate Routes */}
           <Route
+            path="/afiliados"
+            element={<Navigate to="/afiliados/dashboard" replace />}
+          />
+          <Route
             path="/afiliados/dashboard"
             element={
               <TestAffiliateRoute>
@@ -104,6 +125,15 @@ function App() {
             element={
               <TestAffiliateRoute>
                 <TestBibliotecaPage />
+              </TestAffiliateRoute>
+            }
+          />
+
+          <Route
+            path="/afiliados/encuestas"
+            element={
+              <TestAffiliateRoute>
+                <EncuestasAfiliadosPage />
               </TestAffiliateRoute>
             }
           />
@@ -123,6 +153,14 @@ function App() {
             element={
               <AdminRoute>
                 <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/notificaciones"
+            element={
+              <AdminRoute>
+                <AdminNotificaciones />
               </AdminRoute>
             }
           />
@@ -206,14 +244,7 @@ function App() {
               </AdminRoute>
             }
           />
-          <Route
-            path="/admin/newsletter"
-            element={
-              <AdminRoute>
-                <AdminNewsletter />
-              </AdminRoute>
-            }
-          />
+
           <Route
             path="/admin/categorias-documentos"
             element={
@@ -247,6 +278,14 @@ function App() {
             }
           />
           <Route
+            path="/admin/administradores"
+            element={
+              <AdminRoute>
+                <AdminAdministradores />
+              </AdminRoute>
+            }
+          />
+          <Route
             path="/admin/documentos-sindicales"
             element={
               <AdminRoute>
@@ -260,6 +299,14 @@ function App() {
             element={
               <AdminRoute>
                 <AdminBeneficiosUGT />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/newsletter"
+            element={
+              <AdminRoute>
+                <AdminNewsletter />
               </AdminRoute>
             }
           />

@@ -10,7 +10,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
-  updatePassword: (newPassword: string) => Promise<void>;
+  updatePassword: (password: string) => Promise<void>;
   isAdmin: boolean;
   isAffiliate: boolean;
 }
@@ -71,16 +71,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function signUp(email: string, password: string, fullName: string) {
-    // Validar dominio
-    const { data: validationData, error: validationError } = await supabase.functions.invoke(
-      'validate-email-domain',
-      { body: { email } }
-    );
-
-    if (validationError || !validationData.valid) {
-      throw new Error(validationData?.message || 'Email no válido');
-    }
-
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -105,12 +95,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error;
   }
 
-  async function updatePassword(newPassword: string) {
+  async function updatePassword(password: string) {
     const { error } = await supabase.auth.updateUser({
-      password: newPassword,
+      password: password,
     });
     if (error) throw error;
   }
+
+
 
   const isAdmin = profile?.role === 'admin';
   const isAffiliate = profile?.is_affiliate === true;

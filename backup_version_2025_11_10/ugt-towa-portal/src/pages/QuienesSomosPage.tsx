@@ -4,6 +4,7 @@ import Footer from '@/components/Footer';
 import { supabase, Delegate } from '@/lib/supabase';
 import { Users, User } from 'lucide-react';
 
+
 export default function QuienesSomosPage() {
   const [delegates, setDelegates] = useState<{
     comite: Delegate[];

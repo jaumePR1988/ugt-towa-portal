@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { Mail } from 'lucide-react';
 import { toast } from 'sonner';
 
+
 export default function NewsletterPage() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { supabase, Profile } from '@/lib/supabase';
-import { Users, Search, CheckCircle, XCircle } from 'lucide-react';
+import { Users, Search, CheckCircle, XCircle, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -12,6 +12,9 @@ export default function AdminAfiliados() {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [updatingUsers, setUpdatingUsers] = useState<Set<string>>(new Set());
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<Profile | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     loadUsers();
@@ -86,6 +89,35 @@ export default function AdminAfiliados() {
         newSet.delete(userId);
         return newSet;
       });
+    }
+  }
+
+  function confirmDeleteUser(user: Profile) {
+    setUserToDelete(user);
+    setShowDeleteModal(true);
+  }
+
+  async function deleteUser() {
+    if (!userToDelete) return;
+
+    setDeleting(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', userToDelete.id);
+
+      if (error) throw error;
+
+      toast.success('Usuario eliminado correctamente');
+      setShowDeleteModal(false);
+      setUserToDelete(null);
+      loadUsers();
+    } catch (error) {
+      console.error('Error al eliminar usuario:', error);
+      toast.error('Error al eliminar el usuario');
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -192,6 +224,9 @@ export default function AdminAfiliados() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Estado Afiliado
                     </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Acciones
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -229,6 +264,15 @@ export default function AdminAfiliados() {
                           <span className="ml-2 text-xs text-gray-400">Actualizando...</span>
                         )}
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <button
+                          onClick={() => confirmDeleteUser(user)}
+                          className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition"
+                        >
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          Eliminar
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -245,6 +289,38 @@ export default function AdminAfiliados() {
           </p>
         </div>
       </div>
+
+      {/* Modal de confirmación de eliminación */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Confirmar Eliminación</h3>
+            <p className="text-gray-600 mb-6">
+              ¿Está seguro de que desea eliminar al usuario <strong>{userToDelete?.full_name}</strong> ({userToDelete?.email}) del sistema?
+              Esta acción no se puede deshacer.
+            </p>
+            <div className="flex space-x-3">
+              <button
+                onClick={deleteUser}
+                disabled={deleting}
+                className="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50"
+              >
+                {deleting ? 'Eliminando...' : 'Eliminar Usuario'}
+              </button>
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setUserToDelete(null);
+                }}
+                disabled={deleting}
+                className="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

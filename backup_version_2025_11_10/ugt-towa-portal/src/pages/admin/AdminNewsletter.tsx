@@ -31,16 +31,16 @@ interface NewsletterContent {
   published_at: string | null;
 }
 
-interface NewsletterSent {
+interface NewsletterEdition {
   id: string;
-  subject: string;
-  content: string;
-  sent_at: string;
-  total_generated: number;
-  pdf_downloads: number;
-  pdf_url: string | null;
-  pdf_generated_at: string | null;
-  status: 'draft' | 'generated';
+  title: string;
+  content: any;
+  status: 'draft' | 'sent' | 'published';
+  subscribers_count: number;
+  created_at: string;
+  sent_at: string | null;
+  created_by: string | null;
+  auto_generated: boolean;
 }
 
 interface Subscriber {
@@ -85,11 +85,13 @@ export default function AdminNewsletter() {
   const [uploadingImage, setUploadingImage] = useState(false);
 
   // Newsletters
-  const [newsletters, setNewsletters] = useState<NewsletterSent[]>([]);
-  const [selectedNewsletter, setSelectedNewsletter] = useState<NewsletterSent | null>(null);
+  const [newsletters, setNewsletters] = useState<NewsletterEdition[]>([]);
+  const [selectedNewsletter, setSelectedNewsletter] = useState<NewsletterEdition | null>(null);
+  const [autoGenEnabled, setAutoGenEnabled] = useState(true);
+  const [lastGenDate, setLastGenDate] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [previewHtml, setPreviewHtml] = useState('');
-  const [editingNewsletter, setEditingNewsletter] = useState<NewsletterSent | null>(null);
+  const [editingNewsletter, setEditingNewsletter] = useState<NewsletterEdition | null>(null);
   const [editedContent, setEditedContent] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -98,17 +100,24 @@ export default function AdminNewsletter() {
 
   // Subscribers
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
+  
+  // Estados para eliminar suscriptores
+  const [deleteSubscriberId, setDeleteSubscriberId] = useState<string | null>(null);
+  const [showDeleteSubscriberModal, setShowDeleteSubscriberModal] = useState<boolean>(false);
+  const [deletingSubscriber, setDeletingSubscriber] = useState<boolean>(false);
 
   useEffect(() => {
     loadDashboardStats();
     loadContents();
     loadNewsletters();
     loadSubscribers();
+    loadConfig();
     
     // Auto-actualización cada 30 segundos
     const interval = setInterval(() => {
       loadDashboardStats();
       loadSubscribers();
+      loadConfig();
     }, 30000);
     
     return () => clearInterval(interval);
@@ -131,7 +140,7 @@ export default function AdminNewsletter() {
       const [subsResult, contentResult, generatedResult] = await Promise.all([
         supabase.from('newsletter_subscribers').select('id, is_active, subscribed_at'),
         supabase.from('newsletter_content').select('id'),
-        supabase.from('newsletters_sent').select('id').eq('status', 'generated')
+        supabase.from('newsletter_editions').select('id')
       ]);
 
       const totalSubs = subsResult.data?.length || 0;
@@ -217,7 +226,7 @@ export default function AdminNewsletter() {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('newsletters_sent')
+        .from('newsletter_editions')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -236,12 +245,95 @@ export default function AdminNewsletter() {
       const { data, error } = await supabase
         .from('newsletter_subscribers')
         .select('*')
-        .order('subscribed_at', { ascending: false });
+        .order('subscribed_at', { ascending: false});
 
       if (error) throw error;
       setSubscribers(data || []);
     } catch (error) {
       console.error('Error loading subscribers:', error);
+    }
+  };
+
+  function confirmDeleteSubscriber(id: string) {
+    setDeleteSubscriberId(id);
+    setShowDeleteSubscriberModal(true);
+  }
+
+  async function deleteSubscriber() {
+    if (!deleteSubscriberId) return;
+    
+    setDeletingSubscriber(true);
+    try {
+      const { error } = await supabase
+        .from('newsletter_subscribers')
+        .delete()
+        .eq('id', deleteSubscriberId);
+
+      if (error) throw error;
+
+      toast.success('Suscriptor eliminado correctamente');
+      setShowDeleteSubscriberModal(false);
+      setDeleteSubscriberId(null);
+      loadSubscribers();
+      loadDashboardStats();
+    } catch (error) {
+      console.error('Error al eliminar suscriptor:', error);
+      toast.error('Error al eliminar el suscriptor');
+    } finally {
+      setDeletingSubscriber(false);
+    }
+  }
+
+  const loadConfig = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('newsletter_config')
+        .select('*')
+        .limit(1)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      if (data) {
+        setAutoGenEnabled(data.auto_generation_enabled !== false);
+        setLastGenDate(data.last_generation_date);
+      }
+    } catch (error) {
+      console.error('Error loading config:', error);
+    }
+  };
+
+  const toggleAutoGeneration = async () => {
+    setLoading(true);
+    try {
+      const { data: configData } = await supabase
+        .from('newsletter_config')
+        .select('id')
+        .limit(1)
+        .single();
+
+      if (!configData) {
+        toast.error('Configuración no encontrada');
+        return;
+      }
+
+      const newValue = !autoGenEnabled;
+      const { error } = await supabase
+        .from('newsletter_config')
+        .update({ 
+          auto_generation_enabled: newValue,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', configData.id);
+
+      if (error) throw error;
+
+      setAutoGenEnabled(newValue);
+      toast.success(newValue ? 'Generación automática activada' : 'Generación automática desactivada');
+    } catch (error) {
+      console.error('Error toggling auto generation:', error);
+      toast.error('Error actualizando configuración');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -379,24 +471,25 @@ export default function AdminNewsletter() {
     }
   };
 
-  const handlePreviewNewsletter = async (newsletter: NewsletterSent) => {
+  const handlePreviewNewsletter = async (newsletter: NewsletterEdition) => {
     setSelectedNewsletter(newsletter);
-    // Usar la función de creación de HTML para mostrar contenido limpio, sin encabezados adicionales
-    const cleanHtml = createProfessionalNewsletterHTML(newsletter.subject, newsletter.content || '');
+    // Extraer HTML del content JSONB
+    const htmlContent = newsletter.content?.html || '';
+    const cleanHtml = createProfessionalNewsletterHTML(newsletter.title, htmlContent);
     setPreviewHtml(cleanHtml);
     setShowPreview(true);
   };
 
-  const handleEditNewsletter = (newsletter: NewsletterSent) => {
+  const handleEditNewsletter = (newsletter: NewsletterEdition) => {
     setEditingNewsletter(newsletter);
-    const content = newsletter.content || '';
-    setEditedContent(content);
+    const htmlContent = newsletter.content?.html || '';
+    setEditedContent(htmlContent);
     
     // Esperar un momento para que el DOM se actualice, luego establecer el contenido
     setTimeout(() => {
       const editor = document.getElementById('newsletter-editor') as HTMLElement;
-      if (editor && content) {
-        editor.innerHTML = content;
+      if (editor && htmlContent) {
+        editor.innerHTML = htmlContent;
       }
     }, 100);
     
@@ -410,9 +503,15 @@ export default function AdminNewsletter() {
 
     setLoading(true);
     try {
+      // Actualizar el content JSONB con el HTML editado
+      const updatedContent = {
+        ...editingNewsletter.content,
+        html: editedContent
+      };
+      
       const { error } = await supabase
-        .from('newsletters_sent')
-        .update({ content: editedContent })
+        .from('newsletter_editions')
+        .update({ content: updatedContent })
         .eq('id', editingNewsletter.id);
 
       if (error) throw error;
@@ -482,18 +581,18 @@ export default function AdminNewsletter() {
     setShowPreviewModal(true);
   };
 
-  const handleGeneratePDF = async (newsletter: NewsletterSent) => {
-    console.log('=== INICIANDO GENERACIÓN DE PDF MEJORADA ===');
+  const handleGeneratePDF = async (newsletter: NewsletterEdition) => {
+    console.log('=== GENERANDO PDF PROFESIONAL ===');
     console.log('Newsletter ID:', newsletter.id);
-    console.log('Newsletter Subject:', newsletter.subject);
+    console.log('Newsletter Title:', newsletter.title);
     
     setLoading(true);
-    toast.info('Generando PDF optimizado...');
+    toast.info('Generando vista optimizada para PDF...');
 
     try {
       // CARGAR EL CONTENIDO MÁS RECIENTE
       const { data: newsletterData, error: loadError } = await supabase
-        .from('newsletters_sent')
+        .from('newsletter_editions')
         .select('content')
         .eq('id', newsletter.id)
         .single();
@@ -503,7 +602,7 @@ export default function AdminNewsletter() {
         throw loadError;
       }
 
-      const htmlContent = editingNewsletter?.id === newsletter.id ? editedContent : (newsletterData?.content || newsletter.content);
+      const htmlContent = editingNewsletter?.id === newsletter.id ? editedContent : (newsletterData?.content?.html || newsletter.content?.html || '');
       
       if (!htmlContent || htmlContent.trim() === '') {
         throw new Error('El contenido del newsletter está vacío');
@@ -511,148 +610,49 @@ export default function AdminNewsletter() {
 
       console.log('Contenido HTML cargado, longitud:', htmlContent.length);
       
-      // Crear HTML optimizado para PDF
-      const optimizedHtml = createProfessionalNewsletterHTML(newsletter.subject, htmlContent);
-      
-      console.log('HTML optimizado creado');
-      
-      // Crear elemento temporal para renderizar
-      const tempDiv = document.createElement('div');
-      tempDiv.id = 'pdf-temp-container';
-      tempDiv.innerHTML = optimizedHtml;
-      tempDiv.style.position = 'absolute';
-      tempDiv.style.left = '-9999px';
-      tempDiv.style.top = '0';
-      tempDiv.style.width = '800px';
-      tempDiv.style.minHeight = '1100px';
-      tempDiv.style.background = 'white';
-      tempDiv.style.padding = '40px';
-      tempDiv.style.fontFamily = 'Georgia, serif';
-      tempDiv.style.color = '#2c3e50';
-      tempDiv.style.lineHeight = '1.6';
-      tempDiv.style.boxSizing = 'content-box';
-      
-      document.body.appendChild(tempDiv);
-      console.log('Elemento temporal agregado al DOM');
-
-      // Esperar renderizado completo
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Forzar renderizado de elementos complejos como códigos QR
-      const qrElements = tempDiv.querySelectorAll('canvas, img');
-      console.log('Elementos encontrados para renderizado:', qrElements.length);
-      
-      // Esperar un poco más para códigos QR
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      console.log('Generando canvas mejorado...');
-      const canvas = await html2canvas(tempDiv, {
-        scale: 2.5,
-        useCORS: true,
-        logging: true,
-        backgroundColor: '#ffffff',
-        width: 800,
-        height: tempDiv.scrollHeight,
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: 800,
-        allowTaint: true
+      // Llamar a la Edge Function para obtener HTML optimizado para PDF
+      const { data, error } = await supabase.functions.invoke('generate-newsletter-pdf', {
+        body: { newsletterId: newsletter.id }
       });
 
-      console.log('Canvas generado:', canvas.width, 'x', canvas.height);
-
-      if (canvas.width === 0 || canvas.height === 0) {
-        throw new Error('Canvas vacío generado');
+      if (error) {
+        console.error('Error llamando a Edge Function:', error);
+        throw error;
       }
 
-      // Crear PDF con configuración optimizada
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-        compress: true,
-        putOnlyUsedFonts: true
-      });
-
-      const imgData = canvas.toDataURL('image/png', 0.95);
-      const pageWidth = 210; // A4 width in mm
-      const pageHeight = 297; // A4 height in mm
-      const margin = 15; // Margen optimizado
-      const availableWidth = pageWidth - (2 * margin);
-      const availableHeight = pageHeight - (2 * margin);
+      const optimizedHtml = data?.data?.htmlContent;
       
-      console.log('Calculando dimensiones del PDF...');
-      
-      // Calcular dimensiones manteniendo proporción
-      const imgAspectRatio = canvas.width / canvas.height;
-      const scaledHeight = availableWidth / imgAspectRatio;
-      
-      console.log('Aspect ratio:', imgAspectRatio);
-      console.log('Scaled height:', scaledHeight, 'mm');
-      
-      if (scaledHeight <= availableHeight) {
-        // Contenido cabe en una página
-        console.log('Agregando imagen en una página');
-        pdf.addImage(imgData, 'PNG', margin, margin, availableWidth, scaledHeight);
-      } else {
-        // Contenido requiere múltiples páginas - lógica mejorada
-        console.log('Dividiendo en múltiples páginas');
-        
-        // Calcular cuántas páginas necesitamos
-        const pagesNeeded = Math.ceil(scaledHeight / availableHeight);
-        console.log('Páginas necesarias:', pagesNeeded);
-        
-        // Calcular la altura de cada porción
-        const portionHeight = canvas.height / pagesNeeded;
-        const scaledPortionHeight = scaledHeight / pagesNeeded;
-        
-        for (let page = 0; page < pagesNeeded; page++) {
-          if (page > 0) {
-            pdf.addPage();
-          }
-          
-          console.log(`Procesando página ${page + 1}/${pagesNeeded}`);
-          
-          // Crear un canvas temporal para esta porción
-          const tempCanvas = document.createElement('canvas');
-          tempCanvas.width = canvas.width;
-          tempCanvas.height = portionHeight;
-          const ctx = tempCanvas.getContext('2d');
-          
-          // Copiar la porción correspondiente
-          ctx?.drawImage(
-            canvas,
-            0, portionHeight * page,
-            canvas.width, portionHeight,
-            0, 0,
-            canvas.width, portionHeight
-          );
-          
-          // Convertir a imagen y agregar al PDF
-          const portionImgData = tempCanvas.toDataURL('image/png', 0.95);
-          pdf.addImage(portionImgData, 'PNG', margin, margin, availableWidth, scaledPortionHeight);
-          
-          // Limpiar
-          tempCanvas.remove();
-        }
+      if (!optimizedHtml) {
+        throw new Error('No se recibió HTML optimizado del servidor');
       }
 
-      // Descargar
-      const fileName = `Newsletter-UGT-Towa-${new Date().toISOString().split('T')[0]}.pdf`;
-      pdf.save(fileName);
+      console.log('HTML profesional recibido del servidor');
       
-      console.log('PDF descargado:', fileName);
+      // Abrir en nueva ventana para impresión
+      const printWindow = window.open('', '_blank');
+      
+      if (!printWindow) {
+        throw new Error('Por favor, permite las ventanas emergentes para generar el PDF');
+      }
 
-      // Limpiar
-      document.body.removeChild(tempDiv);
+      printWindow.document.write(optimizedHtml);
+      printWindow.document.close();
+
+      // Esperar que se cargue el contenido
+      printWindow.onload = function() {
+        console.log('Contenido cargado en ventana de impresión');
+        
+        // Abrir diálogo de impresión automáticamente
+        setTimeout(() => {
+          printWindow.print();
+        }, 500);
+      };
 
       // Actualizar base de datos
       const { error: updateError } = await supabase
-        .from('newsletters_sent')
+        .from('newsletter_editions')
         .update({
-          total_generated: (newsletter.total_generated || 0) + 1,
-          pdf_generated_at: new Date().toISOString(),
-          status: 'generated'
+          status: 'published'
         })
         .eq('id', newsletter.id);
 
@@ -660,7 +660,7 @@ export default function AdminNewsletter() {
         console.error('Error actualizando stats:', updateError);
       }
 
-      toast.success('PDF generado y descargado exitosamente');
+      toast.success('Vista PDF abierta. Use Ctrl+P o Cmd+P para guardar como PDF');
       loadNewsletters();
       loadDashboardStats();
 
@@ -843,6 +843,45 @@ export default function AdminNewsletter() {
               </div>
             </div>
             
+            {/* Configuración de Generación Automática */}
+            <div className="bg-white p-6 rounded-lg shadow">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Generación Automática Mensual</h3>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {autoGenEnabled ? 'Activada - Se ejecuta el día 1 de cada mes a las 9:00 AM' : 'Desactivada - No se generarán newsletters automáticamente'}
+                  </p>
+                  {lastGenDate && (
+                    <p className="text-xs text-gray-400 mt-1">
+                      Última generación: {new Date(lastGenDate).toLocaleDateString('es-ES', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </p>
+                  )}
+                </div>
+                <button
+                  onClick={toggleAutoGeneration}
+                  disabled={loading}
+                  className={`relative inline-flex h-10 w-20 items-center rounded-full transition-colors ${
+                    autoGenEnabled ? 'bg-green-600' : 'bg-gray-300'
+                  } ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                >
+                  <span
+                    className={`inline-block h-8 w-8 transform rounded-full bg-white transition-transform ${
+                      autoGenEnabled ? 'translate-x-10' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+              <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded">
+                <strong>Funcionamiento:</strong> El sistema extrae automáticamente los últimos 5 comunicados y 4 eventos de la galería para crear el newsletter mensual.
+              </div>
+            </div>
+            
             {/* Additional Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white p-6 rounded-lg shadow">
@@ -977,10 +1016,11 @@ export default function AdminNewsletter() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {subscribers.slice(0, 5).map((sub) => (
+                    {subscribers.slice(0, 10).map((sub) => (
                       <tr key={sub.id}>
                         <td className="px-6 py-4 text-sm text-gray-900">{sub.email}</td>
                         <td className="px-6 py-4 text-sm text-gray-900">{sub.name || '-'}</td>
@@ -993,6 +1033,16 @@ export default function AdminNewsletter() {
                           ) : (
                             <span className="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">Inactivo</span>
                           )}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-right">
+                          <button
+                            onClick={() => confirmDeleteSubscriber(sub.id)}
+                            className="inline-flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-xs font-medium"
+                            aria-label="Eliminar suscriptor"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                            <span>Eliminar</span>
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -1212,12 +1262,14 @@ export default function AdminNewsletter() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           {getStatusIcon(newsletter.status)}
-                          <h3 className="font-semibold text-gray-900">{newsletter.subject}</h3>
+                          <h3 className="font-semibold text-gray-900">{newsletter.title}</h3>
                         </div>
                         <p className="text-sm text-gray-500">
-                          {newsletter.status === 'generated' 
-                            ? `PDF generado el ${new Date(newsletter.pdf_generated_at || '').toLocaleDateString('es-ES')}`
-                            : 'Borrador - PDF no generado aún'
+                          {newsletter.status === 'sent' 
+                            ? `Enviado el ${newsletter.sent_at ? new Date(newsletter.sent_at).toLocaleDateString('es-ES') : 'N/A'}`
+                            : newsletter.status === 'published'
+                            ? 'Publicado'
+                            : 'Borrador'
                           }
                         </p>
                       </div>
@@ -1247,15 +1299,15 @@ export default function AdminNewsletter() {
                       </div>
                     </div>
 
-                    {newsletter.status === 'generated' && (
+                    {newsletter.status === 'sent' && (
                       <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t">
                         <div className="text-center">
-                          <p className="text-2xl font-bold text-gray-900">{newsletter.total_generated}</p>
-                          <p className="text-sm text-gray-500">Generaciones</p>
+                          <p className="text-2xl font-bold text-gray-900">{newsletter.subscribers_count}</p>
+                          <p className="text-sm text-gray-500">Suscriptores</p>
                         </div>
                         <div className="text-center">
-                          <p className="text-2xl font-bold text-green-600">{newsletter.pdf_downloads || 0}</p>
-                          <p className="text-sm text-gray-500">Descargas</p>
+                          <p className="text-2xl font-bold text-green-600">{newsletter.auto_generated ? 'Automático' : 'Manual'}</p>
+                          <p className="text-sm text-gray-500">Tipo</p>
                         </div>
                       </div>
                     )}
@@ -1277,7 +1329,7 @@ export default function AdminNewsletter() {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
               <div className="p-4 border-b flex items-center justify-between">
-                <h3 className="text-lg font-semibold">{selectedNewsletter.subject}</h3>
+                <h3 className="text-lg font-semibold">{selectedNewsletter.title}</h3>
                 <button
                   onClick={() => setShowPreview(false)}
                   className="text-gray-500 hover:text-gray-700"
@@ -1300,7 +1352,7 @@ export default function AdminNewsletter() {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
               <div className="p-4 border-b flex items-center justify-between">
-                <h3 className="text-lg font-semibold">Editar Newsletter: {editingNewsletter.subject}</h3>
+                <h3 className="text-lg font-semibold">Editar Newsletter: {editingNewsletter.title}</h3>
                 <button
                   onClick={() => {
                     setShowEditModal(false);
@@ -1512,6 +1564,55 @@ export default function AdminNewsletter() {
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                 >
                   Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal de confirmación para eliminar suscriptor */}
+        {showDeleteSubscriberModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+              <div className="flex items-center mb-4">
+                <div className="flex-shrink-0 w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                  <Trash2 className="h-6 w-6 text-red-600" />
+                </div>
+                <div className="ml-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Confirmar Eliminación</h3>
+                  <p className="text-sm text-gray-500">Esta acción no se puede deshacer</p>
+                </div>
+              </div>
+              <p className="text-gray-700 mb-6">
+                Estás a punto de eliminar este suscriptor. Se eliminará permanentemente de la base de datos y no recibirá más newsletters.
+              </p>
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={() => {
+                    setShowDeleteSubscriberModal(false);
+                    setDeleteSubscriberId(null);
+                  }}
+                  disabled={deletingSubscriber}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium disabled:opacity-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={deleteSubscriber}
+                  disabled={deletingSubscriber}
+                  className="flex items-center gap-2 bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 font-medium disabled:bg-red-400 disabled:cursor-not-allowed transition-colors"
+                >
+                  {deletingSubscriber ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <span>Eliminando...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="h-4 w-4" />
+                      <span>Eliminar Suscriptor</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>

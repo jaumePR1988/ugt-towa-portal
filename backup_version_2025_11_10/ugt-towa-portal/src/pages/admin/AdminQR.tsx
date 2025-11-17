@@ -167,8 +167,7 @@ export default function AdminQR() {
           </div>
 
           <p className="text-gray-600 mb-8">
-            Gestiona el codigo QR que se muestra en la seccion de sugerencias anonimas
-            y en el PDF del newsletter mensual.
+            Gestiona el codigo QR que se muestra en la seccion de sugerencias anonimas.
           </p>
 
           {/* QR Code Actual */}
@@ -239,7 +238,7 @@ export default function AdminQR() {
                     <li>Formatos permitidos: PNG, JPG, WEBP</li>
                     <li>Tamano maximo: 5MB</li>
                     <li>Recomendado: Imagen cuadrada de alta resolucion</li>
-                    <li>El QR se mostrara en la pagina de inicio y en el PDF del newsletter</li>
+                    <li>El QR se mostrara en la pagina de inicio</li>
                   </ul>
                 </div>
               </div>

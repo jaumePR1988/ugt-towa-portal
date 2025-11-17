@@ -6,6 +6,7 @@ import { supabase, Survey, SurveyResponse } from '@/lib/supabase';
 import { Vote, BarChart3 } from 'lucide-react';
 import { toast } from 'sonner';
 
+
 export default function EncuestasPage() {
   const { user } = useAuth();
   const [surveys, setSurveys] = useState<Survey[]>([]);
@@ -20,6 +21,7 @@ export default function EncuestasPage() {
       .from('surveys')
       .select('*')
       .eq('is_active', true)
+      .eq('tipo', 'publica')
       .order('created_at', { ascending: false });
     if (data) {
       setSurveys(data);
