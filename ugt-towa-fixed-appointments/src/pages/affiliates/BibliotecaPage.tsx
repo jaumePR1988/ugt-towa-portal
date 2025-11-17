@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import DocumentViewer from '@/components/DocumentViewer';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase, SyndicalDocument } from '@/lib/supabase';
-import { Search, Download, FileText, Filter, User, BookOpen, Gift, Vote } from 'lucide-react';
+import { Search, Download, FileText, Filter, User, BookOpen, Gift, Vote, Eye } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -16,6 +17,8 @@ export default function BibliotecaPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('todas');
   const [loading, setLoading] = useState(true);
+  const [selectedDocument, setSelectedDocument] = useState<SyndicalDocument | null>(null);
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
 
   const categories = [
     { value: 'todas', label: 'Todas las Categorías' },
@@ -71,6 +74,16 @@ export default function BibliotecaPage() {
 
     setFilteredDocs(filtered);
   }
+
+  const handleViewDocument = (doc: SyndicalDocument) => {
+    setSelectedDocument(doc);
+    setIsViewerOpen(true);
+  };
+
+  const closeViewer = () => {
+    setIsViewerOpen(false);
+    setSelectedDocument(null);
+  };
 
   const menuItems = [
     { icon: User, label: 'Dashboard', path: '/afiliados/dashboard' },
@@ -163,10 +176,15 @@ export default function BibliotecaPage() {
                 {filteredDocs.map((doc) => (
                   <div key={doc.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
                     <div className="flex items-start justify-between">
-                      <div className="flex-1">
+                      <div 
+                        className="flex-1 cursor-pointer" 
+                        onClick={() => handleViewDocument(doc)}
+                      >
                         <div className="flex items-center space-x-2 mb-2">
                           <FileText className="h-5 w-5 text-red-600" />
-                          <h3 className="text-xl font-semibold text-gray-900">{doc.title}</h3>
+                          <h3 className="text-xl font-semibold text-gray-900 hover:text-red-600 transition">
+                            {doc.title}
+                          </h3>
                         </div>
                         {doc.description && (
                           <p className="text-gray-600 mb-3">{doc.description}</p>
@@ -186,15 +204,24 @@ export default function BibliotecaPage() {
                           )}
                         </div>
                       </div>
-                      <a
-                        href={doc.file_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="ml-4 flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-                      >
-                        <Download className="h-4 w-4" />
-                        <span>Descargar</span>
-                      </a>
+                      <div className="flex flex-col space-y-2">
+                        <button
+                          onClick={() => handleViewDocument(doc)}
+                          className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                        >
+                          <Eye className="h-4 w-4" />
+                          <span>Ver</span>
+                        </button>
+                        <a
+                          href={doc.file_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                        >
+                          <Download className="h-4 w-4" />
+                          <span>Descargar</span>
+                        </a>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -213,6 +240,13 @@ export default function BibliotecaPage() {
       </div>
 
       <Footer />
+
+      {/* Document Viewer */}
+      <DocumentViewer
+        isOpen={isViewerOpen}
+        onClose={closeViewer}
+        document={selectedDocument}
+      />
     </div>
   );
 }

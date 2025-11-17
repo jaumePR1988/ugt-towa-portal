@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import DocumentViewer from '@/components/DocumentViewer';
 import { supabase, SyndicalDocument } from '@/lib/supabase';
-import { FileText, Upload, Trash2, Search } from 'lucide-react';
+import { FileText, Upload, Trash2, Search, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -12,6 +13,8 @@ export default function AdminDocumentosSindicales() {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState<SyndicalDocument | null>(null);
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
 
   // Formulario
   const [title, setTitle] = useState('');
@@ -155,6 +158,16 @@ export default function AdminDocumentosSindicales() {
     doc.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleViewDocument = (doc: SyndicalDocument) => {
+    setSelectedDocument(doc);
+    setIsViewerOpen(true);
+  };
+
+  const closeViewer = () => {
+    setIsViewerOpen(false);
+    setSelectedDocument(null);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -286,8 +299,13 @@ export default function AdminDocumentosSindicales() {
                   {filteredDocuments.map((doc) => (
                     <div key={doc.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
                       <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-gray-900">{doc.title}</h3>
+                        <div 
+                          className="flex-1 cursor-pointer" 
+                          onClick={() => handleViewDocument(doc)}
+                        >
+                          <h3 className="font-semibold text-gray-900 hover:text-red-600 transition">
+                            {doc.title}
+                          </h3>
                           {doc.description && (
                             <p className="text-sm text-gray-600 mt-1">{doc.description}</p>
                           )}
@@ -304,6 +322,13 @@ export default function AdminDocumentosSindicales() {
                         </div>
 
                         <div className="flex items-center space-x-2 ml-4">
+                          <button
+                            onClick={() => handleViewDocument(doc)}
+                            className="p-2 text-blue-600 hover:bg-blue-50 rounded transition"
+                            title="Ver documento"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </button>
                           <label className="flex items-center cursor-pointer">
                             <input
                               type="checkbox"
@@ -316,6 +341,7 @@ export default function AdminDocumentosSindicales() {
                           <button
                             onClick={() => handleDelete(doc.id, doc.file_url)}
                             className="p-2 text-red-600 hover:bg-red-50 rounded transition"
+                            title="Eliminar documento"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -329,6 +355,13 @@ export default function AdminDocumentosSindicales() {
           </div>
         </div>
       </div>
+
+      {/* Document Viewer */}
+      <DocumentViewer
+        isOpen={isViewerOpen}
+        onClose={closeViewer}
+        document={selectedDocument}
+      />
     </div>
   );
 }
