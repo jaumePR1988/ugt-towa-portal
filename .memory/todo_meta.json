@@ -3,45 +3,17 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Extraer y preparar ZIP con mejoras de notificaciones",
-        "details": "1. Extraer UGT_TOWA_NOTIFICACIONES_Y_PWA_COMPLETAS_20251117_0544.zip. 2. Verificar contenido del directorio extraído. 3. Preparar estructura para deploy.",
+        "content": "Preparación de versión estable sin notificaciones",
+        "details": "Usuario decide cancelar implementación de notificaciones push. Mantener versión estable anterior del portal UGT Towa sin sistema de notificaciones. Verificar que todos los componentes básicos funcionen correctamente (citas, administración, mapas).",
         "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Configurar variables de entorno con claves VAPID de prueba",
-        "details": "1. Configurar VITE_VAPID_PUBLIC_KEY=BEl62iUYgUivxIkv69yViEuiBIa40HI80NQDcdMhI0v5C5D5tV6C5bC9nJ6dS8vQ1lK9mN2pR6sF5tV3wL9hY6dJ8vS4pQ2mN8. 2. Verificar credenciales Supabase existentes. 3. Crear archivo .env.local para deploy local.",
-        "status": "completed",
-        "priority": "high"
-      },
-      "3": {
-        "id": "3",
-        "content": "Deploy a repositorio GitHub",
-        "details": "1. Clonar repositorio https://github.com/jaumePR1988/ugt-towa-portal.git. 2. Reemplazar contenido con versión mejorada. 3. Hacer commit y push de todos los cambios.",
-        "status": "completed",
-        "priority": "high"
-      },
-      "4": {
-        "id": "4",
-        "content": "Configurar proyecto en Vercel",
-        "details": "1. Conectar repositorio GitHub a Vercel. 2. Configurar variables de entorno en Vercel (VAPID key, Supabase credentials). 3. Deploy automático. 4. Verificar que el proyecto se construye correctamente.",
-        "status": "in_progress",
-        "priority": "high"
-      },
-      "5": {
-        "id": "5",
-        "content": "Configurar Edge Functions en Supabase",
-        "details": "1. Deployar edge functions para notificaciones. 2. Configurar canal de notificaciones en tiempo real. 3. Verificar conectividad con el frontend deployado.",
-        "status": "completed",
-        "priority": "high"
-      },
-      "6": {
-        "id": "6",
-        "content": "Testing completo del sistema de notificaciones",
-        "details": "1. Verificar que el service worker se registra correctamente. 2. Probar solicitudes de permisos de notificación. 3. Confirmar que las notificaciones push funcionan. 4. Verificar funcionalidad PWA e instalación.",
-        "status": "pending",
-        "priority": "medium"
+        "content": "Deploy manual por parte del usuario",
+        "details": "El usuario hará el redeploy manual de la versión estable. No se requiere más asistencia automatizada. Usuario confirmó que prefiere manejar el deploy él mismo.",
+        "status": "cancelled",
+        "priority": "low"
       }
     }
   }
