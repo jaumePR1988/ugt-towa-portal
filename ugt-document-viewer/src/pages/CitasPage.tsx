@@ -19,6 +19,7 @@ export default function CitasPage() {
   const [selectedType, setSelectedType] = useState<'sindical' | 'prevencion'>('sindical');
   const [slots, setSlots] = useState<AppointmentSlot[]>([]);
   const [myAppointments, setMyAppointments] = useState<Appointment[]>([]);
+  const [showCompleted, setShowCompleted] = useState(false);
   
   // Modal de reserva
   const [showBookingModal, setShowBookingModal] = useState(false);
@@ -233,6 +234,57 @@ export default function CitasPage() {
     }
   }
 
+  async function handleCompleteAppointment(appointmentId: string) {
+    if (!confirm('¿Marcar esta cita como completada? Se archivará automáticamente y se contará en las estadísticas.')) return;
+
+    try {
+      // Marcar cita como completada
+      const { error } = await supabase
+        .from('appointments')
+        .update({ status: 'completed' })
+        .eq('id', appointmentId);
+
+      if (error) {
+        console.error('Error al completar cita:', error);
+        toast.error('Error al marcar la cita como completada');
+        return;
+      }
+
+      // Actualizar el slot para liberarlo para futuras citas
+      const appointment = myAppointments.find(apt => apt.id === appointmentId);
+      if (appointment?.slot_id) {
+        await supabase
+          .from('appointment_slots')
+          .update({ 
+            status: 'available',
+            blocked_by: null,
+            block_reason: null
+          })
+          .eq('id', appointment.slot_id);
+      }
+
+      toast.success('Cita marcada como completada y archivada automáticamente. Se ha actualizado en las estadísticas.');
+      loadSlots();
+      loadMyAppointments();
+
+      // Enviar notificación de finalización (opcional)
+      try {
+        await supabase.functions.invoke('notify-appointment', {
+          body: {
+            appointmentId: appointmentId,
+            action: 'completed'
+          }
+        });
+      } catch (notifyError) {
+        console.error('Error al enviar notificación de finalización:', notifyError);
+      }
+
+    } catch (error: any) {
+      console.error('Error general al completar cita:', error);
+      toast.error('Error al procesar la finalización de la cita');
+    }
+  }
+
   function changeDate(days: number) {
     const newDate = new Date(selectedDate);
     newDate.setDate(newDate.getDate() + days);
@@ -366,44 +418,142 @@ export default function CitasPage() {
           <div>
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-bold mb-4">Mis Citas</h2>
+              
+              {/* Estadísticas rápidas */}
+              <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                <div className="grid grid-cols-3 gap-3 text-center">
+                  <div>
+                    <div className="text-lg font-bold text-blue-600">
+                      {myAppointments.filter(apt => apt.status === 'confirmed' || apt.status === 'pending').length}
+                    </div>
+                    <div className="text-xs text-gray-600">Activas</div>
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-green-600">
+                      {myAppointments.filter(apt => apt.status === 'completed').length}
+                    </div>
+                    <div className="text-xs text-gray-600">Completadas</div>
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-red-600">
+                      {myAppointments.filter(apt => apt.status === 'cancelled').length}
+                    </div>
+                    <div className="text-xs text-gray-600">Canceladas</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-gray-700">Historial de Citas</h3>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => setShowCompleted(false)}
+                    className={`px-3 py-1 text-sm rounded-full font-semibold transition ${
+                      !showCompleted 
+                        ? 'bg-blue-600 text-white' 
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    Activas
+                  </button>
+                  <button
+                    onClick={() => setShowCompleted(true)}
+                    className={`px-3 py-1 text-sm rounded-full font-semibold transition ${
+                      showCompleted 
+                        ? 'bg-blue-600 text-white' 
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    Completadas ({myAppointments.filter(apt => apt.status === 'completed').length})
+                  </button>
+                </div>
+              </div>
+              
               <div className="space-y-3">
-                {myAppointments.filter(apt => apt.status !== 'cancelled').length === 0 ? (
-                  <p className="text-gray-500 text-sm">No tienes citas reservadas</p>
+                {!showCompleted ? (
+                  // Citas activas (confirmadas y pendientes)
+                  myAppointments.filter(apt => apt.status === 'confirmed' || apt.status === 'pending').length === 0 ? (
+                    <p className="text-gray-500 text-sm">No tienes citas activas</p>
+                  ) : (
+                    myAppointments
+                      .filter(apt => apt.status === 'confirmed' || apt.status === 'pending')
+                      .map(apt => (
+                        <div key={apt.id} className="p-4 border-2 border-gray-200 rounded-lg">
+                          <div className="flex items-start justify-between mb-2">
+                            <p className="font-semibold text-gray-900 capitalize">{apt.delegate_type}</p>
+                            <span className={`px-2 py-1 text-xs rounded-full font-semibold ${
+                              apt.status === 'confirmed' 
+                                ? 'bg-green-100 text-green-700' 
+                                : 'bg-yellow-100 text-yellow-700'
+                            }`}>
+                              {apt.status === 'confirmed' ? 'Confirmada' : 'Pendiente'}
+                            </span>
+                          </div>
+                          <div className="flex items-center text-sm text-gray-600 mb-3">
+                            <CalendarIcon className="h-4 w-4 mr-2" />
+                            <span>
+                              {format(new Date(apt.start_time), "d 'de' MMM, yyyy", { locale: es })}
+                            </span>
+                          </div>
+                          <div className="flex items-center text-sm text-gray-600 mb-3">
+                            <Clock className="h-4 w-4 mr-2" />
+                            <span>
+                              {format(new Date(apt.start_time), 'HH:mm')} - {format(new Date(apt.end_time), 'HH:mm')}
+                            </span>
+                          </div>
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => handleCancelAppointment(apt.id)}
+                              className="flex-1 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm"
+                            >
+                              Cancelar Cita
+                            </button>
+                            
+                            {apt.status === 'confirmed' && new Date(apt.start_time) < new Date() && (
+                              <button
+                                onClick={() => handleCompleteAppointment(apt.id)}
+                                className="flex-1 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm"
+                              >
+                                Marcar como Completada
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                  )
                 ) : (
-                  myAppointments
-                    .filter(apt => apt.status !== 'cancelled')
-                    .map(apt => (
-                      <div key={apt.id} className="p-4 border-2 border-gray-200 rounded-lg">
-                        <div className="flex items-start justify-between mb-2">
-                          <p className="font-semibold text-gray-900 capitalize">{apt.delegate_type}</p>
-                          <span className={`px-2 py-1 text-xs rounded-full font-semibold ${
-                            apt.status === 'confirmed' 
-                              ? 'bg-green-100 text-green-700' 
-                              : 'bg-yellow-100 text-yellow-700'
-                          }`}>
-                            {apt.status === 'confirmed' ? 'Confirmada' : 'Pendiente'}
-                          </span>
+                  // Citas completadas
+                  myAppointments.filter(apt => apt.status === 'completed').length === 0 ? (
+                    <p className="text-gray-500 text-sm">No tienes citas completadas</p>
+                  ) : (
+                    myAppointments
+                      .filter(apt => apt.status === 'completed')
+                      .map(apt => (
+                        <div key={apt.id} className="p-4 border-2 border-green-200 rounded-lg bg-green-50">
+                          <div className="flex items-start justify-between mb-2">
+                            <p className="font-semibold text-gray-900 capitalize">{apt.delegate_type}</p>
+                            <span className="px-2 py-1 text-xs rounded-full font-semibold bg-green-100 text-green-700">
+                              ✓ Completada
+                            </span>
+                          </div>
+                          <div className="flex items-center text-sm text-gray-600 mb-3">
+                            <CalendarIcon className="h-4 w-4 mr-2" />
+                            <span>
+                              {format(new Date(apt.start_time), "d 'de' MMM, yyyy", { locale: es })}
+                            </span>
+                          </div>
+                          <div className="flex items-center text-sm text-gray-600 mb-3">
+                            <Clock className="h-4 w-4 mr-2" />
+                            <span>
+                              {format(new Date(apt.start_time), 'HH:mm')} - {format(new Date(apt.end_time), 'HH:mm')}
+                            </span>
+                          </div>
+                          <p className="text-xs text-green-700 font-medium">
+                            📊 Esta cita se cuenta en las estadísticas
+                          </p>
                         </div>
-                        <div className="flex items-center text-sm text-gray-600 mb-3">
-                          <CalendarIcon className="h-4 w-4 mr-2" />
-                          <span>
-                            {format(new Date(apt.start_time), "d 'de' MMM, yyyy", { locale: es })}
-                          </span>
-                        </div>
-                        <div className="flex items-center text-sm text-gray-600 mb-3">
-                          <Clock className="h-4 w-4 mr-2" />
-                          <span>
-                            {format(new Date(apt.start_time), 'HH:mm')} - {format(new Date(apt.end_time), 'HH:mm')}
-                          </span>
-                        </div>
-                        <button
-                          onClick={() => handleCancelAppointment(apt.id)}
-                          className="w-full py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm"
-                        >
-                          Cancelar Cita
-                        </button>
-                      </div>
-                    ))
+                      ))
+                  )
                 )}
               </div>
             </div>
