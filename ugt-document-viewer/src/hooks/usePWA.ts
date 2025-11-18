@@ -218,7 +218,6 @@ export const usePWA = () => {
     requestNotificationPermission,
     sendTestNotification,
     subscribeToPush,
-    checkSubscription,
-    deferredPrompt // Export for PWAInstallGuide component
+    checkSubscription
   };
 };

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Download, Smartphone, Chrome, Monitor, X, CheckCircle, AlertCircle } from 'lucide-react';
 import { usePWA } from '@/hooks/usePWA';
-import { toast } from 'sonner';
 
 interface PWAInstallGuideProps {
   isOpen: boolean;
@@ -9,22 +8,19 @@ interface PWAInstallGuideProps {
 }
 
 export default function PWAInstallGuide({ isOpen, onClose }: PWAInstallGuideProps) {
-  const { isInstallable, promptInstall, deferredPrompt } = usePWA();
+  const { isInstallable, promptInstall } = usePWA();
   const [installStep, setInstallStep] = useState<'detect' | 'chrome' | 'firefox' | 'safari'>('detect');
 
   if (!isOpen) return null;
 
   const handleInstallClick = async () => {
-    if (deferredPrompt) {
-      try {
-        const success = await promptInstall();
-        if (success) {
-          toast.success('¡App instalada exitosamente!');
-          onClose();
-        }
-      } catch (error) {
-        console.error('Error installing PWA:', error);
+    try {
+      const success = await promptInstall();
+      if (success) {
+        onClose();
       }
+    } catch (error) {
+      console.error('Error installing PWA:', error);
     }
   };
 
@@ -141,7 +137,7 @@ export default function PWAInstallGuide({ isOpen, onClose }: PWAInstallGuideProp
           </div>
 
           <div className="flex flex-col space-y-3">
-            {deferredPrompt && (
+            {isInstallable && (
               <button
                 onClick={handleInstallClick}
                 className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
