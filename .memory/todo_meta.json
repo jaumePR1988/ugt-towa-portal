@@ -5,21 +5,21 @@
         "id": "1",
         "content": "Modificar generación automática de newsletter para filtrar por mes anterior",
         "details": "1. Identificar función de generación automática (probablemente generate-monthly-draft)\n2. Modificar filtros para comunicados del mes anterior únicamente\n3. Añadir datos de encuestas al contenido\n4. Filtrar galería de fotos por mes anterior\n5. Actualizar lógica de selección de contenido",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
         "content": "Actualizar edge function de generación automática",
         "details": "1. Cargar toolkit de supabase\n2. Identificar función actual (generate-monthly-draft-v3 probablemente)\n3. Modificar consultas SQL para filtrar por mes anterior\n4. Añadir sección de encuestas\n5. Actualizar filtros de galería\n6. Mantener compatibilidad con generación manual",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "3": {
         "id": "3",
         "content": "Probar generación automática actualizada",
         "details": "1. Verificar que las consultas filtran correctamente por mes anterior\n2. Confirmar que incluye datos de encuestas\n3. Validar filtrado de galería de fotos\n4. Comprobar formato final de newsletter\n5. Generar archivo ZIP final con todos los cambios",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       }
     }
