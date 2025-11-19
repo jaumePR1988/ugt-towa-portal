@@ -1,0 +1,41 @@
+📄 Extracted from page: UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical
+URL: http://localhost:5173/
+
+Extracted content:
+```json
+{
+  "title": "UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical",
+  "url": "http://localhost:5173/",
+  "summary": "El Portal Sindical UGT Towa es una plataforma dedicada a la Unión General de Trabajadores de Towa Pharmaceutical Europe, diseñada para facilitar la comunicación, participación y conexión de los empleados con sus representantes sindicales. Ofrece acceso rápido a información importante, servicios clave y canales de interacción para sus afiliados. El portal promueve la transparencia y la implicación de los trabajadores en la actividad sindical a través de comunicados, encuestas y eventos, además de proveer herramientas para la defensa de los derechos laborales.",
+  "key_points": [
+    "**Portal UGT Towa**: Plataforma principal de comunicación y participación para los trabajadores de Towa Pharmaceutical.",
+    "**Acceso a la Aplicación Móvil**: Promoción destacada para instalar una aplicación móvil que ofrece acceso rápido, notificaciones automáticas y funcionalidad sin internet.",
+    "**Navegación Principal**: Incluye secciones como Inicio, Quiénes Somos, Comunicados, Citas, Documentos, Encuestas, Newsletter y Afiliados (con dashboard).",
+    "**Bienvenida y Propósito**: Presenta el portal como una plataforma para estar informado, participar y conectar con los representantes sindicales.",
+    "**Servicios Destacados**: Permite solicitar citas con representantes y ver comunicados importantes.",
+    "**Galería de Eventos**: Muestra momentos destacados de la actividad sindical con descripciones de visitas, manifestaciones y reuniones (ej. visita presidenta comité LUCTA, visita delegado UGT AGC Pharma Chemicals, apoyo a huelga Intermas Group, visita a Grifols, manifestación reducción jornada, asamblea sobre nuevo convenio, significado de la bandera UGT).",
+    "**Encuestas Activas**: Permite la participación de los usuarios en encuestas sobre temas relevantes para futuras negociaciones o mejoras del portal, mostrando días restantes y estado (Activa).",
+    "**Últimos Comunicados**: Publica noticias y convocatorias relevantes como la asamblea del Comité de Empresa, reuniones con el Departamento de People sobre el Calendario Laboral 2026 y la bienvenida al portal.",
+    "**Accesos Rápidos**: Enlaces directos a 'Quiénes Somos', 'Solicitar Cita' y 'Buzón de Sugerencias'.",
+    "**Buzón de Sugerencias Anónimas**: Un canal para que los usuarios compartan ideas, comentarios o preocupaciones de forma confidencial.",
+    "**Afiliación**: Presenta un código QR para facilitar el proceso de afiliación a UGT.",
+    "**Contacto**: Proporciona información de contacto (correo electrónico, teléfono) y la entidad a la que pertenece (Towa Pharmaceutical Europe).",
+    "**Sobre UGT Towa**: Describe la misión de la sección sindical de UGT en Towa Pharmaceutical Europe, enfocada en la defensa de los derechos laborales y el bienestar de los trabajadores."
+  ],
+  "relevant_links": [
+    "/",
+    "/quienes-somos",
+    "/comunicados",
+    "/citas",
+    "/documentos",
+    "/encuestas",
+    "/newsletter",
+    "/afiliados/dashboard",
+    "/comunicados/512e77b8-016a-4542-a79f-600a5168f0a5",
+    "/comunicados/9dff224d-665f-4f17-a5db-6eaa913466c4",
+    "/comunicados/18051306-3625-4d00-8634-fd89a13466c4",
+    "#sugerencias"
+  ],
+  "file_name": "ugt_towa_portal_sindical_content.json"
+}
+```
