@@ -95,7 +95,7 @@ export default function EventCarousel() {
             >
               {eventImages.map((image, index) => (
                 <div key={image.id} className="w-full flex-shrink-0 relative group">
-                  <div className="aspect-[16/9] bg-gray-200 dark:bg-gray-700">
+                  <div className="aspect-[16/10] bg-gray-200 dark:bg-gray-700 max-h-[350px]">
                     <img
                       src={image.image_url}
                       alt={image.title}
