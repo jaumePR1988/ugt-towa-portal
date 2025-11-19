@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UGT Towa - Preview Carrusel Modificado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        /* Carrusel Original (16:9) - Solo para comparación */
+        .carousel-original {
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+        }
+        
+        /* Carrusel Modificado (16:10) - Nuevo tamaño */
+        .carousel-nuevo {
+            aspect-ratio: 16 / 10;
+            max-height: 350px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+        }
+        
+        .demo-container {
+            background-color: #f8fafc;
+            min-height: 100vh;
+        }
+        
+        .comparison-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="demo-container p-6">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">UGT Towa Portal - Preview</h1>
+            <p class="text-xl text-gray-600 mb-6">Comparación: Carrusel Original vs. Carrusel Modificado</p>
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <h2 class="text-lg font-semibold text-blue-900 mb-2">Cambios Implementados:</h2>
+                <ul class="text-blue-800 space-y-1">
+                    <li>✅ Proporción: 16:9 → 16:10 (más compacto)</li>
+                    <li>✅ Altura máxima: 350px (control mejor)</li>
+                    <li>✅ Mejor aprovechamiento del espacio</li>
+                    <li>✅ Mantiene funcionalidad completa</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+            <!-- Carrusel Original -->
+            <div class="comparison-card">
+                <div class="bg-red-600 text-white p-4">
+                    <h3 class="text-lg font-bold">CARRUSEL ORIGINAL</h3>
+                    <p class="text-sm opacity-90">Proporción 16:9 - Altura: ~506px</p>
+                </div>
+                <div class="p-6">
+                    <div class="carousel-original bg-gray-200 dark:bg-gray-700 rounded-xl shadow-lg relative group overflow-hidden">
+                        <!-- Simulación de imagen de fondo -->
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 opacity-80"></div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="text-white text-center">
+                                <i data-lucide="camera" class="w-12 h-12 mx-auto mb-2 opacity-60"></i>
+                                <p class="text-sm opacity-80">Evento Syndical 2025</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Overlay -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                        
+                        <!-- Content -->
+                        <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+                            <h3 class="text-xl font-bold mb-2">Reunión Anual UGT Towa</h3>
+                            <p class="text-sm text-gray-200 mb-2 line-clamp-2">
+                                Un evento memorable que reunir a todos los trabajadores para celebrar nuestros logros del año
+                            </p>
+                            <p class="text-xs text-gray-300">
+                                15 de Noviembre de 2025
+                            </p>
+                        </div>
+                        
+                        <!-- Navigation Buttons -->
+                        <button class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all">
+                            <i data-lucide="chevron-left" class="h-6 w-6"></i>
+                        </button>
+                        <button class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all">
+                            <i data-lucide="chevron-right" class="h-6 w-6"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="mt-4 space-y-2">
+                        <!-- Dots -->
+                        <div class="flex justify-center space-x-2">
+                            <div class="w-3 h-3 rounded-full bg-red-600"></div>
+                            <div class="w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400"></div>
+                            <div class="w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400"></div>
+                        </div>
+                        
+                        <!-- Button -->
+                        <div class="text-center">
+                            <button class="inline-flex items-center px-6 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">
+                                <i data-lucide="camera" class="h-5 w-5 mr-2"></i>
+                                Ver Galería Completa
+                            </button>
+                        </div>
+                        
+                        <!-- Info -->
+                        <div class="text-center">
+                            <p class="text-sm text-gray-600">1 de 3 imágenes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carrusel Nuevo -->
+            <div class="comparison-card">
+                <div class="bg-green-600 text-white p-4">
+                    <h3 class="text-lg font-bold">CARRUSEL MODIFICADO</h3>
+                    <p class="text-sm opacity-90">Proporción 16:10 - Altura máxima: 350px</p>
+                </div>
+                <div class="p-6">
+                    <div class="carousel-nuevo bg-gray-200 dark:bg-gray-700 rounded-xl shadow-lg relative group overflow-hidden">
+                        <!-- Simulación de imagen de fondo -->
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 opacity-80"></div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="text-white text-center">
+                                <i data-lucide="camera" class="w-12 h-12 mx-auto mb-2 opacity-60"></i>
+                                <p class="text-sm opacity-80">Evento Syndical 2025</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Overlay -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                        
+                        <!-- Content -->
+                        <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+                            <h3 class="text-xl font-bold mb-2">Reunión Anual UGT Towa</h3>
+                            <p class="text-sm text-gray-200 mb-2 line-clamp-2">
+                                Un evento memorable que reunió a todos los trabajadores para celebrar nuestros logros del año
+                            </p>
+                            <p class="text-xs text-gray-300">
+                                15 de Noviembre de 2025
+                            </p>
+                        </div>
+                        
+                        <!-- Navigation Buttons -->
+                        <button class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all">
+                            <i data-lucide="chevron-left" class="h-6 w-6"></i>
+                        </button>
+                        <button class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all">
+                            <i data-lucide="chevron-right" class="h-6 w-6"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="mt-4 space-y-2">
+                        <!-- Dots -->
+                        <div class="flex justify-center space-x-2">
+                            <div class="w-3 h-3 rounded-full bg-green-600"></div>
+                            <div class="w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400"></div>
+                            <div class="w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400"></div>
+                        </div>
+                        
+                        <!-- Button -->
+                        <div class="text-center">
+                            <button class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">
+                                <i data-lucide="camera" class="h-5 w-5 mr-2"></i>
+                                Ver Galería Completa
+                            </button>
+                        </div>
+                        
+                        <!-- Info -->
+                        <div class="text-center">
+                            <p class="text-sm text-gray-600">1 de 3 imágenes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Newsletter Section Preview -->
+        <div class="mt-12 comparison-card">
+            <div class="bg-purple-600 text-white p-4">
+                <h3 class="text-lg font-bold">NEWSLETTER AUTOMÁTICA - NUEVA SECCIÓN ENCUESTAS</h3>
+                <p class="text-sm opacity-90">Con datos y estadísticas del mes anterior</p>
+            </div>
+            <div class="p-6">
+                <div class="space-y-6">
+                    <!-- Encuesta Example -->
+                    <div class="border-l-4 border-purple-600 pl-4">
+                        <h4 class="font-bold text-gray-900 mb-2">¿Cuál es tu nivel de satisfacción laboral?</h4>
+                        <p class="text-sm text-gray-600 mb-3"><strong>Total de participantes:</strong> 25 empleados</p>
+                        
+                        <div class="space-y-3">
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-sm">Muy satisfecho</span>
+                                    <span class="text-purple-600 font-bold text-sm">40% (10 votos)</span>
+                                </div>
+                                <div class="bg-gray-200 h-2 rounded-full">
+                                    <div class="bg-purple-600 h-2 rounded-full" style="width: 40%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-sm">Satisfecho</span>
+                                    <span class="text-purple-600 font-bold text-sm">35% (9 votos)</span>
+                                </div>
+                                <div class="bg-gray-200 h-2 rounded-full">
+                                    <div class="bg-purple-600 h-2 rounded-full" style="width: 35%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-sm">Neutral</span>
+                                    <span class="text-purple-600 font-bold text-sm">20% (5 votos)</span>
+                                </div>
+                                <div class="bg-gray-200 h-2 rounded-full">
+                                    <div class="bg-purple-600 h-2 rounded-full" style="width: 20%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-sm">Insatisfecho</span>
+                                    <span class="text-purple-600 font-bold text-sm">5% (1 voto)</span>
+                                </div>
+                                <div class="bg-gray-200 h-2 rounded-full">
+                                    <div class="bg-purple-600 h-2 rounded-full" style="width: 5%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs Preview -->
+        <div class="mt-8 comparison-card">
+            <div class="bg-indigo-600 text-white p-4">
+                <h3 class="text-lg font-bold">NAVEGACIÓN - NUEVA PESTAÑA GALERÍA</h3>
+                <p class="text-sm opacity-90">"Galería de Eventos" añadida entre Comunicados y Citas</p>
+            </div>
+            <div class="p-6">
+                <div class="flex space-x-8 border-b-2 border-gray-200">
+                    <a href="#" class="text-gray-900 font-medium border-b-2 border-red-600 pb-2">Inicio</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-700 pb-2">Comunicados</a>
+                    <a href="#" class="text-blue-600 font-medium border-b-2 border-blue-600 pb-2">Galería de Eventos</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-700 pb-2">Citas</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-700 pb-2">Newsletter</a>
+                </div>
+                <p class="text-sm text-gray-600 mt-2">
+                    ✓ La pestaña "Galería de Eventos" redirige a /galeria
+                </p>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="mt-8 bg-green-50 border border-green-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-green-900 mb-4">✅ RESUMEN DE CAMBIOS IMPLEMENTADOS</h3>
+            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                <div>
+                    <h4 class="font-semibold text-green-800 mb-2">Carrusel Homepage</h4>
+                    <ul class="text-green-700 space-y-1">
+                        <li>• Proporción 16:10 (más compacto)</li>
+                        <li>• Altura máxima 350px</li>
+                        <li>• Mejor proporción visual</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-green-800 mb-2">Newsletter Automática</h4>
+                    <ul class="text-green-700 space-y-1">
+                        <li>• Solo contenido del mes anterior</li>
+                        <li>• Nueva sección de encuestas</li>
+                        <li>• Estadísticas con gráficos</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-green-800 mb-2">Navegación</h4>
+                    <ul class="text-green-700 space-y-1">
+                        <li>• Nueva pestaña "Galería de Eventos"</li>
+                        <li>• Carrusel redirige a /galeria</li>
+                        <li>• Página completa de galería</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>

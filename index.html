@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 INSTALACIÓN DIRECTA PWA UGT TOWA</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #e50000 0%, #dc2626 100%);
+            color: white;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .main-content {
+            max-width: 400px;
+            padding: 20px;
+        }
+        
+        .logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .install-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 20px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            min-width: 250px;
+        }
+        
+        .install-btn:hover {
+            background: white;
+            color: #e50000;
+            transform: scale(1.05);
+        }
+        
+        .features {
+            margin: 40px 0;
+            text-align: left;
+        }
+        
+        .feature {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        
+        .instructions {
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .step {
+            margin: 10px 0;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .step:last-child {
+            border-bottom: none;
+        }
+        
+        .warning {
+            background: rgba(255,193,7,0.2);
+            border: 1px solid rgba(255,193,7,0.5);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .success {
+            background: rgba(40,167,69,0.2);
+            border: 1px solid rgba(40,167,69,0.5);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @media (max-width: 480px) {
+            .title {
+                font-size: 28px;
+            }
+            
+            .install-btn {
+                font-size: 18px;
+                padding: 15px 30px;
+                min-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <div class="logo">🏛️</div>
+        <div class="title">UGT Towa</div>
+        <div class="subtitle">Portal Sindical - Instalación PWA</div>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <div>
+                    <strong>Aplicación rápida</strong><br>
+                    Abre al instante como app nativa
+                </div>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">📴</div>
+                <div>
+                    <strong>Funciona offline</strong><br>
+                    Acceso sin conexión a internet
+                </div>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">🔔</div>
+                <div>
+                    <strong>Notificaciones</strong><br>
+                    Alertas de comunicados importantes
+                </div>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">💾</div>
+                <div>
+                    <strong>Pantalla de inicio</strong><br>
+                    Acceso directo desde el icono
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin: 30px 0;">
+            <a href="https://9ya0vtpov5ir.space.minimax.io?forcePWA=true" class="install-btn pulse" onclick="mostrarInstrucciones()">
+                🚀 INSTALAR AHORA
+            </a>
+        </div>
+        
+        <div class="instructions" id="instructions" style="display: none;">
+            <h3>📱 Instrucciones de instalación:</h3>
+            
+            <div class="step">
+                <strong>1. Abrir sitio</strong><br>
+                Se abrirá UGT Towa automáticamente
+            </div>
+            
+            <div class="step">
+                <strong>2. Buscar popup</strong><br>
+                Aparecerá un popup en 30 segundos
+            </div>
+            
+            <div class="step">
+                <strong>3. Tocar "Instalar"</strong><br>
+                Botón rojo "Instalar ahora"
+            </div>
+            
+            <div class="step">
+                <strong>4. Confirmar</strong><br>
+                Elegir nombre del icono
+            </div>
+            
+            <div class="step">
+                <strong>5. ¡Listo!</strong><br>
+                Buscar icono "UGT Towa" en pantalla inicio
+            </div>
+        </div>
+        
+        <div class="warning">
+            <strong>💡 Si no aparece el popup:</strong><br>
+            • Chrome Android: Menú (⋮) > "Agregar a pantalla de inicio"<br>
+            • Safari iPhone: Compartir (⬆️) > "Agregar a pantalla de inicio"
+        </div>
+        
+        <div class="success" id="success">
+            <strong>✅ ¡Instalación iniciada!</strong><br>
+            Sigue las instrucciones del navegador para completar la instalación.
+        </div>
+        
+        <div style="margin-top: 30px; font-size: 14px; opacity: 0.8;">
+            <strong>Manual de instalación completo:</strong><br>
+            <a href="GUIA_INSTALACION_MOVIL.md" style="color: white; text-decoration: underline;">
+                Ver guía detallada
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        function mostrarInstrucciones() {
+            document.getElementById('instructions').style.display = 'block';
+            document.getElementById('success').style.display = 'block';
+            
+            // Scroll a las instrucciones
+            document.getElementById('instructions').scrollIntoView({
+                behavior: 'smooth'
+            });
+            
+            // Detectar si se instaló
+            setTimeout(() => {
+                if (window.matchMedia('(display-mode: standalone)').matches) {
+                    document.getElementById('success').innerHTML = 
+                        '🎉 ¡PWA instalada exitosamente!<br>Busca el icono "UGT Towa" en tu pantalla de inicio.';
+                }
+            }, 5000);
+        }
+        
+        // Auto-detectar tipo de dispositivo
+        function detectarDispositivo() {
+            const userAgent = navigator.userAgent;
+            const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+            const isAndroid = /Android/i.test(userAgent);
+            const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
+            
+            console.log('📱 Dispositivo detectado:', {
+                mobile: isMobile,
+                android: isAndroid,
+                ios: isIOS,
+                navegador: getNavegador()
+            });
+            
+            if (isMobile) {
+                if (isAndroid) {
+                    document.querySelector('.warning').innerHTML = 
+                        '<strong>📱 Chrome Android:</strong><br>• Esperar 30 segundos para el popup<br>• O: Menú (⋮) > "Agregar a pantalla de inicio"';
+                } else if (isIOS) {
+                    document.querySelector('.warning').innerHTML = 
+                        '<strong>🍎 Safari iPhone:</strong><br>• Esperar 30 segundos para el popup<br>• O: Compartir (⬆️) > "Agregar a pantalla de inicio"';
+                }
+            }
+        }
+        
+        function getNavegador() {
+            const userAgent = navigator.userAgent;
+            if (userAgent.includes('Chrome') && !userAgent.includes('Edg')) return 'Chrome';
+            if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) return 'Safari';
+            if (userAgent.includes('Firefox')) return 'Firefox';
+            return 'Otro';
+        }
+        
+        // Ejecutar al cargar
+        window.onload = detectarDispositivo;
+        
+        // Detectar cuando la app se instala
+        window.addEventListener('appinstalled', function() {
+            document.getElementById('success').innerHTML = 
+                '🎉 ¡PWA instalada exitosamente!<br>Busca el icono "UGT Towa" en tu pantalla de inicio.';
+            console.log('📱 PWA instalada correctamente');
+        });
+    </script>
+</body>
+</html>
