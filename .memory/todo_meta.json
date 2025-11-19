@@ -3,59 +3,24 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Portal UGT TOWA - Complete PWA & Notification System Implementation",
-        "details": "✅ COMPLETED: Successfully implemented and deployed advanced PWA system with intelligent installation, complete notification system with admin panel, 25+ edge functions, zero TypeScript errors, and production-ready deployment at https://55g0csidwr93.space.minimax.io",
-        "status": "completed",
+        "content": "Modificar generación automática de newsletter para filtrar por mes anterior",
+        "details": "1. Identificar función de generación automática (probablemente generate-monthly-draft)\n2. Modificar filtros para comunicados del mes anterior únicamente\n3. Añadir datos de encuestas al contenido\n4. Filtrar galería de fotos por mes anterior\n5. Actualizar lógica de selección de contenido",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "URGENT: Fix Appointment Booking start_time Constraint Error",
-        "details": "✅ SOLVED: Successfully identified and fixed the null constraint violation in the appointment booking system. Added start_time and end_time fields to the INSERT statement in CitasPage.tsx. Applied corrections to all versions. Build completed successfully with 0 TypeScript errors. Deployed at https://xqmbk00ixzzy.space.minimax.io",
-        "status": "completed",
+        "content": "Actualizar edge function de generación automática",
+        "details": "1. Cargar toolkit de supabase\n2. Identificar función actual (generate-monthly-draft-v3 probablemente)\n3. Modificar consultas SQL para filtrar por mes anterior\n4. Añadir sección de encuestas\n5. Actualizar filtros de galería\n6. Mantener compatibilidad con generación manual",
+        "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Implement click-to-view functionality for event galleries",
-        "details": "✅ COMPLETED: Successfully implemented the requested functionality where users click on the homepage carousel to open a dedicated 'Galería de Eventos' page in a new tab. Solution preserves the original carousel (user preferred version) while adding enhanced gallery viewing in separate tab. Features: original homepage carousel → click opens /galeria-eventos in new tab → grid layout with 'Ver galería' buttons → fullscreen viewer with zoom/navigation. Deployed at https://6f8yvqu7wsnw.space.minimax.io",
-        "status": "completed",
-        "priority": "high"
-      },
-      "4": {
-        "id": "4",
-        "content": "Implement Document Viewer for Document Images and Text",
-        "details": "✅ COMPLETED: Successfully implemented comprehensive document viewer system allowing users to click on documents to view them in fullscreen modal. Features include: zoom controls (50%-200%), support for images and PDFs, download functionality, responsive design, and integration into both admin and affiliate interfaces. Deployed at https://i7bke2n2uozw.space.minimax.io",
-        "status": "completed",
-        "priority": "high"
-      },
-      "5": {
-        "id": "5",
-        "content": "Setup Production VAPID Keys for Push Notifications",
-        "details": "Configure production VAPID keys for secure push notification delivery. Current system has development keys - need production-ready keys for real-world deployment and proper notification delivery.",
-        "status": "pending",
-        "priority": "high"
-      },
-      "6": {
-        "id": "6",
-        "content": "Implement Analytics and Performance Monitoring",
-        "details": "Add comprehensive analytics tracking and performance monitoring. Monitor user engagement, PWA installation rates, notification delivery rates, page load times, and user behavior patterns.",
+        "content": "Probar generación automática actualizada",
+        "details": "1. Verificar que las consultas filtran correctamente por mes anterior\n2. Confirmar que incluye datos de encuestas\n3. Validar filtrado de galería de fotos\n4. Comprobar formato final de newsletter\n5. Generar archivo ZIP final con todos los cambios",
         "status": "pending",
         "priority": "medium"
-      },
-      "7": {
-        "id": "7",
-        "content": "SEO Optimization and Search Engine Visibility",
-        "details": "Enhance search engine optimization including meta tags, structured data, sitemap generation, robots.txt optimization, and Google Search Console integration for better discoverability.",
-        "status": "pending",
-        "priority": "medium"
-      },
-      "8": {
-        "id": "8",
-        "content": "Consider Native Mobile App Development with Capacitor",
-        "details": "Evaluate the possibility of creating a native mobile app using Capacitor based on the existing PWA. This would provide app store distribution and enhanced mobile experience while maintaining the web-based architecture.",
-        "status": "pending",
-        "priority": "low"
       }
     }
   }
