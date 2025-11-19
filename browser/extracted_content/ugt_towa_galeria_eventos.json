@@ -1,0 +1,29 @@
+📄 Extracted from page: UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical
+URL: http://localhost:5173/
+
+Extracted content:
+```json
+{
+  "title": "UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical",
+  "url": "http://localhost:5173/",
+  "summary": "La sección 'Galería de Eventos' se ha cargado correctamente y muestra una colección de momentos destacados de la actividad sindical de UGT Towa. La sección incluye un título, una breve descripción de su propósito y listados individuales para cada evento, indicando la presencia de 7 eventos en total, de los cuales 7 están detallados en la página proporcionada.",
+  "key_points": [
+    "**Título de la sección:** Galería de Eventos.",
+    "**Subtítulo:** Momentos destacados de nuestra actividad sindical.",
+    "**Contador de eventos:** Se indica 'Mostrando 6 de 7 eventos', aunque la página muestra detalles de 7 eventos distintos.",
+    "**Formato de evento:** Cada entrada de la galería incluye una imagen (indicada), un título del evento, una fecha y una descripción detallada del mismo.",
+    "**Eventos visibles y sus descripciones:**",
+    "   - **Visita Presidenta Comite LUCTA (23 de septiembre, 2025):** Reunión con la presidenta del comité de LUCTA y el responsable de acción sindical del Vallès Oriental-Maresme para compartir acuerdos y beneficios, como parte de una ronda de contacto con empresas de la zona.",
+    "   - **Visita Delegado Sindical AGC Pharma Chemicals (13 de junio, 2025):** Recepción del delegado sindical de UGT en AGC Pharma Chemicals para intercambiar ideas y conocer sus condiciones laborales y beneficios sociales.",
+    "   - **Huelga Descuelgue Intermas Group (24 de abril, 2025):** Apoyo a los compañeros de Intermas Group por una reducción salarial del 23% aplicada mediante el artículo 41, con crítica a la normalización de esta práctica.",
+    "   - **Visita a la Farmacéutica Grifols (14 de marzo, 2025):** Delegación sindical se reúne con la sección de UGT en Grifols para conocer acuerdos y beneficios, y visita a antiguos compañeros de Towa.",
+    "   - **Manifestación Reducción Jornada (5 de marzo, 2025):** Presencia de la sección sindical de UGT Towa en una manifestación a favor de la reducción de la jornada laboral.",
+    "   - **Asamblea sobre Artículos del Nuevo Convenio (26 de febrero, 2025):** Delegados asistiendo a una reunión informativa en la central de UGT de Barcelona para conocer las modificaciones y mejoras del convenio de la industria química.",
+    "   - **Bandera de la UGT (9 de noviembre, 2024):** Descripción de la bandera de la UGT como símbolo de unidad y lucha obrera, destacando su color rojo, las letras 'UGT' y el emblema del apretón de manos."
+  ],
+  "relevant_links": [
+    "Ver galería"
+  ],
+  "file_name": "ugt_towa_galeria_eventos.json"
+}
+```

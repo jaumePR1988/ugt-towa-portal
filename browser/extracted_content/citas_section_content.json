@@ -1,0 +1,30 @@
+📄 Extracted from page: UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical
+URL: http://localhost:5173/citas
+
+Extracted content:
+```json
+{
+  "title": "UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical",
+  "url": "http://localhost:5173/citas",
+  "summary": "La sección 'Citas' del Portal UGT Towa ha cargado correctamente, ofreciendo a los usuarios un sistema para gestionar sus reuniones. La página permite seleccionar el tipo de delegado con el que se desea concertar una cita (Sindicales o Prevención), muestra la disponibilidad de horarios para una fecha específica (miércoles, 19 de noviembre de 2025) y presenta una sección para revisar las citas reservadas por el usuario.",
+  "key_points": [
+    "La URL de la página (`/citas`) y el título principal 'Sistema de Citas' confirman que la sección de citas se ha cargado correctamente.",
+    "Se ofrece una opción para 'Selecciona Tipo de Delegado' con dos alternativas: 'Delegados Sindicales' y 'Delegados de Prevención'.",
+    "Se muestra la disponibilidad de horarios para el 'miércoles, 19 de noviembre de 2025'.",
+    "Los 'Horarios Disponibles' se listan desde las 8:00 hasta las 16:00, con la mayoría de los tramos horarios marcados como 'Disponible', excepto el de '08:00 - 09:00' que figura como 'No disponible'.",
+    "La sección 'Mis Citas' indica que el usuario 'No tienes citas reservadas'.",
+    "La página incluye elementos de navegación persistentes, un banner para instalar la aplicación móvil, información de contacto (correo y teléfono) y enlaces de pie de página."
+  ],
+  "relevant_links": [
+    "/quienes-somos",
+    "/comunicados",
+    "/citas",
+    "/documentos",
+    "/encuestas",
+    "/newsletter",
+    "/afiliados/dashboard",
+    "/citas"
+  ],
+  "file_name": "citas_section_content.json"
+}
+```

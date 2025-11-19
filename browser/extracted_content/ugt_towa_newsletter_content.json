@@ -1,0 +1,27 @@
+📄 Extracted from page: UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical
+URL: http://localhost:5173/newsletter
+
+Extracted content:
+```json
+{
+  "title": "UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical",
+  "url": "http://localhost:5173/newsletter",
+  "summary": "The Newsletter section loaded correctly, prominently displaying a subscription form and details about the content subscribers will receive. The page aims to keep users informed about union news, negotiations, events, and important communications. It also includes contact information for the union, general navigation links, and a brief 'About UGT' section.",
+  "key_points": [
+    "The page is titled 'Newsletter UGT Towa' and includes the tagline 'Mantente informado de las últimas noticias, negociaciones y eventos del sindicato'.",
+    "A 'Suscríbete al Newsletter' section is present with an email input field and a 'Suscribirse' button.",
+    "The section '¿Qué recibirás?' outlines the benefits of subscribing: updates on negotiations and agreements, assembly and event convocations, important union communications, and relevant labor news.",
+    "Contact information is provided: email (jpedragosa@towapharmaceutical.com) and phone (629 931 957) for Towa Pharmaceutical Europe.",
+    "Additional navigation links are available: Quiénes Somos, Comunicados, Solicitar Cita, Encuestas.",
+    "A brief description of UGT Towa Pharmaceutical Europe highlights its commitment to defending labor rights and worker well-being.",
+    "Copyright information for 2025 is displayed."
+  ],
+  "relevant_links": [
+    "/quienes-somos",
+    "/comunicados",
+    "/citas",
+    "/encuestas"
+  ],
+  "file_name": "ugt_towa_newsletter_content.json"
+}
+```
