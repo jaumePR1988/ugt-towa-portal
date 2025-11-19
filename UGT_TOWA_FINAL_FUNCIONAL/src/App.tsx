@@ -20,6 +20,7 @@ import DocumentosPage from './pages/DocumentosPage';
 import NewsletterPage from './pages/NewsletterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import GaleriaPage from './pages/GaleriaPage';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -83,6 +84,7 @@ function App() {
           <Route path="/quienes-somos" element={<QuienesSomosPage />} />
           <Route path="/comunicados" element={<ComunicadosPage />} />
           <Route path="/comunicados/:id" element={<ComunicadoDetailPage />} />
+          <Route path="/galeria" element={<GaleriaPage />} />
           <Route path="/encuestas" element={<EncuestasPage />} />
           <Route path="/newsletter" element={<NewsletterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />

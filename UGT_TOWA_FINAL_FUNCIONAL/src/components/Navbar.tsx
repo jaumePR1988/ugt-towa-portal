@@ -28,6 +28,7 @@ export default function Navbar() {
     { to: '/', label: 'Inicio' },
     { to: '/quienes-somos', label: 'Quiénes Somos' },
     { to: '/comunicados', label: 'Comunicados' },
+    { to: '/galeria', label: 'Galería de Eventos' },
     { to: '/citas', label: 'Citas' },
     ...(user ? [{ to: '/documentos', label: 'Documentos' }] : []),
     { to: '/encuestas', label: 'Encuestas' },
