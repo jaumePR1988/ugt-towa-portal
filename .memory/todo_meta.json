@@ -3,31 +3,24 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Investigar y diagnosticar problemas de subida de archivos",
-        "details": "1. Verificar edge functions desplegadas en Supabase\n2. Revisar logs de error de las funciones\n3. Probar las funciones de upload manualmente\n4. Verificar configuración de CORS y permisos",
+        "content": "Diagnóstico completo del portal UGT TOWA",
+        "details": "✅ Portal accesible en: https://6xzgavdsvyvx.space.minimax.io\n✅ Galería de eventos: CONFIRMADO - imágenes siguen cortadas\n✅ Variables de entorno: Configuradas correctamente en .env.example\n✅ URL de Supabase: https://zaxdscclkeytakcowgww.supabase.co\n❌ Edge functions no están funcionando para subida de archivos\n❌ Correcciones en EventCard.tsx no aplicadas al portal en vivo",
         "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Corregir problema de imágenes cortadas",
-        "details": "1. Identificar componente/código que causa imágenes a la mitad\n2. Revisar CSS y layout de galería de imágenes\n3. Verificar responsive design\n4. Corregir aspect ratio y dimensiones",
-        "status": "completed",
+        "content": "Corregir problemas identificados",
+        "details": "1. Solucionar subida de archivos si no funciona. 2. Corregir visualización de imágenes si siguen cortadas. 3. Actualizar edge functions si es necesario. 4. Verificar configuración de Supabase.",
+        "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Re-desplegar edge functions en Supabase",
-        "details": "1. Verificar que ambas funciones (upload-communique-image y upload-communique-attachment) estén activas\n2. Probar funcionalidades de subida\n3. Verificar URLs y configuración\n4. Actualizar documentación con instrucciones de despliegue",
-        "status": "completed",
+        "content": "Crear versión definitiva funcionando",
+        "details": "1. Implementar todas las correcciones necesarias. 2. Probar funcionalidad completa. 3. Crear ZIP final con todo funcionando.",
+        "status": "pending",
         "priority": "high"
-      },
-      "4": {
-        "id": "4",
-        "content": "Crear versión final corregida y lista para producción",
-        "details": "1. Aplicar todas las correcciones identificadas\n2. Probar funcionalidad completa\n3. Crear ZIP final limpio\n4. Documentar instrucciones de despliegue y uso",
-        "status": "completed",
-        "priority": "medium"
       }
     }
   }
