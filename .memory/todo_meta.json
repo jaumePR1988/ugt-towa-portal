@@ -3,23 +3,30 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Modificar generación automática de newsletter para filtrar por mes anterior",
-        "details": "1. Identificar función de generación automática (probablemente generate-monthly-draft)\n2. Modificar filtros para comunicados del mes anterior únicamente\n3. Añadir datos de encuestas al contenido\n4. Filtrar galería de fotos por mes anterior\n5. Actualizar lógica de selección de contenido",
-        "status": "completed",
+        "content": "Investigar y diagnosticar problemas de subida de archivos",
+        "details": "1. Verificar edge functions desplegadas en Supabase\n2. Revisar logs de error de las funciones\n3. Probar las funciones de upload manualmente\n4. Verificar configuración de CORS y permisos",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Actualizar edge function de generación automática",
-        "details": "1. Cargar toolkit de supabase\n2. Identificar función actual (generate-monthly-draft-v3 probablemente)\n3. Modificar consultas SQL para filtrar por mes anterior\n4. Añadir sección de encuestas\n5. Actualizar filtros de galería\n6. Mantener compatibilidad con generación manual",
-        "status": "completed",
+        "content": "Corregir problema de imágenes cortadas",
+        "details": "1. Identificar componente/código que causa imágenes a la mitad\n2. Revisar CSS y layout de galería de imágenes\n3. Verificar responsive design\n4. Corregir aspect ratio y dimensiones",
+        "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Probar generación automática actualizada",
-        "details": "1. Verificar que las consultas filtran correctamente por mes anterior\n2. Confirmar que incluye datos de encuestas\n3. Validar filtrado de galería de fotos\n4. Comprobar formato final de newsletter\n5. Generar archivo ZIP final con todos los cambios",
-        "status": "completed",
+        "content": "Re-desplegar edge functions en Supabase",
+        "details": "1. Verificar que ambas funciones (upload-communique-image y upload-communique-attachment) estén activas\n2. Probar funcionalidades de subida\n3. Verificar URLs y configuración\n4. Actualizar documentación con instrucciones de despliegue",
+        "status": "pending",
+        "priority": "high"
+      },
+      "4": {
+        "id": "4",
+        "content": "Crear versión final corregida y lista para producción",
+        "details": "1. Aplicar todas las correcciones identificadas\n2. Probar funcionalidad completa\n3. Crear ZIP final limpio\n4. Documentar instrucciones de despliegue y uso",
+        "status": "pending",
         "priority": "medium"
       }
     }
