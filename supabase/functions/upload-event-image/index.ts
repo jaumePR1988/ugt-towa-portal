@@ -10,19 +10,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-
-    // Obtener el token del usuario
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: 'No authorization header' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Parsear FormData
     const formData = await req.formData();
     const file = formData.get('file') as File;
     const title = formData.get('title') as string;
@@ -30,10 +17,18 @@ Deno.serve(async (req) => {
     const eventDate = formData.get('eventDate') as string;
     const displayOrder = formData.get('displayOrder') as string;
 
-    if (!file) {
+    if (!file || !title) {
       return new Response(
-        JSON.stringify({ error: 'No file provided' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: 'Se requiere archivo e información del evento' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
+    }
+
+    // Validar tamaño (máximo 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      return new Response(
+        JSON.stringify({ error: 'El archivo excede el tamaño máximo permitido de 5MB' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
       );
     }
 
@@ -41,109 +36,96 @@ Deno.serve(async (req) => {
     const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
       return new Response(
-        JSON.stringify({ error: 'Invalid file type. Only PNG, JPG, JPEG, and WEBP are allowed.' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: 'Tipo de archivo no permitido. Solo se permiten imágenes PNG, JPG, JPEG o WEBP' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
       );
     }
 
-    // Validar tamaño (5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      return new Response(
-        JSON.stringify({ error: 'File size exceeds 5MB limit' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    // Generar nombre único para el archivo
+    const timestamp = Date.now();
+    const randomString = crypto.randomUUID().split('-')[0];
+    const fileExtension = file.name.split('.').pop();
+    const fileName = `event-${timestamp}-${randomString}.${fileExtension}`;
 
-    // Generar nombre único
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${crypto.randomUUID()}.${fileExt}`;
-    const filePath = `events/${fileName}`;
+    // Leer el archivo como ArrayBuffer
+    const arrayBuffer = await file.arrayBuffer();
+    const uint8Array = new Uint8Array(arrayBuffer);
 
-    // Subir a Storage
+    // Obtener URL y Service Role Key desde variables de entorno
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
+
+    // Subir a Supabase Storage
     const uploadResponse = await fetch(
-      `${supabaseUrl}/storage/v1/object/event-images/${filePath}`,
+      `${supabaseUrl}/storage/v1/object/event-images/${fileName}`,
       {
         method: 'POST',
         headers: {
-          authorization: `Bearer ${supabaseServiceKey}`,
-          'content-type': file.type,
+          'Authorization': `Bearer ${serviceRoleKey}`,
+          'Content-Type': file.type,
         },
-        body: await file.arrayBuffer(),
+        body: uint8Array,
       }
     );
 
     if (!uploadResponse.ok) {
-      const error = await uploadResponse.text();
-      return new Response(
-        JSON.stringify({ error: `Storage upload failed: ${error}` }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      const errorText = await uploadResponse.text();
+      throw new Error(`Error al subir el archivo: ${errorText}`);
     }
 
-    // URL pública de la imagen
-    const imageUrl = `${supabaseUrl}/storage/v1/object/public/event-images/${filePath}`;
+    // Generar URL pública del archivo
+    const fileUrl = `${supabaseUrl}/storage/v1/object/public/event-images/${fileName}`;
 
-    // Obtener user ID del token
-    const userResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
-      headers: { authorization: authHeader },
-    });
-
-    if (!userResponse.ok) {
-      return new Response(
-        JSON.stringify({ error: 'Invalid user token' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const userData = await userResponse.json();
-    const userId = userData.id;
-
-    // Insertar en la tabla event_images
+    // Insertar registro en la base de datos
     const insertResponse = await fetch(
       `${supabaseUrl}/rest/v1/event_images`,
       {
         method: 'POST',
         headers: {
-          authorization: `Bearer ${supabaseServiceKey}`,
+          'Authorization': `Bearer ${serviceRoleKey}`,
+          'apikey': serviceRoleKey,
           'Content-Type': 'application/json',
-          apikey: supabaseServiceKey,
-          Prefer: 'return=representation',
+          'Prefer': 'return=representation'
         },
         body: JSON.stringify({
-          title: title || 'Evento UGT Towa',
-          description: description || '',
-          image_url: imageUrl,
+          title: title,
+          description: description || null,
+          image_url: fileUrl,
           event_date: eventDate || null,
-          display_order: displayOrder ? parseInt(displayOrder) : 0,
-          is_active: true,
-          created_by: userId,
-        }),
+          display_order: parseInt(displayOrder) || 0,
+          is_active: true
+        })
       }
     );
 
     if (!insertResponse.ok) {
-      const error = await insertResponse.text();
-      return new Response(
-        JSON.stringify({ error: `Database insert failed: ${error}` }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      const errorText = await insertResponse.text();
+      throw new Error(`Error al guardar en la base de datos: ${errorText}`);
     }
 
-    const insertedData = await insertResponse.json();
+    const insertData = await insertResponse.json();
 
     return new Response(
       JSON.stringify({
         success: true,
-        data: insertedData[0],
-        message: 'Event image uploaded successfully',
+        url: fileUrl,
+        data: insertData[0]
       }),
-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      }
     );
-
   } catch (error) {
+    console.error('Error en upload-event-image:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({
+        error: error instanceof Error ? error.message : 'Error desconocido al subir la imagen',
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500,
+      }
     );
   }
 });

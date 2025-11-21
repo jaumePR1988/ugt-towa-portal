@@ -1,195 +1,117 @@
-# Portal Sindical UGT Towa - Guía de Despliegue
+# Guía de Despliegue - UGT Towa Portal
 
-## Estado del Proyecto
+## 📋 Requisitos Previos
 
-### Backend (Supabase) - 100% COMPLETADO
-- ✅ 12 tablas creadas (profiles, delegates, site_content, communiques, comments, appointments, appointment_slots, surveys, survey_responses, newsletter_subscribers, negotiation_status, suggestions)
-- ✅ RLS (Row Level Security) configurado en todas las tablas
-- ✅ Trigger automático para creación de perfiles
-- ✅ Storage bucket `delegate-photos` creado
-- ✅ Edge Functions desplegadas:
-  - validate-email-domain: https://zaxdscclkeytakcowgww.supabase.co/functions/v1/validate-email-domain
-  - upload-delegate-photo: https://zaxdscclkeytakcowgww.supabase.co/functions/v1/upload-delegate-photo
-- ✅ Datos iniciales insertados
+- Node.js 18+ instalado
+- pnpm instalado (`npm install -g pnpm`)
+- Cuenta en Vercel (opcional)
+- Cuenta en Supabase configurada
 
-### Frontend (React + TypeScript + Tailwind CSS) - 95% COMPLETADO
-- ✅ Proyecto React con Vite
-- ✅ Configuración de Supabase
-- ✅ Sistema de autenticación completo
-- ✅ Todas las páginas públicas implementadas
-- ✅ Panel de administración implementado
-- ✅ Componentes principales (Navbar, Footer, PrivateRoute, AdminRoute)
-- ⏳ Build pendiente
+## 🚀 Instalación Rápida
 
-## Credenciales Supabase
-
-```
-URL: https://zaxdscclkeytakcowgww.supabase.co
-ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpheGRzY2Nsa2V5dGFrY293Z3d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwMTUxMTIsImV4cCI6MjA3NzU5MTExMn0.MQMePYqEhW9xhCipC-MeU8Z_dXqvyBKH5e0vtgaS9xQ
-```
-
-## Instrucciones de Build y Despliegue
-
-### 1. Preparación del Proyecto
-
+### 1. Clonar/Instalar Dependencias
 ```bash
-cd /workspace/ugt-towa-portal
-
 # Instalar dependencias
 pnpm install
 
-# Build del proyecto
-pnpm run build
+# Ejecutar en desarrollo
+pnpm dev
 ```
 
-Esto generará el directorio `dist/` con los archivos estáticos.
+### 2. Configuración de Variables de Entorno
 
-### 2. Despliegue en Hostinger
+Crea un archivo `.env.local` con las siguientes variables:
 
-#### Opción A: Hosting Estático (Recomendado)
+```env
+# Supabase Configuration
+VITE_SUPABASE_URL=tu_supabase_url
+VITE_SUPABASE_ANON_KEY=tu_supabase_anon_key
 
-1. Acceder al panel de Hostinger
-2. Ir a "File Manager" o usar FTP
-3. Subir el contenido del directorio `dist/` a `public_html/`
-4. Configurar el archivo `.htaccess` para SPA routing:
-
-```apache
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteBase /
-  RewriteRule ^index\.html$ - [L]
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
-</IfModule>
+# Opcional: Para producción en Vercel
+SUPABASE_URL=tu_supabase_url
+SUPABASE_ANON_KEY=tu_supabase_anon_key
 ```
 
-#### Opción B: Node.js Hosting
+### 3. Despliegue en Vercel
 
-Si Hostinger soporta Node.js:
+#### Opción A: Despliegue Automático
+1. Conecta tu repositorio GitHub a Vercel
+2. Vercel detectará automáticamente la configuración
+3. Configura las variables de entorno en el dashboard de Vercel
 
-1. Subir todo el proyecto (no solo `dist/`)
-2. Configurar variables de entorno en el panel de Hostinger
-3. Ejecutar:
+#### Opción B: Despliegue Manual
 ```bash
-npm install
-npm run build
-npm run preview
+# Instalar Vercel CLI
+npm i -g vercel
+
+# Login en Vercel
+vercel login
+
+# Desplegar
+vercel --prod
 ```
 
-### 3. Configuración de Variables de Entorno
+### 4. Configuración de Supabase
 
-Asegurarse de que estas variables estén configuradas:
+1. Crea un proyecto en [supabase.com](https://supabase.com)
+2. Ejecuta las migraciones en `supabase/migrations/`
+3. Despliega las Edge Functions en `supabase/functions/`
+4. Configura las políticas RLS necesarias
 
-```
-VITE_SUPABASE_URL=https://zaxdscclkeytakcowgww.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-```
-
-## Estructura del Proyecto
+## 📁 Estructura del Proyecto
 
 ```
 ugt-towa-portal/
-├── src/
-│   ├── components/         # Componentes reutilizables
-│   │   ├── Navbar.tsx
-│   │   ├── Footer.tsx
-│   │   ├── PrivateRoute.tsx
-│   │   └── AdminRoute.tsx
-│   ├── contexts/          # Contextos de React
-│   │   └── AuthContext.tsx
-│   ├── lib/               # Utilidades
-│   │   └── supabase.ts    # Configuración Supabase
-│   ├── pages/             # Páginas de la aplicación
-│   │   ├── HomePage.tsx
-│   │   ├── LoginPage.tsx
-│   │   ├── RegisterPage.tsx
-│   │   ├── QuienesSomosPage.tsx
-│   │   ├── ComunicadosPage.tsx
-│   │   ├── ComunicadoDetailPage.tsx
-│   │   ├── CitasPage.tsx
-│   │   ├── EncuestasPage.tsx
-│   │   ├── NewsletterPage.tsx
-│   │   └── admin/         # Panel de administración
-│   │       ├── AdminDashboard.tsx
-│   │       ├── AdminQuienesSomos.tsx
-│   │       ├── AdminComunicados.tsx
-│   │       ├── AdminCitas.tsx
-│   │       ├── AdminDisponibilidad.tsx
-│   │       └── AdminEncuestas.tsx
-│   ├── App.tsx            # Configuración de rutas
-│   └── main.tsx           # Punto de entrada
-├── public/
-│   └── UGT-logo.jpg       # Logo del sindicato
-└── supabase/
-    └── functions/         # Edge Functions
-        ├── validate-email-domain/
-        └── upload-delegate-photo/
+├── src/                 # Código fuente React
+├── supabase/           # Backend (migraciones + Edge Functions)
+├── public/             # Archivos estáticos
+├── package.json        # Dependencias y scripts
+└── README.md           # Documentación
 ```
 
-## Funcionalidades Implementadas
+## 🔧 Scripts Disponibles
 
-### Páginas Públicas
-- **Home**: Hero, últimos comunicados, encuesta activa, termómetro de negociación, buzón de sugerencias
-- **Quiénes Somos**: Información del sindicato y delegados organizados por tipo
-- **Comunicados**: Listado paginado con filtros por categoría
-- **Detalle de Comunicado**: Contenido completo con comentarios en tiempo real
-- **Citas**: Sistema de reserva de citas con calendario
-- **Encuestas**: Visualización y votación con resultados en tiempo real
-- **Newsletter**: Formulario de suscripción
+```bash
+# Desarrollo
+pnpm dev
 
-### Panel de Administración
-- **Dashboard**: Resumen de actividad con estadísticas
-- **Quiénes Somos**: CRUD de delegados con subida de imágenes
-- **Comunicados**: CRUD completo con editor
-- **Citas**: Gestión y actualización de estados
-- **Disponibilidad**: Configuración de slots de citas
-- **Encuestas**: Creación y gestión de encuestas
+# Build de producción
+pnpm build
 
-### Características Técnicas
-- **Autenticación**: Validación de dominio @towapharmaceutical.com
-- **Roles**: Sistema de permisos admin/user
-- **Tiempo Real**: Comentarios y actualizaciones con Supabase Realtime
-- **Responsive**: Diseño mobile-first con Tailwind CSS
-- **Seguridad**: RLS en todas las tablas, rutas protegidas
+# Preview del build
+pnpm preview
 
-## Crear Usuario Admin
+# Linting
+pnpm lint
 
-Después del despliegue, crear el primer usuario admin:
+# Limpiar dependencias
+pnpm clean
+```
 
-1. Registrarse con email @towapharmaceutical.com
-2. Acceder a Supabase Dashboard
-3. Ir a Table Editor > profiles
-4. Buscar el usuario recién creado
-5. Cambiar el campo `role` de `user` a `admin`
+## ⚠️ Notas Importantes
 
-## Soporte y Mantenimiento
+- **NO incluir `node_modules` en el repositorio**
+- **NO incluir `pnpm-lock.yaml` en versiones específicas**
+- **NO incluir `dist/` (se genera automáticamente)**
+- Configurar variables de entorno en la plataforma de deploy
 
-### Logs y Debugging
-- Backend: Supabase Dashboard > Logs
-- Edge Functions: Supabase Dashboard > Edge Functions > Logs
-- Frontend: Consola del navegador
+## 🐛 Solución de Problemas
 
-### Problemas Comunes
+### Error: "Cannot resolve /assets/index-xxx.js"
+- Solución: Ejecutar `pnpm build` antes del deploy
+- Verificar que el build se complete correctamente
 
-1. **Error de CORS**: Verificar que las Edge Functions tienen los headers CORS correctos
-2. **Error de autenticación**: Verificar variables de entorno
-3. **Imágenes no cargan**: Verificar permisos del bucket en Storage
-4. **Comentarios no aparecen**: Verificar RLS policies
+### Error: "Module not found"
+- Solución: Verificar que todas las dependencias estén instaladas
+- Ejecutar `pnpm install`
 
-## URLs del Sistema
+### Error de variables de entorno
+- Verificar que `.env.local` esté configurado
+- Verificar variables en la plataforma de deploy
 
-- **Frontend**: [Configurar después del despliegue]
-- **Supabase Dashboard**: https://supabase.com/dashboard/project/zaxdscclkeytakcowgww
-- **Edge Function - Validación Email**: https://zaxdscclkeytakcowgww.supabase.co/functions/v1/validate-email-domain
-- **Edge Function - Subida Fotos**: https://zaxdscclkeytakcowgww.supabase.co/functions/v1/upload-delegate-photo
+## 📞 Soporte
 
-## Próximos Pasos
-
-1. Completar el build del proyecto
-2. Desplegar en Hostinger
-3. Configurar dominio y SSL
-4. Crear usuario admin
-5. Poblar contenido inicial
-6. Testing completo
-7. Lanzamiento
+Para problemas técnicos, revisar:
+1. Logs de la consola del navegador
+2. Logs de la plataforma de deploy
+3. Estado del proyecto en Supabase
