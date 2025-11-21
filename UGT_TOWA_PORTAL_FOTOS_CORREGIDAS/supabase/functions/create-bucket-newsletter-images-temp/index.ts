@@ -32,13 +32,13 @@ Deno.serve(async (req) => {
 
     // Prepare bucket configuration
     const bucketConfig = {
-        id: 'communique-images',
-        name: 'communique-images',
+        id: 'newsletter-images',
+        name: 'newsletter-images',
         public: true
     };
 
     // Add optional configurations
-    bucketConfig.allowed_mime_types = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"];
+    bucketConfig.allowed_mime_types = ["image/*"];
     bucketConfig.file_size_limit = 5242880;
 
     // Create bucket using Storage API
@@ -70,13 +70,13 @@ Deno.serve(async (req) => {
     // Create public access policies for the bucket
     const policyQueries = [
         // Allow public to view objects in this bucket
-        `CREATE POLICY "Public Access for communique-images" ON storage.objects FOR SELECT USING (bucket_id = 'communique-images');`,
+        `CREATE POLICY "Public Access for newsletter-images" ON storage.objects FOR SELECT USING (bucket_id = 'newsletter-images');`,
         // Allow public to insert objects in this bucket
-        `CREATE POLICY "Public Upload for communique-images" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'communique-images');`,
+        `CREATE POLICY "Public Upload for newsletter-images" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'newsletter-images');`,
         // Allow public to update objects in this bucket
-        `CREATE POLICY "Public Update for communique-images" ON storage.objects FOR UPDATE USING (bucket_id = 'communique-images');`,
+        `CREATE POLICY "Public Update for newsletter-images" ON storage.objects FOR UPDATE USING (bucket_id = 'newsletter-images');`,
         // Allow public to delete objects in this bucket
-        `CREATE POLICY "Public Delete for communique-images" ON storage.objects FOR DELETE USING (bucket_id = 'communique-images');`
+        `CREATE POLICY "Public Delete for newsletter-images" ON storage.objects FOR DELETE USING (bucket_id = 'newsletter-images');`
     ];
 
     // Execute policy creation queries
@@ -109,9 +109,9 @@ Deno.serve(async (req) => {
         success: true,
         message: 'Bucket created successfully with public access policies',
         bucket: {
-        name: 'communique-images',
+        name: 'newsletter-images',
         public: true,
-        allowed_mime_types: ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"],
+        allowed_mime_types: ["image/*"],
         file_size_limit: 5242880,
         policies: policyResults
         }
