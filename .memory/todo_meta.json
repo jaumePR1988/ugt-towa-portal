@@ -5,28 +5,28 @@
         "id": "1",
         "content": "Investigar y diagnosticar problemas de subida de archivos",
         "details": "1. Verificar edge functions desplegadas en Supabase\n2. Revisar logs de error de las funciones\n3. Probar las funciones de upload manualmente\n4. Verificar configuración de CORS y permisos",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
         "content": "Corregir problema de imágenes cortadas",
         "details": "1. Identificar componente/código que causa imágenes a la mitad\n2. Revisar CSS y layout de galería de imágenes\n3. Verificar responsive design\n4. Corregir aspect ratio y dimensiones",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "3": {
         "id": "3",
         "content": "Re-desplegar edge functions en Supabase",
         "details": "1. Verificar que ambas funciones (upload-communique-image y upload-communique-attachment) estén activas\n2. Probar funcionalidades de subida\n3. Verificar URLs y configuración\n4. Actualizar documentación con instrucciones de despliegue",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "4": {
         "id": "4",
         "content": "Crear versión final corregida y lista para producción",
         "details": "1. Aplicar todas las correcciones identificadas\n2. Probar funcionalidad completa\n3. Crear ZIP final limpio\n4. Documentar instrucciones de despliegue y uso",
-        "status": "pending",
+        "status": "completed",
         "priority": "medium"
       }
     }

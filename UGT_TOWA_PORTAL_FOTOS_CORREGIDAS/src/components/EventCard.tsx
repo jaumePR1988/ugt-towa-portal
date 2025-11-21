@@ -34,11 +34,11 @@ export default function EventCard({ eventGroup, onClick }: EventCardProps) {
       className="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1"
     >
       {/* Image container */}
-      <div className="relative h-48 overflow-hidden">
+      <div className="relative aspect-[16/10] overflow-hidden bg-gray-200">
         <img
           src={primaryImage.image_url}
           alt={eventGroup.eventTitle}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
         
         {/* Image count badge */}
