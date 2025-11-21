@@ -3,24 +3,31 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Diagnóstico completo del portal UGT TOWA",
-        "details": "✅ Portal accesible en: https://6xzgavdsvyvx.space.minimax.io\n✅ Galería de eventos: CONFIRMADO - imágenes siguen cortadas\n✅ Variables de entorno: Configuradas correctamente en .env.example\n✅ URL de Supabase: https://zaxdscclkeytakcowgww.supabase.co\n❌ Edge functions no están funcionando para subida de archivos\n❌ Correcciones en EventCard.tsx no aplicadas al portal en vivo",
+        "content": "Verificar y corregir el código EventCard.tsx con aspect ratio correcto",
+        "details": "1. Revisar EventCard.tsx en la versión más reciente. 2. Asegurar que use aspect-[16/10] en lugar de h-48 fijo. 3. Verificar que las imágenes no se corten en la galería.",
         "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Corregir problemas identificados",
-        "details": "1. Solucionar subida de archivos si no funciona. 2. Corregir visualización de imágenes si siguen cortadas. 3. Actualizar edge functions si es necesario. 4. Verificar configuración de Supabase.",
-        "status": "pending",
+        "content": "Verificar y redesplegar edge functions para subida de archivos",
+        "details": "1. Verificar upload-communique-image edge function. 2. Verificar upload-communique-attachment edge function. 3. Asegurar que funcionen correctamente para comunicados. 4. Redesplegar si es necesario.",
+        "status": "completed",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Crear versión definitiva funcionando",
-        "details": "1. Implementar todas las correcciones necesarias. 2. Probar funcionalidad completa. 3. Crear ZIP final con todo funcionando.",
-        "status": "pending",
+        "content": "Crear paquete ZIP completamente funcional para GitHub",
+        "details": "1. Tomar la versión más reciente con todas las correcciones. 2. Verificar que tenga todas las dependencias correctas. 3. Crear ZIP limpio listo para subir a GitHub (ugt.towa.cat).",
+        "status": "completed",
         "priority": "high"
+      },
+      "4": {
+        "id": "4",
+        "content": "Generar instrucciones claras de deployment",
+        "details": "1. Crear README con pasos de instalación. 2. Documentar configuración de variables de entorno. 3. Incluir comandos de deploy específicos para GitHub Pages/Vercel. 4. Verificar que todo funcione correctamente.",
+        "status": "completed",
+        "priority": "medium"
       }
     }
   }
