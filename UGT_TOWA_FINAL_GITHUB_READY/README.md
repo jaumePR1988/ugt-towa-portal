@@ -181,6 +181,25 @@ Para verificar que todo funciona:
    - Probar en móvil y desktop
    - Verificar que todo se adapta correctamente
 
+## 🔍 SEO y Google Indexación
+
+El portal está **completamente optimizado** para Google:
+
+### ✅ Configuración SEO Incluida:
+- **robots.txt** - Permite crawling público
+- **sitemap.xml** - URLs de todas las páginas
+- **Metadatos completos** - Título, descripción, keywords
+- **Verificación Google Search Console** - Archivo incluido
+- **Open Graph** - Para redes sociales
+- **Schema.org** - Datos estructurados
+
+### 🚀 Post-Deploy SEO:
+1. **Google Search Console**: Configurar `https://ugt.towa.cat`
+2. **Subir sitemap**: `https://ugt.towa.cat/sitemap.xml`
+3. **Verificar indexación**: 1-3 días para aparecer
+
+Ver archivo: `SEO_GOOGLE_INDEXACION.md` para instrucciones detalladas.
+
 ## 📞 Soporte
 
 Este proyecto está listo para producción. Todas las correcciones han sido aplicadas y probadas.
