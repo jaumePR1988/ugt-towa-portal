@@ -1,0 +1,15 @@
+# Variables de entorno para UGT Towa Portal con Notificaciones Push
+
+# Claves VAPID para Web Push Notifications (Claves de Prueba)
+VITE_VAPID_PUBLIC_KEY=BEl62iUYgUivxIkv69yViEuiBIa40HI80NQDcdMhI0v5C5D5tV6C5bC9nJ6dS8vQ1lK9mN2pR6sF5tV3wL9hY6dJ8vS4pQ2mN8
+
+# Credenciales Supabase (Ya configuradas)
+VITE_SUPABASE_URL=https://zaxdscclkeytakcowgww.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpheGRzY2Nsa2V5dGFrY293Z3d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwMTUxMTIsImV4cCI6MjA3NzU5MTExMn0.MQMePYqEhW9xhCipC-MeU8Z_dXqvyBKH5e0vtgaS9xQ
+
+# Google Maps API Key (ya configurada)
+VITE_GOOGLE_MAPS_API_KEY=AIzaSyCO0kKndUNlmQi3B5mxy4dblg_8WYcuKuk
+
+# Configuración adicional para PWA
+VITE_APP_NAME=UGT Towa Portal
+VITE_APP_VERSION=2.1.0
