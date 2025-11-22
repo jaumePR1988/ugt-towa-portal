@@ -1,0 +1,7 @@
+Test Image File
+================
+
+This is a test image file to verify the upload functionality in the UGT Towa portal.
+Created for testing the file upload features in the administration panel.
+Date: 2025-11-22
+Time: 23:39:53

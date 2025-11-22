@@ -1,0 +1,76 @@
+📄 Extracted from page: UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical
+URL: https://ef1zyz8w4cq7.space.minimax.io/encuestas
+
+Extracted content:
+```json
+{
+  "title": "UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical",
+  "url": "https://ef1zyz8w4cq7.space.minimax.io/encuestas",
+  "summary": "La página del Portal Sindical UGT Towa muestra una sección dedicada a encuestas donde los miembros pueden participar. Se presentan varias preguntas de encuesta sobre diferentes temas de interés para el sindicato y sus afiliados, incluyendo satisfacción con los servicios, sugerencias de nuevos servicios, efectividad de la comunicación, mejoras para el portal, temas de negociación y la importancia de llevar grupos profesionales al TLC.",
+  "key_points": [
+    {
+      "survey_question": "¿Cómo calificarías tu satisfacción general con los servicios del sindicato?",
+      "description": "Esta es la encuesta solicitada específicamente. La página indica 'Total de votos: 0'. **Las opciones de respuesta para esta encuesta no se muestran en el contenido de la página proporcionado.**",
+      "total_votes": 0,
+      "options": []
+    },
+    {
+      "survey_question": "¿Qué nuevo servicio te gustaría que ofrezca el sindicato?",
+      "description": "Encuesta para recabar sugerencias sobre nuevos servicios.",
+      "total_votes": 0,
+      "options": []
+    },
+    {
+      "survey_question": "¿Consideras que la comunicación del sindicato es efectiva?",
+      "description": "Encuesta sobre la percepción de la efectividad de la comunicación del sindicato.",
+      "total_votes": 0,
+      "options": []
+    },
+    {
+      "survey_question": "¿Qué mejora prioritaria deseas para el portal?",
+      "description": "Encuesta sobre las mejoras deseadas para el portal sindical.",
+      "total_votes": 1,
+      "options": [
+        { "option": "Más comunicados", "percentage": "0%", "votes": 0 },
+        { "option": "Más eventos", "percentage": "100%", "votes": 1 },
+        { "option": "Mejores beneficios", "percentage": "0%", "votes": 0 },
+        { "option": "Mejor diseño", "percentage": "0%", "votes": 0 }
+      ]
+    },
+    {
+      "survey_question": "Crees que es importante llevar al TLC los grupos profesionales de fábrica?",
+      "description": "Encuesta sobre la importancia de incluir grupos profesionales de fábrica en el TLC (Tratado de Libre Comercio, presumiblemente).",
+      "total_votes": 2,
+      "options": [
+        { "option": "Si", "percentage": "100%", "votes": 2 },
+        { "option": "No, no es el momento", "percentage": "0%", "votes": 0 }
+      ]
+    },
+    {
+      "survey_question": "¿Qué tema te gustaría que priorizáramos en las próximas negociaciones?",
+      "description": "Encuesta para identificar las prioridades de los afiliados en futuras negociaciones.",
+      "total_votes": 2,
+      "options": [
+        { "option": "Incremento salarial", "percentage": "50%", "votes": 1 },
+        { "option": "Más flexibilidad horaria", "percentage": "0%", "votes": 0 },
+        { "option": "Mejora del plan de formación", "percentage": "0%", "votes": 0 },
+        { "option": "Beneficios sociales adicionales", "percentage": "50%", "votes": 1 }
+      ]
+    }
+  ],
+  "relevant_links": [
+    "/",
+    "/quienes-omos",
+    "/comunicados",
+    "/galeria",
+    "/citas",
+    "/documentos",
+    "/encuestas",
+    "/newsletter",
+    "/afiliados/dashboard",
+    "/admin/dashboard",
+    "/admin/newsletter"
+  ],
+  "file_name": "ugt_towa_encuestas_satisfaccion.json"
+}
+```

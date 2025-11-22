@@ -40,23 +40,24 @@ export default function EncuestasPage() {
   }
 
   async function handleVote(surveyId: string, optionId: number) {
-    // Permitir votación anónima para encuestas públicas
+    // REQUERIR AUTENTICACIÓN para todas las encuestas
     if (!user) {
-      // Buscar si la encuesta permite votación anónima
-      const survey = surveys.find(s => s.id === surveyId);
-      if (!survey || survey.tipo !== 'publica') {
-        toast.error('Debes iniciar sesión para votar en esta encuesta');
-        return;
-      }
+      // Mostrar error de múltiples formas para asegurar que se vea
+      toast.error('Debes iniciar sesión para votar en esta encuesta');
+      alert('Debes iniciar sesión para votar en esta encuesta');
+      console.log('Error: Usuario no autenticado intentando votar');
+      return;
     }
 
     try {
       const { error } = await supabase
         .from('survey_responses')
         .insert([{
+          id: crypto.randomUUID(), // UUID requerido por la tabla
           survey_id: surveyId,
-          user_id: user?.id || null, // Permitir null para votación anónima
-          selected_option_id: optionId
+          user_id: user.id, // Usuario autenticado OBLIGATORIO
+          selected_option_id: optionId,
+          created_at: new Date().toISOString() // Timestamp explícito
         }]);
 
       if (error) {
@@ -67,10 +68,6 @@ export default function EncuestasPage() {
         }
       } else {
         toast.success('Voto registrado correctamente');
-        // Trackear votación para usuarios anónimos
-        if (!user) {
-          localStorage.setItem(`voted_${surveyId}`, 'true');
-        }
         loadResponses(surveyId);
       }
     } catch (error) {
@@ -103,8 +100,6 @@ export default function EncuestasPage() {
             const results = getResults(survey);
             const totalVotes = responses[survey.id]?.length || 0;
             const hasVoted = user && responses[survey.id]?.some(r => r.user_id === user.id);
-            // Para usuarios anónimos, usar localStorage para trackear votaciones
-            const hasVotedAnon = !user && localStorage.getItem(`voted_${survey.id}`) === 'true';
 
             return (
               <div key={survey.id} className="bg-white rounded-lg shadow-md p-8">

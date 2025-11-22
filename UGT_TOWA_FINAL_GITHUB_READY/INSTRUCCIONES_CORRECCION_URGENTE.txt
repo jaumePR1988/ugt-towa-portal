@@ -1,0 +1,67 @@
+====================================================================
+CORRECCIÓN URGENTE: ERROR DE VOTACIÓN EN ENCUESTAS
+====================================================================
+
+PROBLEMA:
+- Los usuarios no pueden votar en encuestas
+- Error mostrado: "Error al votar"
+- Causa: Políticas RLS (Row Level Security) en tabla survey_responses
+
+SOLUCIÓN - EJECUTAR EN SUPABASE DASHBOARD:
+====================================================================
+
+PASO 1: Acceder a Supabase
+---------------------------
+URL: https://app.supabase.com/project/zaxdscclkeytakcowgww
+Panel: SQL Editor (menú lateral izquierdo)
+
+PASO 2: Ejecutar el siguiente SQL
+---------------------------
+
+-- Limpiar políticas antiguas
+DROP POLICY IF EXISTS "authenticated_insert_responses" ON survey_responses;
+DROP POLICY IF EXISTS "public_view_responses" ON survey_responses;
+DROP POLICY IF EXISTS "users_view_all_responses" ON survey_responses;
+
+-- Asegurar RLS habilitado
+ALTER TABLE survey_responses ENABLE ROW LEVEL SECURITY;
+
+-- Crear políticas correctas
+CREATE POLICY "public_view_responses" 
+ON survey_responses 
+FOR SELECT 
+USING (true);
+
+CREATE POLICY "authenticated_insert_responses" 
+ON survey_responses 
+FOR INSERT 
+TO authenticated
+WITH CHECK (auth.uid() = user_id);
+
+-- Verificar (debe mostrar 2 políticas)
+SELECT policyname, cmd FROM pg_policies WHERE tablename = 'survey_responses';
+
+PASO 3: Verificar la corrección
+---------------------------
+1. Ir a: https://lmgqlxg2tvei.space.minimax.io/login
+2. Iniciar sesión: jpedragosa@towapharmaceutical.com / towa2022
+3. Ir a: /encuestas
+4. Intentar votar en una encuesta
+5. El voto debería registrarse correctamente
+
+====================================================================
+ARCHIVO ALTERNATIVO:
+El SQL también está disponible en:
+supabase/migrations/1732319400_fix_survey_responses_rls.sql
+====================================================================
+
+ESTADO ACTUAL DEL PORTAL:
+✓ Autenticación funcionando
+✓ Navegación "Gestión Newsletter" para admin
+✓ Subida de archivos en comunicados
+✓ Galería de eventos
+✓ Panel de afiliados
+✗ Votación en encuestas (REQUIERE ESTA CORRECCIÓN)
+
+URL PRODUCCIÓN: https://lmgqlxg2tvei.space.minimax.io
+====================================================================

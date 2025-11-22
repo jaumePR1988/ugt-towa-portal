@@ -54,9 +54,11 @@ export default function EncuestasAfiliadosPage() {
       const { error } = await supabase
         .from('survey_responses')
         .insert([{
+          id: crypto.randomUUID(), // UUID requerido por la tabla
           survey_id: surveyId,
           user_id: user.id,
-          selected_option_id: optionId
+          selected_option_id: optionId,
+          created_at: new Date().toISOString() // Timestamp explícito
         }]);
 
       if (error) {

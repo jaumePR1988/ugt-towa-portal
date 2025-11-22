@@ -1,0 +1,55 @@
+📄 Extracted from page: UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical
+URL: https://azqt0c57i5lc.space.minimax.io/encuestas
+
+Extracted content:
+```json
+{
+  "title": "UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical",
+  "url": "https://azqt0c57i5lc.space.minimax.io/encuestas",
+  "summary": "La página de encuestas del portal UGT Towa presenta seis encuestas activas. Tres de ellas tienen 0 votos hasta el momento, relacionadas con la satisfacción general con los servicios, nuevos servicios deseados y la efectividad de la comunicación sindical. Las otras tres encuestas, sobre mejoras prioritarias para el portal, la importancia de llevar grupos profesionales al TLC, y temas prioritarios para negociaciones, ya han recibido votos y muestran los porcentajes y recuentos de cada opción.",
+  "key_points": [
+    {
+      "question": "¿Cómo calificarías tu satisfacción general con los servicios del sindicato?",
+      "total_votes": 0
+    },
+    {
+      "question": "¿Qué nuevo servicio te gustaría que ofrezca el sindicato?",
+      "total_votes": 0
+    },
+    {
+      "question": "¿Consideras que la comunicación del sindicato es efectiva?",
+      "total_votes": 0
+    },
+    {
+      "question": "¿Qué mejora prioritaria deseas para el portal?",
+      "options": [
+        {"option": "Más comunicados", "percentage": "0%", "votes": 0},
+        {"option": "Más eventos", "percentage": "100%", "votes": 1},
+        {"option": "Mejores beneficios", "percentage": "0%", "votes": 0},
+        {"option": "Mejor diseño", "percentage": "0%", "votes": 0}
+      ],
+      "total_votes": 1
+    },
+    {
+      "question": "Crees que es importante llevar al TLC los grupos profesionales de fábrica?",
+      "options": [
+        {"option": "Si", "percentage": "100%", "votes": 2},
+        {"option": "No, no es el momento", "percentage": "0%", "votes": 0}
+      ],
+      "total_votes": 2
+    },
+    {
+      "question": "¿Qué tema te gustaría que priorizáramos en las próximas negociaciones?",
+      "options": [
+        {"option": "Incremento salarial", "percentage": "50%", "votes": 1},
+        {"option": "Más flexibilidad horaria", "percentage": "0%", "votes": 0},
+        {"option": "Mejora del plan de formación", "percentage": "0%", "votes": 0},
+        {"option": "Beneficios sociales adicionales", "percentage": "50%", "votes": 1}
+      ],
+      "total_votes": 2
+    }
+  ],
+  "relevant_links": [],
+  "file_name": "ugt_towa_surveys.json"
+}
+```

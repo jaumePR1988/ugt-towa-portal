@@ -14,6 +14,132 @@ Portal web completo para Sección Sindical UGT en Towa Pharmaceutical Europe
 - Keys: Disponibles via get_all_secrets
 
 ## Fase Actual
+CORRECCIÓN ERROR 23502 VOTACIÓN - 23-Nov-2025 00:06
+
+### Objetivo
+Resolver error 23502 (not_null_violation) en votación de encuestas
+
+### Problema Identificado
+Error PostgreSQL 23502 indicaba campo NOT NULL faltante en INSERT a survey_responses
+
+### Análisis y Diagnóstico
+- Tabla survey_responses requiere campo 'id' obligatorio
+- Campo 'id' NO tiene valor DEFAULT configurado en la BD
+- INSERT anterior no incluía este campo (causaba error 23502)
+
+### Corrección Aplicada
+**Archivos Modificados**:
+1. src/pages/EncuestasPage.tsx (línea 55)
+   - Agregado: id: crypto.randomUUID()
+   - Campo created_at ya estaba presente desde corrección anterior
+2. src/pages/affiliates/EncuestasAfiliadosPage.tsx (línea 55)
+   - Agregado: id: crypto.randomUUID()
+   - Agregado: created_at: new Date().toISOString()
+
+**Estructura INSERT Completa**:
+```javascript
+{
+  id: crypto.randomUUID(),        // UUID requerido
+  survey_id: surveyId,            // ID de la encuesta
+  user_id: user.id,              // ID del usuario autenticado
+  selected_option_id: optionId,   // Opción seleccionada
+  created_at: new Date().toISOString() // Timestamp
+}
+```
+
+### Despliegue Corrección
+- URL NUEVA: https://isnxxg0t06ee.space.minimax.io
+- Build: 2700 módulos, 634.11 KB gzip
+- Estado: DESPLEGADO - PENDIENTE TESTING
+- Fecha: 23-Nov-2025 00:06
+
+### URLs Históricas
+- v1: https://lmgqlxg2tvei.space.minimax.io (primera versión)
+- v2: https://azqt0c57i5lc.space.minimax.io (con alert)
+- v3: https://ef1zyz8w4cq7.space.minimax.io (con created_at)
+- v4: https://isnxxg0t06ee.space.minimax.io (con id + created_at) ACTUAL
+
+### Siguiente Paso
+Testing comprehensivo de votación en encuestas para verificar resolución del error 23502
+
+## Fase Anterior
+DESPLIEGUE CORRECCIONES UGT TOWA - 22-Nov-2025 23:19
+
+### Objetivo
+Desplegar el portal UGT TOWA con correcciones aplicadas:
+- Encuestas públicas requieren autenticación (EncuestasPage.tsx corregido)
+- Navegación muestra "Gestión Newsletter" para admin y "Newsletter" para usuarios
+- Funcionalidad de subida de archivos en comunicados operativa
+
+### Progreso
+- [x] Build del proyecto desde /workspace/UGT_TOWA_FINAL_GITHUB_READY/ ✅
+  * 2700 módulos transformados
+  * 634.02 KB gzip (bundle principal)
+  * Build completado en 17.63s
+- [x] Despliegue en producción ✅
+  * URL: https://lmgqlxg2tvei.space.minimax.io
+  * Desplegado exitosamente
+- [x] Verificación de funcionalidad ✅
+  * Testing comprehensivo completado
+  * Resultados: 8/9 tests exitosos
+  * ERROR CRÍTICO identificado: Sistema de votación en encuestas
+- [x] Diagnóstico del error ✅
+  * Causa: Políticas RLS en tabla survey_responses
+  * Código frontend correcto (EncuestasPage.tsx verifica autenticación)
+- [x] Solución preparada ✅
+  * Archivo de migración SQL creado: supabase/migrations/1732319400_fix_survey_responses_rls.sql
+  * Documentación de corrección: CORRECCION_VOTACION_ENCUESTAS.md
+  * Instrucciones para el usuario: INSTRUCCIONES_CORRECCION_URGENTE.txt
+  
+### Archivos Creados para Corrección
+1. supabase/migrations/1732319400_fix_survey_responses_rls.sql - SQL de migración
+2. CORRECCION_VOTACION_ENCUESTAS.md - Documentación completa
+3. INSTRUCCIONES_CORRECCION_URGENTE.txt - Instrucciones paso a paso
+4. diagnostico_votacion.py - Script de diagnóstico
+
+### Instrucciones para Aplicar Corrección
+El usuario debe ejecutar el SQL en Supabase Dashboard:
+1. Ir a https://app.supabase.com/project/zaxdscclkeytakcowgww
+2. SQL Editor → Copiar contenido de archivo de migración
+3. Ejecutar SQL
+4. Verificar votación en https://lmgqlxg2tvei.space.minimax.io/encuestas
+
+### Resultados del Testing
+**EXITOSOS** ✅:
+- Autenticación y login
+- Navegación muestra "Gestión Newsletter" para admin
+- Subida de archivos en comunicados funcional
+- Galería de eventos funcional
+- Panel de afiliados accesible
+- Sin errores en consola
+
+**ERROR CRÍTICO** ❌:
+- Votación en encuestas no funciona (mensaje: "Error al votar")
+
+### Siguiente Paso
+- COMPLETADO: Portal desplegado exitosamente
+
+### URL FINAL DE PRODUCCIÓN
+https://lmgqlxg2tvei.space.minimax.io
+
+### ESTADO FINAL: PORTAL DESPLEGADO
+- Build: 2700 módulos, 634.02 KB gzip
+- Funcionalidades verificadas: 8/9 exitosas
+- Error identificado: Votación en encuestas
+- Solución preparada: SQL de migración creado
+
+### Documentación Final Generada
+1. RESUMEN_DESPLIEGUE.md - Resumen ejecutivo completo
+2. CORRECCION_VOTACION_ENCUESTAS.md - Documentación técnica
+3. INSTRUCCIONES_CORRECCION_URGENTE.txt - Guía paso a paso
+4. test-progress.md - Reporte de testing detallado
+5. supabase/migrations/1732319400_fix_survey_responses_rls.sql - Migración SQL
+
+### Acción Pendiente del Usuario
+Ejecutar SQL en Supabase Dashboard para habilitar votación en encuestas.
+Instrucciones completas en: INSTRUCCIONES_CORRECCION_URGENTE.txt
+
+## Fase Anterior
 OPTIMIZACION NEWSLETTER - FILTRO TEMPORAL + PDF PROFESIONAL - 16-Nov-2025 21:41
 
 ### Objetivo
