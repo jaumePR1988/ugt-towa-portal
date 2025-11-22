@@ -1,2 +1,7 @@
-2025/11/22-16:19:52.493 1216 Creating DB /workspace/browser/user_data/Default/IndexedDB/https_supabase.com_0.indexeddb.leveldb since it was missing.
-2025/11/22-16:19:52.515 1216 Reusing MANIFEST /workspace/browser/user_data/Default/IndexedDB/https_supabase.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/11/22-17:18:55.115 1216 Reusing MANIFEST /workspace/browser/user_data/Default/IndexedDB/https_supabase.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/11/22-17:18:55.181 1216 Recovering log #3
+2025/11/22-17:18:55.182 1216 Reusing old log /workspace/browser/user_data/Default/IndexedDB/https_supabase.com_0.indexeddb.leveldb/000003.log 
+2025/11/22-17:18:59.697 1217 Level-0 table #5: started
+2025/11/22-17:18:59.709 1217 Level-0 table #5: 891 bytes OK
+2025/11/22-17:18:59.714 1217 Delete type=0 #3
+2025/11/22-17:18:59.718 1217 Manual compaction at level-0 from (begin) .. (end); will stop at (end)
