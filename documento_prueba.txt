@@ -1,0 +1,5 @@
+Este es un documento de prueba para verificar la funcionalidad de subida de archivos en la aplicación de comunicados UGT Towa.
+
+Fecha: 2025-11-23
+Contenido: Documento de prueba para testing de subida de archivos
+Formato: TXT (aceptado según especificaciones)
