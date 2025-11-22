@@ -3,8 +3,8 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Solucionar incidencia de subida de archivos en comunicados",
-        "details": "1. Modificar upload-communique-attachment edge function para usar el bucket communique-images que funciona. 2. Actualizar el código frontend si es necesario. 3. Verificar que tanto imágenes como attachments se suben correctamente.",
+        "content": "Aplicar corrección de subida de archivos en el proyecto Supabase correcto",
+        "details": "1. Verificar el estado actual de buckets en el proyecto. 2. Desplegar edge functions de subida de archivos en el proyecto correcto. 3. Verificar que funcionan correctamente con la URL actual del portal.",
         "status": "completed",
         "priority": "high"
       }
