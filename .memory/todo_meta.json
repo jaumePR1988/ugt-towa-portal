@@ -5,7 +5,7 @@
         "id": "1",
         "content": "Solucionar incidencia de subida de archivos en comunicados",
         "details": "1. Modificar upload-communique-attachment edge function para usar el bucket communique-images que funciona. 2. Actualizar el código frontend si es necesario. 3. Verificar que tanto imágenes como attachments se suben correctamente.",
-        "status": "in_progress",
+        "status": "completed",
         "priority": "high"
       }
     }
