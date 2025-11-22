@@ -80,23 +80,17 @@ export default function AdminComunicados() {
       const formDataUpload = new FormData();
       formDataUpload.append('file', selectedFile);
 
-      const response = await fetch('https://zaxdscclkeytakcowgww.supabase.co/functions/v1/upload-communique-image-fixed', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
+      const { data: result, error } = await supabase.functions.invoke('upload-communique-image', {
         body: formDataUpload
       });
 
-      const result = await response.json();
-
-      if (result.success) {
+      if (!error && result?.success) {
         setFormData(prev => ({ ...prev, image_url: result.url }));
         toast.success('Imagen subida correctamente');
         setSelectedFile(null);
       } else {
-        console.error('Error details:', result);
-        toast.error(`Error al subir imagen: ${result.error || 'Error desconocido'}`);
+        console.error('Error details:', error || result);
+        toast.error(`Error al subir imagen: ${error?.message || result?.error || 'Error desconocido'}`);
       }
     } catch (error: any) {
       console.error('Upload error:', error);
@@ -148,17 +142,11 @@ export default function AdminComunicados() {
         const formDataUpload = new FormData();
         formDataUpload.append('file', file);
 
-        const response = await fetch('https://zaxdscclkeytakcowgww.supabase.co/functions/v1/upload-communique-attachment-fixed', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
-          body: formDataUpload
+        const { data: result, error } = await supabase.functions.invoke('upload-communique-attachment', {
+          body: formDataUpload,
         });
 
-        const result = await response.json();
-
-        if (result.success) {
+        if (!error && result?.success) {
           setFormData(prev => ({
             ...prev,
             attachments: [...prev.attachments, {
@@ -170,8 +158,8 @@ export default function AdminComunicados() {
           }));
           toast.success(`Archivo ${file.name} subido correctamente`);
         } else {
-          console.error('Upload error:', result);
-          toast.error(`Error al subir ${file.name}: ${result.error || 'Error desconocido'}`);
+          console.error('Upload error:', error || result);
+          toast.error(`Error al subir ${file.name}: ${error?.message || result?.error || 'Error desconocido'}`);
         }
       } catch (error: any) {
         console.error('Error al subir archivo:', error);
