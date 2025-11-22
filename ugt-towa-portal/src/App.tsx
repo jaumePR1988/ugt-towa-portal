@@ -2,8 +2,8 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { Toaster } from 'sonner';
-// import { usePWA_Inteligente as usePWA } from './hooks/usePWA_Inteligente';
-// import { PWAInstallPrompt } from './components/PWAInstallPrompt_Inteligente';
+import { usePWA_Inteligente as usePWA } from './hooks/usePWA_Inteligente';
+import { PWAInstallPrompt } from './components/PWAInstallPrompt_Inteligente';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -20,6 +20,7 @@ import DocumentosPage from './pages/DocumentosPage';
 import NewsletterPage from './pages/NewsletterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import GaleriaPage from './pages/GaleriaPage';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -62,17 +63,17 @@ import TestAffiliateRoute from './components/TestAffiliateRoute';
 import './index.css';
 
 function App() {
-  // const { state, install } = usePWA();
+  const { state, install } = usePWA();
 
   return (
     <BrowserRouter>
       <AuthProvider>
         <Toaster position="top-right" richColors />
         
-        {/* PWA Install Prompt - Disabled */}
-        {/* <PWAInstallPrompt 
+        {/* PWA Install Prompt */}
+        <PWAInstallPrompt 
           onInstall={install}
-        /> */}
+        />
         
         <Routes>
           {/* Public Routes */}
@@ -83,6 +84,7 @@ function App() {
           <Route path="/quienes-somos" element={<QuienesSomosPage />} />
           <Route path="/comunicados" element={<ComunicadosPage />} />
           <Route path="/comunicados/:id" element={<ComunicadoDetailPage />} />
+          <Route path="/galeria" element={<GaleriaPage />} />
           <Route path="/encuestas" element={<EncuestasPage />} />
           <Route path="/newsletter" element={<NewsletterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />

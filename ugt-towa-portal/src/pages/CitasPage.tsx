@@ -145,40 +145,26 @@ export default function CitasPage() {
     setIsBooking(true);
 
     try {
-      // Use the slot's existing timestamps directly, or create them from the slot data
-      // The appointment_slots table already has proper start_time and end_time in ISO format
-      let startTimestamp = selectedSlot.start_time;
-      let endTimestamp = selectedSlot.end_time;
-
-      // If timestamps are not in ISO format or are missing timezone info, convert them
-      if (!startTimestamp || !endTimestamp) {
-        // Fallback: create timestamps from appointment_date if slot timestamps are missing
-        const dateStr = selectedSlot.appointment_date;
-        const timeStr = selectedSlot.start_time.includes('T') 
-          ? selectedSlot.start_time.split('T')[1].split('+')[0].split('.')[0]
-          : '08:00:00';
-        const endTimeStr = selectedSlot.end_time.includes('T')
-          ? selectedSlot.end_time.split('T')[1].split('+')[0].split('.')[0]
-          : '09:00:00';
-        
-        startTimestamp = new Date(`${dateStr}T${timeStr}:00.000Z`).toISOString();
-        endTimestamp = new Date(`${dateStr}T${endTimeStr}:00.000Z`).toISOString();
-      }
-
-      // Validate that timestamps were created properly and are not null/invalid
-      if (!startTimestamp || !endTimestamp || 
-          startTimestamp === 'Invalid Date' || endTimestamp === 'Invalid Date') {
-        throw new Error('No se pudieron generar las fechas y horas de la cita correctamente');
-      }
-
       const { data: newAppointment, error } = await supabase
         .from('appointments')
         .insert([{
           user_id: user.id,
           slot_id: selectedSlot.id,
           delegate_type: selectedType,
-          start_time: startTimestamp,
-          end_time: endTimestamp,
+          appointment_date: selectedSlot.appointment_date,
+          start_time: selectedSlot.start_time,
+          end_time: selectedSlot.end_time,
+          appointment_time: (() => {
+            // Extraer solo la hora de diferentes formatos de timestamp
+            let timeStr = selectedSlot.start_time;
+            if (timeStr.includes('T')) {
+              // Formato ISO: "2025-11-18T08:00:00+00:00"
+              return timeStr.split('T')[1].split('+')[0].split('-')[0];
+            } else {
+              // Formato estándar: "2025-11-10 08:00:00+00"
+              return timeStr.split(' ')[1]?.split('.')[0] || timeStr.split(' ')[1];
+            }
+          })(),
           comments: comments || null,
           questions: questions || null,
           documents: uploadedFiles.length > 0 ? uploadedFiles : null,

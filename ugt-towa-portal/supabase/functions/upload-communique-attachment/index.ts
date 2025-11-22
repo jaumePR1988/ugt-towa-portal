@@ -59,9 +59,9 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
     const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 
-    // Subir a Supabase Storage usando el bucket communique-images que funciona
+    // Subir a Supabase Storage
     const uploadResponse = await fetch(
-      `${supabaseUrl}/storage/v1/object/communique-images/${fileName}`,
+      `${supabaseUrl}/storage/v1/object/communique-attachments/${fileName}`,
       {
         method: 'POST',
         headers: {
@@ -78,7 +78,7 @@ Deno.serve(async (req) => {
     }
 
     // Generar URL pública del archivo
-    const fileUrl = `${supabaseUrl}/storage/v1/object/public/communique-images/${fileName}`;
+    const fileUrl = `${supabaseUrl}/storage/v1/object/public/communique-attachments/${fileName}`;
 
     return new Response(
       JSON.stringify({

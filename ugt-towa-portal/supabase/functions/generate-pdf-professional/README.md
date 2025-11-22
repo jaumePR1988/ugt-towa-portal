@@ -20,11 +20,9 @@ Edge Function profesional para generación de PDF con HTML→PDF backend usando 
 ### 🏢 **Elementos Corporativos**
 - **Portada profesional** con branding UGT
 - **Secciones estructuradas** con títulos y subtítulos
-- **Estadísticas destacadas** con diseño de tarjetas (solo datos positivos)
+- **Estadísticas destacadas** con diseño de tarjetas
 - **Sección de afiliación** con QR code generado
 - **Footer informativo** con datos de contacto
-- **Encuestas activas** integradas cuando están disponibles
-- **Galería de eventos excluida** para mantener enfoque en contenido textual
 
 ### ⚡ **Backend Robusto**
 - **Manejo de errores** completo con logging
@@ -341,16 +339,6 @@ console.error('Error en generación PDF profesional:', error);
 3. **"No se encontró contenido"** → Verificar contenido HTML
 
 ## Versión y Changelog
-
-### v1.1.0 (2025-11-16) - OPTIMIZADO PARA NEWSLETTER
-- ✅ **Galería de eventos excluida** completamente del PDF
-- ✅ **Estadísticas filtradas** - solo datos positivos (incrementos, mejoras, logros)
-- ✅ **Encuestas activas agregadas** cuando están disponibles
-- ✅ **Limpieza automática de HTML** -移除 tracking pixels, scripts, comentarios
-- ✅ **Optimización de imágenes** para impresión
-- ✅ **Manejo mejorado de contenido** desde newsletter_editions
-- ✅ **Filtrado inteligente de contenido positivo** basado en palabras clave
-- ✅ **Respuestas enriquecidas** con metadata sobre filtros aplicados
 
 ### v1.0.0 (2025-11-16)
 - ✅ Implementación inicial profesional

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+// import NotificationSetup from '@/components/NotificationSetup'; // Removed - not needed in admin context
 import { supabase, Appointment } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { Bell, CheckCircle, XCircle, Calendar, Clock, Filter, TrendingUp, AlertCircle, Search, User, RefreshCcw, BarChart3, Users, Target, Activity, Settings, Plus, Minus, Edit3, Save, X, Download, FileText, FileSpreadsheet, CalendarDays, Clock3, TrendingDown, Mail, Trash2 } from 'lucide-react';
@@ -1315,6 +1316,8 @@ export default function AdminCitas() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Gestión de Citas</h1>
         </div>
+
+        {/* Configuración de Notificaciones - Removed for admin context */}
 
         {/* Dashboard de Estadísticas */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
