@@ -56,8 +56,21 @@ Deno.serve(async (req) => {
     const uint8Array = new Uint8Array(arrayBuffer);
 
     // Obtener URL y Service Role Key desde variables de entorno
-    const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
-    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+
+    if (!supabaseUrl || !serviceRoleKey) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Configuración de Supabase faltante',
+          details: {
+            supabaseUrl: supabaseUrl ? 'configurado' : 'no configurado',
+            serviceRoleKey: serviceRoleKey ? 'configurado' : 'no configurado'
+          }
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+      );
+    }
 
     // Subir a Supabase Storage
     const uploadResponse = await fetch(

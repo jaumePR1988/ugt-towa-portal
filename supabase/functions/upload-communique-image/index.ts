@@ -49,8 +49,21 @@ Deno.serve(async (req) => {
     const uint8Array = new Uint8Array(arrayBuffer);
 
     // Subir a Supabase Storage
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+
+    if (!supabaseUrl || !serviceRoleKey) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Configuración de Supabase faltante',
+          details: {
+            supabaseUrl: supabaseUrl ? 'configurado' : 'no configurado',
+            serviceRoleKey: serviceRoleKey ? 'configurado' : 'no configurado'
+          }
+        }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     const uploadResponse = await fetch(
       `${supabaseUrl}/storage/v1/object/communique-images/${fileName}`,
