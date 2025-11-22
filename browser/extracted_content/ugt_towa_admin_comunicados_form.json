@@ -1,0 +1,35 @@
+📄 Extracted from page: UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical
+URL: https://6xzgavdsvyvx.space.minimax.io/admin/comunicados
+
+Extracted content:
+```json
+{
+  "title": "UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical",
+  "url": "https://6xzgavdsvyvx.space.minimax.io/admin/comunicados",
+  "summary": "The page displays the 'Gestionar Comunicados' (Manage Communiques) section of the UGT Towa sindical portal. It features a prominent form for creating a 'Nuevo Comunicado' (New Communique), allowing users to define its category, input rich text content, and attach both an optional featured image and multiple relevant documents. Below this form, a list of previously published communiques is presented, along with their categories, descriptions, and publication dates.",
+  "key_points": [
+    "**Form Title:** Nuevo Comunicado",
+    "**Category Selection:** A dropdown with options: Convocatorias, Información General, Negociación, Seguridad Laboral, Urgente.",
+    "**Content Editor:** A text input area labeled 'Contenido' that supports basic formatting (Color, Lista, Enlace) and provides tips for bold (Ctrl+B) and italic (Ctrl+I). Includes a character counter (e.g., '0 caracteres').",
+    "**Featured Image Upload:** An optional field for 'Imagen destacada' with an implied 'Subir' (Upload) action, indicating file upload functionality.",
+    "**File Attachments:** An optional section for 'Archivos Adjuntos' with the description: 'Puedes adjuntar documentos relevantes (PDF, imágenes, Word). Máximo 5MB por archivo.'",
+    "**Attachment File Types:** Allowed types are PDF, JPG, PNG, DOC, DOCX, with a 'Seleccionar archivos' (Select files) button.",
+    "**Form Actions:** 'Publicar' (Publish) and 'Cancelar' (Cancel) buttons for submission and discard.",
+    "**HTML/JavaScript/URL Search:** No explicit HTML tags, JavaScript code blocks, or specific URLs containing the string 'upload-communique' were found in the provided *text content* of the page. The 'Subir' and 'Seleccionar archivos' elements clearly indicate active file upload mechanisms, which would typically be handled by JavaScript and backend upload endpoints, though these are not directly visible in the given text."
+  ],
+  "relevant_links": [
+    "/",
+    "/quienes-somos",
+    "/comunicados",
+    "/galeria",
+    "/citas",
+    "/documentos",
+    "/encuestas",
+    "/newsletter",
+    "/afiliados/dashboard",
+    "/admin/dashboard",
+    "/admin/newsletter"
+  ],
+  "file_name": "ugt_towa_admin_comunicados_form.json"
+}
+```

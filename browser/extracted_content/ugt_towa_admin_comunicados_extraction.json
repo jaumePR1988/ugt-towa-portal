@@ -1,0 +1,31 @@
+📄 Extracted from page: UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical
+URL: https://6xzgavdsvyvx.space.minimax.io/admin/comunicados
+
+Extracted content:
+```json
+{
+  "title": "UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical",
+  "url": "https://6xzgavdsvyvx.space.minimax.io/admin/comunicados",
+  "summary": "This page serves as the administrative interface for managing 'Comunicados' (communiqués) for the UGT Towa Pharmaceutical union section. It lists existing communiqués with details such as title, category, content summary, and date. A prominent 'Nuevo' (New) action is available under the 'Gestionar Comunicados' (Manage Communiqués) heading, which is the most likely entry point for creating or uploading a new communiqué. While the exact URL or endpoint for 'upload-communique' is not explicitly found within the provided HTML content, the context strongly indicates that the 'Nuevo' action on this `/admin/comunicados` page would lead to such functionality. The page content provided is HTML, and no explicit JavaScript blocks or direct form actions related to 'upload-communique' were identified in this snippet.",
+  "key_points": [
+    "The page is an administration panel for 'Comunicados' (communiqués) at `/admin/comunicados`.",
+    "A 'Nuevo' (New) button/action is present, indicating the functionality to create or upload new communiqués.",
+    "No direct string 'upload-communique' or explicit form action pointing to an 'upload-communique' endpoint was found in the provided HTML.",
+    "Existing communiqués are displayed with their titles, brief descriptions, and dates.",
+    "The provided content is HTML; no explicit JavaScript blocks were included in the snippet for analysis regarding upload functionality."
+  ],
+  "relevant_links": [
+    {
+      "type": "current_page_admin_endpoint",
+      "url": "/admin/comunicados",
+      "description": "The current page URL, representing the administrative interface for managing communiqués."
+    },
+    {
+      "type": "creation_trigger",
+      "element_text": "Nuevo",
+      "description": "The 'Nuevo' (New) action under 'Gestionar Comunicados' is the likely trigger for navigating to a communiqué creation/upload form or endpoint. The specific URL/endpoint for this action is not provided in the snippet but is implied by context."
+    }
+  ],
+  "file_name": "ugt_towa_admin_comunicados_extraction.json"
+}
+```
