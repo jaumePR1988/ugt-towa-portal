@@ -1,0 +1,8 @@
+Este es un archivo de prueba para verificar la funcionalidad de subida de archivos adjuntos (PDFs) en el portal UGT TOWA.
+
+Contenido del archivo de prueba:
+- Documento PDF de prueba
+- Fecha de creación: 23 de noviembre, 2025
+- Propósito: Verificar funcionalidad de archivos adjuntos
+
+Este archivo debería convertirse a PDF para la prueba.
