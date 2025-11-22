@@ -1,0 +1,32 @@
+📄 Extracted from page: UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical
+URL: https://6xzgavdsvyvx.space.minimax.io/admin/galeria
+
+Extracted content:
+```json
+{
+  "title": "UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical",
+  "url": "https://6xzgavdsvyvx.space.minimax.io/admin/galeria",
+  "summary": "La página actual es el panel de administración para la 'Gestión de Galería de Eventos' de UGT Towa. Permite a los administradores subir nuevas imágenes para el carrusel de la página principal a través de un formulario con campos como título, fecha, descripción, orden de visualización e imagen. El contenido de la página muestra este formulario de subida y una lista de 7 imágenes ya cargadas. **No se observa ningún mensaje de error o confirmación visible en la página que indique el estado de una subida reciente de imagen.** La interfaz se presenta de forma estática, mostrando las funcionalidades disponibles y el contenido existente de la galería.",
+  "key_points": [
+    "La página es la interfaz de administración para gestionar la galería de eventos ('Gestión de Galería de Eventos').",
+    "Incluye un formulario para 'Subir Nueva Imagen' con campos para Título, Fecha del evento, Descripción, Orden de visualización e Imagen (PNG, JPG, WEBP, máx. 5MB).",
+    "Actualmente, hay 7 imágenes ya subidas listadas en la sección 'Imágenes Subidas'.",
+    "No hay mensajes de confirmación de éxito ni mensajes de error visibles en la página que informen sobre el resultado de un intento de subida de imagen.",
+    "Cada imagen subida muestra su título, descripción, fecha y una opción para 'Ocultar'."
+  ],
+  "relevant_links": [
+    "/",
+    "/quienes-somos",
+    "/comunicados",
+    "/galeria",
+    "/citas",
+    "/documentos",
+    "/encuestas",
+    "/newsletter",
+    "/afiliados/dashboard",
+    "/admin/dashboard",
+    "/admin/newsletter"
+  ],
+  "file_name": "ugt_towa_admin_galeria_status.json"
+}
+```

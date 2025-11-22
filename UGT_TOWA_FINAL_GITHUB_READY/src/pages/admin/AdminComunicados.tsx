@@ -80,7 +80,7 @@ export default function AdminComunicados() {
       const formDataUpload = new FormData();
       formDataUpload.append('file', selectedFile);
 
-      const response = await fetch('https://zaxdscclkeytakcowgww.supabase.co/functions/v1/upload-storage-direct', {
+      const response = await fetch('https://zaxdscclkeytakcowgww.supabase.co/functions/v1/upload-communique-image-fixed', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -148,7 +148,7 @@ export default function AdminComunicados() {
         const formDataUpload = new FormData();
         formDataUpload.append('file', file);
 
-        const response = await fetch('https://zaxdscclkeytakcowgww.supabase.co/functions/v1/upload-attachment-direct', {
+        const response = await fetch('https://zaxdscclkeytakcowgww.supabase.co/functions/v1/upload-communique-attachment-fixed', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`
