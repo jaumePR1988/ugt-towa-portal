@@ -1,0 +1,75 @@
+📄 Extracted from page: UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical
+URL: https://6xzgavdsvyvx.space.minimax.io/encuestas
+
+Extracted content:
+```json
+{
+  "title": "UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical",
+  "url": "https://6xzgavdsvyvx.space.minimax.io/encuestas",
+  "summary": "La página de 'Encuestas' del Portal Sindical de UGT Towa muestra los resultados de tres encuestas activas. No ofrece funcionalidad interactiva para que los usuarios respondan a estas encuestas directamente en la página, sino que solo presenta las opciones y los porcentajes/cantidades de votos ya registrados. La página incluye una barra de navegación principal en la cabecera y enlaces adicionales en el pie de página, junto con información de contacto.",
+  "key_points": [
+    {
+      "section": "Encuestas Activas",
+      "details": [
+        {
+          "question": "¿Qué mejora prioritaria deseas para el portal?",
+          "options": [
+            "Más comunicados: 0% (0 votos)",
+            "Más eventos: 100% (1 voto)",
+            "Mejores beneficios: 0% (0 votos)",
+            "Mejor diseño: 0% (0 votos)"
+          ],
+          "total_votes": 1
+        },
+        {
+          "question": "Crees que es importante llevar al TLC los grupos profesionales de fábrica?",
+          "options": [
+            "Si: 100% (2 votos)",
+            "No, no es el momento: 0% (0 votos)"
+          ],
+          "total_votes": 2
+        },
+        {
+          "question": "¿Qué tema te gustaría que priorizáramos en las próximas negociaciones?",
+          "options": [
+            "Incremento salarial: 50% (1 voto)",
+            "Más flexibilidad horaria: 0% (0 votos)",
+            "Mejora del plan de formación: 0% (0 votos)",
+            "Beneficios sociales adicionales: 50% (1 voto)"
+          ],
+          "total_votes": 2
+        }
+      ]
+    },
+    {
+      "section": "Funcionalidad de Respuesta",
+      "details": "La página actual solo muestra los resultados de las encuestas (opciones, porcentajes y número de votos). No se observan elementos interactivos (como botones de radio, casillas de verificación o botones de envío) que permitan a los usuarios participar o emitir nuevos votos en las encuestas directamente desde esta página. Parece ser una vista solo para consulta de resultados."
+    },
+    {
+      "section": "Navegación",
+      "details": "La página cuenta con una barra de navegación principal que incluye enlaces a 'Inicio', 'Quiénes Somos', 'Comunicados', 'Galería de Eventos', 'Citas', 'Documentos', 'Encuestas', 'Newsletter', 'Afiliados', 'Admin' y 'Salir'. En el pie de página, se encuentran enlaces adicionales a 'Quiénes Somos', 'Comunicados', 'Solicitar Cita' y 'Encuestas'."
+    },
+    {
+      "section": "Problemas/Observaciones",
+      "details": [
+        "**Ausencia de interacción para votar:** El principal punto es que la página no permite la participación activa en las encuestas, funcionando únicamente como un tablón de resultados. Esto podría ser una limitación si el objetivo es que los usuarios respondan a las encuestas a través de este portal.",
+        "**Elemento 'Created by MiniMax Agent':** Un pequeño texto 'Created by MiniMax Agent ×' aparece en la parte inferior derecha, que parece un elemento residual de desarrollo o la plataforma utilizada."
+      ]
+    }
+  ],
+  "relevant_links": [
+    "/",
+    "/quienes-somos",
+    "/comunicados",
+    "/galeria",
+    "/citas",
+    "/documentos",
+    "/encuestas",
+    "/newsletter",
+    "/afiliados/dashboard",
+    "/admin/dashboard",
+    "/admin/newsletter"
+  ],
+  "file_name": "ugt_towa_encuestas_analysis.json"
+}
+```

@@ -1,0 +1,29 @@
+📄 Extracted from page: UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical
+URL: https://6xzgavdsvyvx.space.minimax.io/newsletter
+
+Extracted content:
+```json
+{
+    "title": "UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical",
+    "url": "https://6xzgavdsvyvx.space.minimax.io/newsletter",
+    "summary": "La página del newsletter de UGT Towa es una sección dedicada a mantener informados a los afiliados y trabajadores sobre las actividades del sindicato. Ofrece un formulario sencillo para la suscripción, detallando claramente el tipo de contenido que los suscriptores recibirán, como actualizaciones de negociaciones, convocatorias de eventos y comunicados importantes. Además, la página incluye información de contacto del sindicato y enlaces a otras secciones relevantes del portal.",
+    "key_points": [
+        "**Suscripción:** La página presenta un formulario de suscripción básico que solicita una dirección de correo electrónico y un botón 'Suscribirse'. No se observa validación en el cliente ni confirmación inmediata en la interfaz.",
+        "**Contenido del Newsletter:** Se especifica que los suscriptores recibirán: actualizaciones sobre negociaciones y convenios, convocatorias de asambleas y eventos, comunicados importantes del sindicato y noticias laborales relevantes.",
+        "**Funcionalidad:** La página principal es el formulario de suscripción. Incluye enlaces de navegación a otras secciones del portal sindical (Quiénes Somos, Comunicados, Citas, Encuestas), información de contacto del sindicato (email y teléfono) y un pie de página con derechos de autor y el creador.",
+        "**Problemas Observados:** No se aprecian problemas críticos de funcionamiento o contenido faltante. La interfaz de suscripción es directa, aunque la retroalimentación al usuario tras pulsar 'Suscribirse' no es visible en la página estática. Los enlaces de navegación parecen funcionales."
+    ],
+    "relevant_links": [
+        "/quienes-somos",
+        "/comunicados",
+        "/citas",
+        "/encuestas",
+        "/galeria",
+        "/documentos",
+        "/afiliados/dashboard",
+        "/admin/dashboard",
+        "/admin/newsletter"
+    ],
+    "file_name": "ugt_towa_newsletter_analysis.json"
+}
+```

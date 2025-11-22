@@ -1,0 +1,35 @@
+📄 Extracted from page: UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical
+URL: https://6xzgavdsvyvx.space.minimax.io/documentos
+
+Extracted content:
+```json
+{
+  "title": "UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical",
+  "url": "https://6xzgavdsvyvx.space.minimax.io/documentos",
+  "summary": "La página de 'Documentos' del portal sindical UGT Towa actúa como un repositorio centralizado de información relevante para los trabajadores de Towa Pharmaceutical Europe. Está organizada con un sistema de filtrado por categorías, permitiendo a los usuarios encontrar rápidamente documentos sobre políticas, procedimientos y otros temas. Cada documento listado ofrece su título, una breve descripción, fecha, autor, tamaño y un enlace directo para su descarga. La navegación es intuitiva, con un menú principal completo y un pie de página que proporciona enlaces adicionales y detalles de contacto.",
+  "key_points": [
+    "**Organización:** La página está titulada 'Documentos Relevantes' y cuenta con una sección de 'Filtrar por categoría' que incluye opciones como 'Todos', 'Nóminas', 'Contratos', 'Políticas', 'Procedimientos' y 'Otros'.",
+    "**Tipos de Documentos:** Los documentos listados actualmente se clasifican principalmente en 'Políticas' y 'Procedimientos'. Ejemplos incluyen el Plan de igualdad 2024-2026, la Política de teletrabajo, el Procedimiento horario Flexible, Permisos y Licencias, el Estatuto de las personas trabajadoras, y el Convenio colectivo de Industria Química 2024-2026.",
+    "**Detalle de Documentos:** Cada documento muestra su categoría, título, descripción, fecha (uniformemente '17 nov 2025' para los ejemplos), autor ('Jaume Pedragosa'), tamaño del archivo y un botón de 'Descargar'.",
+    "**Descarga:** La descarga se realiza directamente a través de enlaces que apuntan a un servicio de almacenamiento (Supabase), permitiendo el acceso directo a los archivos (presumiblemente PDF).",
+    "**Navegación:** La página incluye un menú de navegación principal con enlaces a 'Inicio', 'Quiénes Somos', 'Comunicados', 'Galería de Eventos', 'Citas', 'Documentos', 'Encuestas', 'Newsletter', 'Afiliados' y 'Admin'. También hay enlaces en el pie de página para 'Contacto' y 'Enlaces' adicionales.",
+    "**Observaciones/Posibles Problemas:** Todas las fechas de los documentos listados son '17 nov 2025', lo que sugiere que podrían ser fechas de publicación futuras, fechas de vencimiento o un valor predeterminado/placeholder. Aunque existen filtros para 'Nóminas' y 'Contratos', no se muestran documentos bajo esas categorías en el contenido proporcionado. Hay dos enlaces a 'Newsletter' en el menú principal."
+  ],
+  "relevant_links": [
+    "/",
+    "/quienes-somos",
+    "/comunicados",
+    "/galeria",
+    "/citas",
+    "/documentos",
+    "/encuestas",
+    "/newsletter",
+    "/afiliados/dashboard",
+    "/admin/dashboard",
+    "mailto:jpedragosa@towapharmaceutical.com",
+    "tel:629931957",
+    "https://zaxdscclkeytakcowgww.supabase.co/storage/v1/object/public/documents/doc_1763368090589_Plan-igualdad-TPE-2022-2026.pdf (ejemplo de descarga de documento)"
+  ],
+  "file_name": "ugt_towa_documentos_analisis.json"
+}
+```

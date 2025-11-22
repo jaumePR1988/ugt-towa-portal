@@ -1,0 +1,32 @@
+📄 Extracted from page: UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical
+URL: https://6xzgavdsvyvx.space.minimax.io/citas
+
+Extracted content:
+```json
+{
+  "title": "UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical",
+  "url": "https://6xzgavdsvyvx.space.minimax.io/citas",
+  "summary": "La página de citas del portal UGT Towa permite a los usuarios gestionar sus citas con los delegados. Los usuarios pueden seleccionar el tipo de delegado (Sindical o Prevención) para ver la disponibilidad de horarios. La página muestra los horarios disponibles para una fecha específica, indicando si hay o no disponibilidad. También incluye una sección donde los usuarios pueden ver sus citas ya agendadas, con su estado (Pendiente o Confirmada) y la opción de cancelarlas. No se muestra un formulario explícito para reservar nuevas citas, sino la disponibilidad y la gestión de las existentes.",
+  "key_points": [
+    "**Funcionalidad principal**: Permite a los usuarios seleccionar entre 'Delegados Sindicales' y 'Delegados de Prevención' para consultar horarios.",
+    "**Visualización de disponibilidad**: Muestra los horarios disponibles por franjas de una hora (08:00 - 16:00) para una fecha específica (ej. 22 de noviembre de 2025).",
+    "**Indicador de no disponibilidad**: Cuando no hay horarios disponibles para la fecha y tipo de delegado seleccionado, se muestra un mensaje claro: \"No hay horarios disponibles para esta fecha y tipo de delegado. Prueba con otra fecha o tipo de delegado.\"",
+    "**Gestión de citas existentes**: La sección 'Mis Citas' lista las citas agendadas por el usuario, incluyendo el tipo de delegado ('sindical'), el estado ('Pendiente' o 'Confirmada'), la fecha y la hora.",
+    "**Acción de cancelación**: Cada cita listada en 'Mis Citas' incluye un botón para 'Cancelar Cita'.",
+    "**Ausencia de formulario de reserva explícito**: No se muestra un formulario directo para introducir datos y reservar una nueva cita; la interacción parece centrarse en la selección de horarios disponibles y la gestión de citas ya hechas.",
+    "**Navegación**: La página es accesible a través del enlace 'Citas' en la barra de navegación principal y también desde un enlace 'Solicitar Cita' en el pie de página."
+  ],
+  "relevant_links": [
+    "/quienes-somos",
+    "/comunicados",
+    "/galeria",
+    "/documentos",
+    "/encuestas",
+    "/afiliados/dashboard",
+    "/admin/dashboard",
+    "/admin/newsletter",
+    "/citas"
+  ],
+  "file_name": "ugt_towa_citas_analisis.json"
+}
+```

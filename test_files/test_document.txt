@@ -1,0 +1,17 @@
+Documento de Prueba UGT TOWA
+===========================
+
+Este es un documento de prueba para verificar la funcionalidad de subida de archivos en el sistema de Gestionar Comunicados.
+
+Detalles del documento:
+- Fecha: 2025-11-22
+- Propósito: Prueba de funcionalidad de archivos adjuntos
+- Usuario: Admin
+- Portal: UGT TOWA
+
+Contenido de prueba:
+- Línea 1: Prueba de subida de archivos
+- Línea 2: Verificar límites de 5MB
+- Línea 3: Comprobar formatos soportados (PDF, JPG, PNG, DOC, DOCX)
+
+Fin del documento de prueba.
