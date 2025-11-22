@@ -3,31 +3,10 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Verificar y corregir el código EventCard.tsx con aspect ratio correcto",
-        "details": "1. Revisar EventCard.tsx en la versión más reciente. 2. Asegurar que use aspect-[16/10] en lugar de h-48 fijo. 3. Verificar que las imágenes no se corten en la galería.",
-        "status": "completed",
+        "content": "Solucionar incidencia de subida de archivos en comunicados",
+        "details": "1. Modificar upload-communique-attachment edge function para usar el bucket communique-images que funciona. 2. Actualizar el código frontend si es necesario. 3. Verificar que tanto imágenes como attachments se suben correctamente.",
+        "status": "in_progress",
         "priority": "high"
-      },
-      "2": {
-        "id": "2",
-        "content": "Verificar y redesplegar edge functions para subida de archivos",
-        "details": "1. Verificar upload-communique-image edge function. 2. Verificar upload-communique-attachment edge function. 3. Asegurar que funcionen correctamente para comunicados. 4. Redesplegar si es necesario.",
-        "status": "completed",
-        "priority": "high"
-      },
-      "3": {
-        "id": "3",
-        "content": "Crear paquete ZIP completamente funcional para GitHub",
-        "details": "1. Tomar la versión más reciente con todas las correcciones. 2. Verificar que tenga todas las dependencias correctas. 3. Crear ZIP limpio listo para subir a GitHub (ugt.towa.cat).",
-        "status": "completed",
-        "priority": "high"
-      },
-      "4": {
-        "id": "4",
-        "content": "Generar instrucciones claras de deployment",
-        "details": "1. Crear README con pasos de instalación. 2. Documentar configuración de variables de entorno. 3. Incluir comandos de deploy específicos para GitHub Pages/Vercel. 4. Verificar que todo funcione correctamente.",
-        "status": "completed",
-        "priority": "medium"
       }
     }
   }

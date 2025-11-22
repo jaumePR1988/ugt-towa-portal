@@ -28,19 +28,17 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Validar tipo de archivo
+    // Validar tipo de archivo (solo imágenes)
     const allowedTypes = [
-      'application/pdf',
       'image/jpeg',
       'image/jpg',
       'image/png',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      'image/webp'
     ];
 
     if (!allowedTypes.includes(file.type)) {
       return new Response(
-        JSON.stringify({ error: 'Tipo de archivo no permitido. Solo se permiten PDF, imágenes y documentos Word' }),
+        JSON.stringify({ error: 'Tipo de archivo no permitido. Solo se permiten imágenes JPEG, JPG, PNG o WEBP' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
       );
     }
@@ -49,7 +47,7 @@ Deno.serve(async (req) => {
     const timestamp = Date.now();
     const randomString = crypto.randomUUID().split('-')[0];
     const fileExtension = file.name.split('.').pop();
-    const fileName = `communique-attachment-${timestamp}-${randomString}.${fileExtension}`;
+    const fileName = `communique-image-${timestamp}-${randomString}.${fileExtension}`;
 
     // Leer el archivo como ArrayBuffer
     const arrayBuffer = await file.arrayBuffer();
@@ -74,10 +72,10 @@ Deno.serve(async (req) => {
 
     if (!uploadResponse.ok) {
       const errorText = await uploadResponse.text();
-      throw new Error(`Error al subir el archivo: ${errorText}`);
+      throw new Error(`Error al subir la imagen: ${errorText}`);
     }
 
-    // Generar URL pública del archivo
+    // Generar URL pública de la imagen
     const fileUrl = `${supabaseUrl}/storage/v1/object/public/communique-images/${fileName}`;
 
     return new Response(
@@ -94,10 +92,10 @@ Deno.serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error('Error en upload-communique-attachment:', error);
+    console.error('Error en upload-communique-image:', error);
     return new Response(
       JSON.stringify({
-        error: error instanceof Error ? error.message : 'Error desconocido al subir el archivo',
+        error: error instanceof Error ? error.message : 'Error desconocido al subir la imagen',
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
