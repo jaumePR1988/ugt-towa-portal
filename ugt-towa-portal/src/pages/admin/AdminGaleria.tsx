@@ -91,34 +91,44 @@ export default function AdminGaleria() {
     try {
       setUploading(true);
 
-      const formData = new FormData();
-      formData.append('file', selectedFile);
-      formData.append('title', title);
-      formData.append('description', description);
-      formData.append('eventDate', eventDate);
-      formData.append('displayOrder', displayOrder);
+      // Generar nombre único para el archivo
+      const timestamp = Date.now();
+      const randomStr = Math.random().toString(36).substring(2, 8);
+      const fileExt = selectedFile.name.split('.').pop();
+      const fileName = `event_${timestamp}_${randomStr}.${fileExt}`;
 
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast.error('Debes estar autenticado');
-        return;
+      // Subir archivo directamente a Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('event-images')
+        .upload(fileName, selectedFile);
+
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        throw new Error(uploadError.message);
       }
 
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/upload-event-image`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-          body: formData,
-        }
-      );
+      // Obtener URL pública
+      const { data: urlData } = supabase.storage
+        .from('event-images')
+        .getPublicUrl(fileName);
 
-      const result = await response.json();
+      // Crear registro en la base de datos
+      const { error: dbError } = await supabase
+        .from('event_images')
+        .insert({
+          title: title.trim(),
+          description: description.trim() || null,
+          image_url: urlData.publicUrl,
+          event_date: eventDate || null,
+          display_order: parseInt(displayOrder) || 0,
+          is_active: true
+        });
 
-      if (!response.ok) {
-        throw new Error(result.error || 'Error al subir imagen');
+      if (dbError) {
+        console.error('Database error:', dbError);
+        // Intentar eliminar el archivo subido si falla la DB
+        await supabase.storage.from('event-images').remove([fileName]);
+        throw new Error(dbError.message);
       }
 
       toast.success('Imagen subida exitosamente');

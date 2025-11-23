@@ -1,0 +1,33 @@
+📄 Extracted from page: UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical
+URL: https://ugt-towa.vercel.app/admin/galeria
+
+Extracted content:
+```json
+{
+  "title": "UGT Towa - Portal Sindical | Unión General de Trabajadores Towa Pharmaceutical",
+  "url": "https://ugt-towa.vercel.app/admin/galeria",
+  "summary": "La página es el panel de administración de la \"Galería de Eventos\" del portal UGT Towa. Permite a los administradores subir nuevas imágenes para el carrusel y gestionar las ya existentes. El formulario de subida de nuevas imágenes incluye campos para el título, fecha del evento, descripción, orden de visualización y el archivo de imagen (aceptando PNG, JPG, WEBP con un tamaño máximo de 5MB). Se observa una entrada en el campo de descripción que indica una prueba para verificar la solución de un error de subida de archivos previo, lo que sugiere que un problema en esa funcionalidad pudo haber sido abordado. No se muestran mensajes de error activos en la página. Además, se lista un total de cinco imágenes ya subidas, cada una con su título, descripción, fecha y una opción para ocultarla.",
+  "key_points": [
+    "La página es la interfaz de administración para la \"Galería de Eventos\", permitiendo la gestión de imágenes del carrusel principal.",
+    "El formulario \"Subir Nueva Imagen\" incluye campos para 'Título', 'Fecha del evento', 'Descripción', 'Orden de visualización' e 'Imagen'.",
+    "El campo 'Imagen' especifica los formatos permitidos (PNG, JPG, WEBP) y un tamaño máximo de 5MB.",
+    "No se muestran mensajes de error activos directamente en la página en relación con la subida de archivos.",
+    "En el campo 'Descripción' del formulario de subida, se encuentra el texto \"Esta es una prueba de la funcionalidad de subida de archivos para verificar que el error se ha solucionado\", indicando que hubo un error previo relacionado con la subida de archivos que se ha intentado resolver y se está probando su corrección.",
+    "La sección \"Imágenes Subidas\" muestra una lista de 5 imágenes ya cargadas, con detalles como título, descripción, fecha y una opción para 'Ocultar' cada una."
+  ],
+  "relevant_links": [
+    "/",
+    "/quienes-somos",
+    "/comunicados",
+    "/galeria",
+    "/citas",
+    "/documentos",
+    "/encuestas",
+    "/newsletter",
+    "/afiliados/dashboard",
+    "/admin/dashboard",
+    "/admin/newsletter"
+  ],
+  "file_name": "ugt_towa_gallery_admin_content.json"
+}
+```
