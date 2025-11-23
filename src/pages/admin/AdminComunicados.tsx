@@ -54,36 +54,32 @@ export default function AdminComunicados() {
     
     setUploading(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token;
+      const fileExt = selectedFile.name.split('.').pop();
+      const fileName = `${crypto.randomUUID()}.${fileExt}`;
 
-      if (!token) {
-        toast.error('No autenticado');
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('communique-images')
+        .upload(fileName, selectedFile, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (uploadError) {
+        console.error('Error al subir imagen:', uploadError);
+        toast.error('Error al subir imagen');
         setUploading(false);
         return;
       }
 
-      const formDataUpload = new FormData();
-      formDataUpload.append('file', selectedFile);
+      const { data: { publicUrl } } = supabase.storage
+        .from('communique-images')
+        .getPublicUrl(fileName);
 
-      const response = await fetch('https://zaxdscclkeytakcowgww.supabase.co/functions/v1/upload-communique-image', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formDataUpload
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        setFormData(prev => ({ ...prev, image_url: result.url }));
-        toast.success('Imagen subida correctamente');
-        setSelectedFile(null);
-      } else {
-        toast.error('Error al subir imagen');
-      }
+      setFormData(prev => ({ ...prev, image_url: publicUrl }));
+      toast.success('Imagen subida correctamente');
+      setSelectedFile(null);
     } catch (error) {
+      console.error('Error:', error);
       toast.error('Error al subir imagen');
     } finally {
       setUploading(false);
@@ -119,27 +115,35 @@ export default function AdminComunicados() {
       }
 
       try {
-        const formDataUpload = new FormData();
-        formDataUpload.append('file', file);
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${crypto.randomUUID()}.${fileExt}`;
 
-        const { data, error } = await supabase.functions.invoke('upload-communique-attachment', {
-          body: formDataUpload,
-        });
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('communique-attachments')
+          .upload(fileName, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
 
-        if (error) throw error;
-
-        if (data && data.success) {
-          setFormData(prev => ({
-            ...prev,
-            attachments: [...prev.attachments, {
-              url: data.url,
-              fileName: data.fileName,
-              fileSize: data.fileSize,
-              fileType: data.fileType,
-            }]
-          }));
-          toast.success(`Archivo ${file.name} subido correctamente`);
+        if (uploadError) {
+          console.error('Error al subir archivo:', uploadError);
+          throw uploadError;
         }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('communique-attachments')
+          .getPublicUrl(fileName);
+
+        setFormData(prev => ({
+          ...prev,
+          attachments: [...prev.attachments, {
+            url: publicUrl,
+            fileName: file.name,
+            fileSize: file.size,
+            fileType: file.type,
+          }]
+        }));
+        toast.success(`Archivo ${file.name} subido correctamente`);
       } catch (error: any) {
         console.error('Error al subir archivo:', error);
         toast.error(`Error al subir ${file.name}: ${error.message}`);
