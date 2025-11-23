@@ -810,10 +810,10 @@ export default function AdminNotificaciones() {
                                     {logo.name}
                                   </h4>
                                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                                    {logo.format.toUpperCase()} • {(logo.file_size / 1024).toFixed(0)} KB
+                                    {logo.format ? logo.format.toUpperCase() : 'N/A'} • {logo.file_size ? (logo.file_size / 1024).toFixed(0) : '0'} KB
                                   </p>
                                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                                    {new Date(logo.created_at).toLocaleDateString('es-ES')}
+                                    {logo.created_at ? new Date(logo.created_at).toLocaleDateString('es-ES') : 'N/A'}
                                   </p>
                                 </div>
                                 {logo.is_active && (
