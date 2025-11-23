@@ -1,0 +1,25 @@
+📄 Extracted from page: Login – Vercel
+URL: https://vercel.com/login?next=%2Fjaumes-projects-b54b89da%2Fugt-towa%2Fdeployments
+
+Extracted content:
+```json
+{
+  "title": "Login – Vercel",
+  "url": "https://vercel.com/login?next=%2Fjaumes-projects-b54b89da%2Fugt-towa%2Fdeployments",
+  "summary": "This page is the login portal for Vercel, allowing users to access their accounts. It offers various authentication methods and provides options for new users to sign up.",
+  "key_points": [
+    "The page is titled 'Login – Vercel'.",
+    "It is the main login interface for Vercel accounts.",
+    "Available authentication methods include: Email, Google, GitHub, SAML SSO, and Passkey.",
+    "There is an option to 'Show other options' which might reveal more authentication methods.",
+    "Users who do not have an account can 'Sign Up'.",
+    "Links to 'Terms' and 'Privacy Policy' are provided at the bottom of the page."
+  ],
+  "relevant_links": [
+    "/signup?next=%2Fjaumes-projects-b54b89da%2Fugt-towa%2Fdeployments",
+    "/legal/terms",
+    "/legal/privacy-policy"
+  ],
+  "file_name": "vercel_login_page_status_and_methods.json"
+}
+```
