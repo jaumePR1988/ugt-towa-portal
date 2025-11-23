@@ -55,7 +55,7 @@ export default function AdminComunicados() {
     setUploading(true);
     try {
       const fileExt = selectedFile.name.split('.').pop();
-      const fileName = `${crypto.randomUUID()}.${fileExt}`;
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
 
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('communique-images')
@@ -116,7 +116,7 @@ export default function AdminComunicados() {
 
       try {
         const fileExt = file.name.split('.').pop();
-        const fileName = `${crypto.randomUUID()}.${fileExt}`;
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
 
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('communique-attachments')
